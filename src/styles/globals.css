@@ -2,5 +2,63 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
+@font-face {
+  font-family: "Ignite";
+  src: url("/fonts/Ignite.otf");
+}
+
+@font-face {
+  font-family: "VCR";
+  src: url("/fonts/Vcr.ttf");
+}
+
+html {
+  background-color: "#031402";
+}
+
+#footerBG {
+  background-image: linear-gradient(to bottom, #bc0500, #ff1c02, #6d0d0f);
+}
+
+#borderYellow {
+  border: 1px solid;
+  border-radius: 0.375rem;
+  border-image: linear-gradient(to right, #feffe8, #fcffcd) 1;
+}
+
+#blurText {
+  background-image: linear-gradient(
+    to bottom,
+    #9acce6,
+    #537684,
+    #5fabb9,
+    #45747e,
+    #9cceda,
+    #2f5566,
+    #c5d6e1
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: #d8d8d8;
+  filter: blur(0.6px);
+}
+
+#noCode {
+  background-image: linear-gradient(
+    to bottom,
+    #e3e1ee,
+    #e3e1ee,
+    #f7fff0,
+    #89eff5,
+    #23fefc,
+    #2b90fd,
+    #341cfe,
+    #341cfe,
+    #341cfe
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
 }
