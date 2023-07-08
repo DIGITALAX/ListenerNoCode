@@ -1,9 +1,13 @@
 import { combineReducers } from "redux";
 import { configureStore } from "@reduxjs/toolkit";
 import walletConnectedReducer from "./reducers/walletConnectedSlice";
+import circuitFlowReducer from "./reducers/circuitFlowSlice";
+import circuitInformationReducer from "./reducers/circuitInformationSlice";
 
 const reducer = combineReducers({
   walletConnectedReducer,
+  circuitFlowReducer,
+  circuitInformationReducer,
 });
 
 export const store = configureStore({

@@ -55,7 +55,7 @@ export default function App({ Component, pageProps }: AppProps) {
     <Provider store={store}>
       <WagmiConfig config={config}>
         <RainbowKitProvider chains={chains}>
-          <div className="relative overflow-x-hidden w-full h-screen flex flex-col selection:bg-ligeroAzul selection:text-oscuraAzul gap-5 bg-offBlack">
+          <div className="relative overflow-x-hidden w-full h-screen flex flex-col selection:bg-ligeroAzul selection:text-oscuraAzul bg-offBlack">
             <Header />
             <Component {...pageProps} />
             <Footer />

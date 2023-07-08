@@ -12,11 +12,17 @@ module.exports = {
         ligeroAzul: "#23FEFC",
         oscuraAzul: "#341CFE",
         ama: "#F6D39B",
-        moda: "#E3E1EE"
+        moda: "#E3E1EE",
+        sol: "#EDFF95",
+        aBlack: "#010101",
+        rio: "#8EADB5",
       },
       fontFamily: {
         vcr: "VCR",
-        ignite: "Ignite"
+        ignite: "Ignite",
+      },
+      width: {
+        100: "33rem",
       },
     },
   },
