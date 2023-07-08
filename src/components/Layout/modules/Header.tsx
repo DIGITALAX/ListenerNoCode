@@ -19,7 +19,7 @@ const Header: FunctionComponent = (): JSX.Element => {
     dispatch(setWalletConnected(isConnected));
   }, [isConnected]);
   return (
-    <div className="relative w-full flex flex-col gap-3 pt-2 pb-20">
+    <div className="relative w-full flex flex-col gap-3 pt-2 pb-[4.5rem]">
       <div className="flex flex-row w-full h-fit text-white flex items-center justify-center px-3">
         <div className="relative flex justify-start w-fit h-fit items-center whitespace-nowrap text-3xl break-words">
           🔥 ☎️
@@ -28,20 +28,24 @@ const Header: FunctionComponent = (): JSX.Element => {
           <Link
             href={"/"}
             className="relative w-fit h-fit justify-center items-center flex cursor-pointer hover:opacity-70"
+            draggable={false}
           >{`( Home )`}</Link>
           <Link
-            href={"https://www.docs.irrevocable.dev"}
+            href={"https://docs.irrevocable.dev/"}
             target="_blank"
             rel="noreferrer"
             className="relative w-fit h-fit justify-center items-center flex cursor-pointer hover:opacity-70"
+            draggable={false}
           >{`( Docs )`}</Link>
           <Link
             href={"/shop"}
             className="relative w-fit h-fit justify-center items-center flex cursor-pointer hover:opacity-70"
+            draggable={false}
           >{`( Shop )`}</Link>
           <Link
             href={"/account"}
             className="relative w-fit h-fit justify-center items-center flex cursor-pointer hover:opacity-70"
+            draggable={false}
           >{`( Account )`}</Link>
         </div>
         <div
