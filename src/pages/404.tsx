@@ -9,7 +9,7 @@ const Custom404: FunctionComponent = (): JSX.Element => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className="relative font-vcr text-moda flex items-center justify-center text-lg">
-        No one's listening. <a href="/">Go home?</a>
+        No one&apos;s listening. <a href="/">Go home?</a>
       </div>
     </div>
   );

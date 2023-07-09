@@ -74,9 +74,9 @@ const useSetConditions = () => {
     }[]
   >([
     {
-      internalType: "",
+      internalType: "string",
       name: "",
-      type: "",
+      type: "string",
     },
   ]);
 
