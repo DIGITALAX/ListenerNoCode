@@ -81,6 +81,16 @@ export type CircuitSwitchProps = {
   editingState: boolean;
   setEditingState: (e: boolean) => void;
   handleUpdateCondition: () => void;
+  matchFunctionsWebhook: {
+    onMatched: () => Promise<void>;
+    onUnMatched: () => Promise<void>;
+    onError: () => void;
+  };
+  setMatchFunctionsWebhook: (e: {
+    onMatched: () => Promise<void>;
+    onUnMatched: () => Promise<void>;
+    onError: () => void;
+  }) => void;
 };
 
 export type SetConditionsProps = {
@@ -150,6 +160,16 @@ export type SetConditionsProps = {
   editingState: boolean;
   setEditingState: (e: boolean) => void;
   handleUpdateCondition: () => void;
+  matchFunctionsWebhook: {
+    onMatched: () => Promise<void>;
+    onUnMatched: () => Promise<void>;
+    onError: () => void;
+  };
+  setMatchFunctionsWebhook: (e: {
+    onMatched: () => Promise<void>;
+    onUnMatched: () => Promise<void>;
+    onError: () => void;
+  }) => void;
 };
 
 export interface CircuitInformation {
@@ -220,6 +240,16 @@ export type ConditionSwitchProps = {
     onError: () => void;
   };
   setMatchFunctionsContract: (e: {
+    onMatched: () => Promise<void>;
+    onUnMatched: () => Promise<void>;
+    onError: () => void;
+  }) => void;
+  matchFunctionsWebhook: {
+    onMatched: () => Promise<void>;
+    onUnMatched: () => Promise<void>;
+    onError: () => void;
+  };
+  setMatchFunctionsWebhook: (e: {
     onMatched: () => Promise<void>;
     onUnMatched: () => Promise<void>;
     onError: () => void;
@@ -323,4 +353,14 @@ export type ContractConditionProps = {
 export type WebhookConditionProps = {
   newWebhookConditionInformation: WebhookCondition | undefined;
   setNewWebhookConditionInformation: (e: WebhookCondition) => void;
+  matchFunctionsWebhook: {
+    onMatched: () => Promise<void>;
+    onUnMatched: () => Promise<void>;
+    onError: () => void;
+  };
+  setMatchFunctionsWebhook: (e: {
+    onMatched: () => Promise<void>;
+    onUnMatched: () => Promise<void>;
+    onError: () => void;
+  }) => void;
 };

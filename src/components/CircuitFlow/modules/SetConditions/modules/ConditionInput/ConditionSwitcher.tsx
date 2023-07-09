@@ -21,6 +21,8 @@ const ConditionSwitch: FunctionComponent<ConditionSwitchProps> = ({
   setMatchFunctionsContract,
   newWebhookConditionInformation,
   setNewWebhookConditionInformation,
+  matchFunctionsWebhook,
+  setMatchFunctionsWebhook,
 }): JSX.Element => {
   switch (conditionType) {
     case "web":
@@ -28,6 +30,8 @@ const ConditionSwitch: FunctionComponent<ConditionSwitchProps> = ({
         <WebhookCondition
           setNewWebhookConditionInformation={setNewWebhookConditionInformation}
           newWebhookConditionInformation={newWebhookConditionInformation}
+          matchFunctionsWebhook={matchFunctionsWebhook}
+          setMatchFunctionsWebhook={setMatchFunctionsWebhook}
         />
       );
 

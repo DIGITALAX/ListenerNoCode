@@ -27,7 +27,9 @@ const CircuitSwitch: FunctionComponent<CircuitSwitchProps> = ({
   setNewWebhookConditionInformation,
   editingState,
   setEditingState,
-  handleUpdateCondition
+  handleUpdateCondition,
+  matchFunctionsWebhook,
+  setMatchFunctionsWebhook,
 }): JSX.Element => {
   switch (circuitFlowIndex) {
     default:
@@ -59,6 +61,8 @@ const CircuitSwitch: FunctionComponent<CircuitSwitchProps> = ({
           editingState={editingState}
           setEditingState={setEditingState}
           handleUpdateCondition={handleUpdateCondition}
+          matchFunctionsWebhook={matchFunctionsWebhook}
+          setMatchFunctionsWebhook={setMatchFunctionsWebhook}
         />
       );
   }
