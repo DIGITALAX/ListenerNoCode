@@ -18,8 +18,9 @@ export default function Home() {
   const {
     conditionType,
     setConditionType,
-    newConditionInformation,
-    setNewConditionInformation,
+    newContractConditionInformation,
+    setNewContractConditionInformation,
+    handleAddConditionAndReset,
   } = useSetConditions();
   return (
     <div className="relative w-full h-full flex flex-row border-t-2 border-sol">
@@ -59,8 +60,11 @@ export default function Home() {
           circuitInformation={circuitInformation}
           conditionType={conditionType}
           setConditionType={setConditionType}
-          newConditionInformation={newConditionInformation}
-          setNewConditionInformation={setNewConditionInformation}
+          newContractConditionInformation={newContractConditionInformation}
+          setNewContractConditionInformation={
+            setNewContractConditionInformation
+          }
+          handleAddConditionAndReset={handleAddConditionAndReset}
         />
         <NextButton
           text={

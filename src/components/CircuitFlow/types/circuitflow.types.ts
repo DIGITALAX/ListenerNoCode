@@ -2,6 +2,7 @@ import { AnyAction, Dispatch } from "redux";
 import {
   Action,
   Condition,
+  ContractCondition,
   IConditionalLogic,
   IExecutionConstraints,
 } from "./litlistener.types";
@@ -17,8 +18,9 @@ export type CircuitSwitchProps = {
   circuitInformation: CircuitInformation | undefined;
   conditionType: string;
   setConditionType: (e: string) => void;
-  newConditionInformation: Condition | undefined;
-  setNewConditionInformation: (e: Condition) => void;
+  newContractConditionInformation: ContractCondition | undefined;
+  setNewContractConditionInformation: (e: ContractCondition) => void;
+  handleAddConditionAndReset: () => void;
 };
 
 export type SetConditionsProps = {
@@ -26,8 +28,9 @@ export type SetConditionsProps = {
   circuitInformation: CircuitInformation | undefined;
   conditionType: string;
   setConditionType: (e: string) => void;
-  newConditionInformation: Condition | undefined;
-  setNewConditionInformation: (e: Condition) => void;
+  newContractConditionInformation: ContractCondition | undefined;
+  setNewContractConditionInformation: (e: ContractCondition) => void;
+  handleAddConditionAndReset: () => void;
 };
 
 export interface CircuitInformation {
@@ -44,6 +47,8 @@ export interface CircuitInformation {
 
 export type ConditionSwitchProps = {
   conditionType: string;
+  newContractConditionInformation: ContractCondition | undefined;
+  setNewContractConditionInformation: (e: ContractCondition) => void;
 };
 
 export type NextButtonProps = {
@@ -61,9 +66,7 @@ export type ConnectorProps = {
 };
 
 export type MoreConditionButtonProps = {
-  dispatch: Dispatch<AnyAction>;
-  circuitInformation: CircuitInformation | undefined;
-  newConditionInformation: Condition | undefined;
+  handleAddConditionAndReset: () => void;
 };
 
 export type ConditionInputProps = {
@@ -73,4 +76,9 @@ export type ConditionInputProps = {
 export type ConditionTypeProps = {
   conditionType: string;
   setConditionType: (e: string) => void;
+};
+
+export type ContractConditionProps = {
+  newContractConditionInformation: ContractCondition | undefined;
+  setNewContractConditionInformation: (e: ContractCondition) => void;
 };

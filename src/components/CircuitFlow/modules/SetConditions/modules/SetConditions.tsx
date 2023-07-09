@@ -11,8 +11,9 @@ const SetConditions: FunctionComponent<SetConditionsProps> = ({
   circuitInformation,
   conditionType,
   setConditionType,
-  newConditionInformation,
-  setNewConditionInformation,
+  newContractConditionInformation,
+  setNewContractConditionInformation,
+  handleAddConditionAndReset,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-full flex flex-col">
@@ -23,16 +24,20 @@ const SetConditions: FunctionComponent<SetConditionsProps> = ({
           conditionType={conditionType}
         />
         <Connector topOnly />
-        <ConditionSwitch conditionType={conditionType} />
+        <ConditionSwitch
+          conditionType={conditionType}
+          newContractConditionInformation={newContractConditionInformation}
+          setNewContractConditionInformation={
+            setNewContractConditionInformation
+          }
+        />
       </div>
       <div className="relative w-full h-fit flex flex-col gap-5 items-center justify-center">
         <div className="relative w-fit h-fit flex ml-auto right-16">
           <Connector />
         </div>
         <MoreConditionButton
-          dispatch={dispatch}
-          circuitInformation={circuitInformation}
-          newConditionInformation={newConditionInformation}
+          handleAddConditionAndReset={handleAddConditionAndReset}
         />
       </div>
     </div>

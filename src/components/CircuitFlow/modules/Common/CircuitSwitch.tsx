@@ -8,8 +8,9 @@ const CircuitSwitch: FunctionComponent<CircuitSwitchProps> = ({
   circuitInformation,
   setConditionType,
   conditionType,
-  newConditionInformation,
-  setNewConditionInformation
+  newContractConditionInformation,
+  setNewContractConditionInformation,
+  handleAddConditionAndReset
 }): JSX.Element => {
   switch (circuitFlowIndex) {
     default:
@@ -19,8 +20,11 @@ const CircuitSwitch: FunctionComponent<CircuitSwitchProps> = ({
           dispatch={dispatch}
           conditionType={conditionType}
           setConditionType={setConditionType}
-          newConditionInformation={newConditionInformation}
-          setNewConditionInformation={setNewConditionInformation}
+          newContractConditionInformation={newContractConditionInformation}
+          setNewContractConditionInformation={
+            setNewContractConditionInformation
+          }
+          handleAddConditionAndReset={handleAddConditionAndReset}
         />
       );
   }
