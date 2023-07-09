@@ -12,11 +12,14 @@ export type OverviewProps = {
   circuitFlowIndex: number;
   dispatch: Dispatch<AnyAction>;
   circuitInformation: CircuitInformation;
+  handleSetConditionalLogic: () => boolean;
 };
 
 export type CircuitSwitchProps = {
   circuitFlowIndex: number;
   dispatch: Dispatch<AnyAction>;
+  targetConditionOpen: boolean;
+  setTargetConditionOpen: (e: boolean) => void;
   circuitInformation: CircuitInformation;
   conditionType: string;
   setConditionType: (e: string) => void;
@@ -90,6 +93,14 @@ export type CircuitSwitchProps = {
     onUnMatched: () => Promise<void>;
     onError: () => void;
   }) => void;
+  setLogicType: (e: string) => void;
+  logicType: string;
+  thresholdValue: number;
+  setThresholdValue: (e: number) => void;
+  targetCondition: number;
+  setTargetCondition: (e: number) => void;
+  interval: string;
+  setInterval: (e: string) => void;
 };
 
 export type SetConditionsProps = {
@@ -257,6 +268,7 @@ export type NextButtonProps = {
   dispatch: Dispatch<AnyAction>;
   text: string;
   circuitInformation: CircuitInformation;
+  handleSetConditionalLogic: () => boolean;
 };
 
 export type AllConditionsProps = {
@@ -358,4 +370,52 @@ export type WebhookConditionProps = {
     onError: () => void;
   }) => void;
   dispatch: Dispatch<AnyAction>;
+};
+
+export type LogicOptionsProps = {
+  setLogicType: (e: string) => void;
+  logicType: string;
+};
+
+export type IntervalProps = {
+  interval: string;
+  setInterval: (e: string) => void;
+};
+
+export type ThresholdProps = {
+  thresholdValue: number;
+  setThresholdValue: (e: number) => void;
+};
+
+export type TargetProps = {
+  targetCondition: number;
+  setTargetCondition: (e: number) => void;
+  targetConditionOpen: boolean;
+  setTargetConditionOpen: (e: boolean) => void;
+  circuitInformation: CircuitInformation;
+};
+
+export type ConditionalLogicProps = {
+  setLogicType: (e: string) => void;
+  logicType: string;
+  thresholdValue: number;
+  setThresholdValue: (e: number) => void;
+  targetCondition: number;
+  setTargetCondition: (e: number) => void;
+  interval: string;
+  setInterval: (e: string) => void;
+  targetConditionOpen: boolean;
+  setTargetConditionOpen: (e: boolean) => void;
+  circuitInformation: CircuitInformation;
+};
+
+export type LogicSwitchProps = {
+  logicType: string;
+  thresholdValue: number;
+  setThresholdValue: (e: number) => void;
+  targetCondition: number;
+  setTargetCondition: (e: number) => void;
+  targetConditionOpen: boolean;
+  setTargetConditionOpen: (e: boolean) => void;
+  circuitInformation: CircuitInformation;
 };

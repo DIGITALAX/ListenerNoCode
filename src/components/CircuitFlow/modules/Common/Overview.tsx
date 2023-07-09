@@ -6,6 +6,7 @@ const Overview: FunctionComponent<OverviewProps> = ({
   circuitFlowIndex,
   dispatch,
   circuitInformation,
+  handleSetConditionalLogic,
 }): JSX.Element => {
   return (
     <div className="relative w-96 h-full border-l-2 border-sol bg-aBlack flex flex-row items-center justify-center p-6">
@@ -55,6 +56,13 @@ const Overview: FunctionComponent<OverviewProps> = ({
                           actionImage: "",
                         })
                       )
+                    : circuitFlowIndex === 1
+                    ? () => {
+                        const logicCorrect = handleSetConditionalLogic();
+                        if (logicCorrect) {
+                          dispatch(setCircuitFlow(circuitFlowIndex + 1));
+                        }
+                      }
                     : dispatch(setCircuitFlow(index))
                 }
               >

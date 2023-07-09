@@ -289,9 +289,9 @@ const useSetConditions = () => {
         })
       );
     } else if (
-      Object.values(CHAIN_NAME).includes(
-        newContractConditionInformation.chainId
-      )
+      !Object.values(CHAIN_NAME)
+        .map((enumValue) => enumValue.toLowerCase())
+        .includes(newContractConditionInformation.chainId.toLowerCase())
     ) {
       checker = false;
       dispatch(
@@ -304,7 +304,7 @@ const useSetConditions = () => {
     } else {
       const errorCheck = codeChecker(
         matchFunctionsContract.onError.toString(),
-        true
+        false
       );
       const matchCheck = codeChecker(
         matchFunctionsContract.onMatched.toString(),
@@ -318,6 +318,15 @@ const useSetConditions = () => {
       const errorEmpty = matchFunctionsContract.onError.toString()?.trim();
       const matchEmpty = matchFunctionsContract.onError.toString()?.trim();
       const unMatchEmpty = matchFunctionsContract.onError.toString()?.trim();
+
+      console.log(
+        errorCheck,
+        errorEmpty,
+        matchCheck,
+        matchEmpty,
+        unMatchCheck,
+        unMatchEmpty
+      );
 
       if (
         (!errorCheck && errorEmpty !== "") ||
@@ -454,7 +463,7 @@ const useSetConditions = () => {
     } else {
       const errorCheck = codeChecker(
         matchFunctionsWebhook.onError.toString(),
-        true
+        false
       );
       const matchCheck = codeChecker(
         matchFunctionsWebhook.onMatched.toString(),

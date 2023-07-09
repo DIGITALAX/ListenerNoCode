@@ -122,7 +122,7 @@ const ContractCondition: FunctionComponent<ContractConditionProps> = ({
                                 }) as any)
                               }
                             >
-                              {input?.indexed}
+                              {`${input?.indexed}`}
                             </div>
                             {dropDownsOpenContract.indexed[index] && (
                               <div className="z-10 absolute w-full h-fit flex flex-col bg-aBlack">

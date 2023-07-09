@@ -29,10 +29,34 @@ const CircuitSwitch: FunctionComponent<CircuitSwitchProps> = ({
   handleUpdateCondition,
   matchFunctionsWebhook,
   setMatchFunctionsWebhook,
+  logicType,
+  setLogicType,
+  thresholdValue,
+  setThresholdValue,
+  targetCondition,
+  setTargetCondition,
+  interval,
+  setInterval,
+  targetConditionOpen,
+  setTargetConditionOpen,
 }): JSX.Element => {
   switch (circuitFlowIndex) {
     case 1:
-      return <ConditionalLogic />;
+      return (
+        <ConditionalLogic
+          logicType={logicType}
+          setLogicType={setLogicType}
+          thresholdValue={thresholdValue}
+          setThresholdValue={setThresholdValue}
+          targetCondition={targetCondition}
+          setTargetCondition={setTargetCondition}
+          interval={interval}
+          setInterval={setInterval}
+          targetConditionOpen={targetConditionOpen}
+          setTargetConditionOpen={setTargetConditionOpen}
+          circuitInformation={circuitInformation}
+        />
+      );
 
     default:
       return (
