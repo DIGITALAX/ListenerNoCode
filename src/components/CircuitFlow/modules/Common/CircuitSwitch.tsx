@@ -1,6 +1,7 @@
 import { FunctionComponent } from "react";
 import { CircuitSwitchProps } from "../../types/circuitflow.types";
 import SetConditions from "../SetConditions/modules/SetConditions";
+import ConditionalLogic from "../ConditionalLogic/ConditionalLogic";
 
 const CircuitSwitch: FunctionComponent<CircuitSwitchProps> = ({
   circuitFlowIndex,
@@ -9,7 +10,6 @@ const CircuitSwitch: FunctionComponent<CircuitSwitchProps> = ({
   setConditionType,
   conditionType,
   newContractConditionInformation,
-  setNewContractConditionInformation,
   handleAddConditionAndReset,
   outputs,
   setOutputs,
@@ -24,7 +24,6 @@ const CircuitSwitch: FunctionComponent<CircuitSwitchProps> = ({
   matchFunctionsContract,
   setMatchFunctionsContract,
   newWebhookConditionInformation,
-  setNewWebhookConditionInformation,
   editingState,
   setEditingState,
   handleUpdateCondition,
@@ -32,6 +31,9 @@ const CircuitSwitch: FunctionComponent<CircuitSwitchProps> = ({
   setMatchFunctionsWebhook,
 }): JSX.Element => {
   switch (circuitFlowIndex) {
+    case 1:
+      return <ConditionalLogic />;
+
     default:
       return (
         <SetConditions
@@ -40,9 +42,6 @@ const CircuitSwitch: FunctionComponent<CircuitSwitchProps> = ({
           conditionType={conditionType}
           setConditionType={setConditionType}
           newContractConditionInformation={newContractConditionInformation}
-          setNewContractConditionInformation={
-            setNewContractConditionInformation
-          }
           handleAddConditionAndReset={handleAddConditionAndReset}
           outputs={outputs}
           setOutputs={setOutputs}
@@ -56,7 +55,6 @@ const CircuitSwitch: FunctionComponent<CircuitSwitchProps> = ({
           setExpectedValues={setExpectedValues}
           matchFunctionsContract={matchFunctionsContract}
           setMatchFunctionsContract={setMatchFunctionsContract}
-          setNewWebhookConditionInformation={setNewWebhookConditionInformation}
           newWebhookConditionInformation={newWebhookConditionInformation}
           editingState={editingState}
           setEditingState={setEditingState}

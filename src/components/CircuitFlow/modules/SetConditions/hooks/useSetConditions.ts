@@ -1,4 +1,5 @@
 import {
+  CHAIN_NAME,
   ContractCondition,
   WebhookCondition,
 } from "@/components/CircuitFlow/types/litlistener.types";
@@ -12,18 +13,22 @@ import { checkMatchOperator } from "../../../../../../lib/helpers/checkMatchOper
 import { checkResponsePath } from "../../../../../../lib/helpers/checkResponsePath";
 import { checkBaseURL } from "../../../../../../lib/helpers/checkBaseURL";
 import { checkEndpoint } from "../../../../../../lib/helpers/checkEndpoint";
+import { setNewContractConditionInformation } from "../../../../../../redux/reducers/newContractConditionInformationSlice";
+import { setNewWebhookConditionInformation } from "../../../../../../redux/reducers/newWebhookConditionInformationSlice";
 
 const useSetConditions = () => {
   const dispatch = useDispatch();
   const circuitInformation = useSelector(
     (state: RootState) => state.app.circuitInformationReducer.value
   );
+  const newContractConditionInformation = useSelector(
+    (state: RootState) => state.app.newContractConditionInformationReducer.value
+  );
+  const newWebhookConditionInformation = useSelector(
+    (state: RootState) => state.app.newWebhookConditionInformationReducer.value
+  );
   const [conditionType, setConditionType] = useState<string>("contract");
   const [editingState, setEditingState] = useState<boolean>(false);
-  const [newContractConditionInformation, setNewContractConditionInformation] =
-    useState<ContractCondition | undefined>();
-  const [newWebhookConditionInformation, setNewWebhookConditionInformation] =
-    useState<WebhookCondition | undefined>();
   const [eventArgs, setEventArgs] = useState<string[]>([""]);
   const [expectedValues, setExpectedValues] = useState<any[]>([""]);
   const [matchFunctionsContract, setMatchFunctionsContract] = useState<{
@@ -176,6 +181,18 @@ const useSetConditions = () => {
         setModalOpen({
           actionOpen: true,
           actionMessage: "Contract Address Missing. Try Again.",
+          actionImage: "",
+        })
+      );
+    } else if (
+      !newContractConditionInformation?.contractAddress.startsWith("0x")
+    ) {
+      checker = false;
+      dispatch(
+        setModalOpen({
+          actionOpen: true,
+          actionMessage: "Contract Address Invalid. Try Again.",
+          actionImage: "",
         })
       );
     } else if (
@@ -187,6 +204,7 @@ const useSetConditions = () => {
         setModalOpen({
           actionOpen: true,
           actionMessage: "Event Name Missing. Try Again.",
+          actionImage: "",
         })
       );
     } else if (
@@ -198,6 +216,7 @@ const useSetConditions = () => {
         setModalOpen({
           actionOpen: true,
           actionMessage: "Chain Id Missing. Try Again.",
+          actionImage: "",
         })
       );
     } else if (newEventArgs?.length < 1) {
@@ -206,6 +225,7 @@ const useSetConditions = () => {
         setModalOpen({
           actionOpen: true,
           actionMessage: "Event Args Missing. Try Again.",
+          actionImage: "",
         })
       );
     } else if (
@@ -217,6 +237,7 @@ const useSetConditions = () => {
         setModalOpen({
           actionOpen: true,
           actionMessage: "Match Operator Missing. Try Again.",
+          actionImage: "",
         })
       );
     } else if (
@@ -227,6 +248,7 @@ const useSetConditions = () => {
         setModalOpen({
           actionOpen: true,
           actionMessage: "Invalid Match Operator. Try Again.",
+          actionImage: "",
         })
       );
     } else if (newExpectedValues?.length < 1) {
@@ -235,6 +257,7 @@ const useSetConditions = () => {
         setModalOpen({
           actionOpen: true,
           actionMessage: "Expected Values Missing. Try Again.",
+          actionImage: "",
         })
       );
     } else if (expectedValues?.length !== eventArgs?.length) {
@@ -244,6 +267,7 @@ const useSetConditions = () => {
           actionOpen: true,
           actionMessage:
             "Each Event Arg Needs A Corresponding Expected Value. Try Again.",
+          actionImage: "",
         })
       );
     } else if (newInputs?.length < 1) {
@@ -252,6 +276,7 @@ const useSetConditions = () => {
         setModalOpen({
           actionOpen: true,
           actionMessage: "Contract ABI Inputs Missing. Try Again.",
+          actionImage: "",
         })
       );
     } else if (newOutputs?.length < 1) {
@@ -260,6 +285,20 @@ const useSetConditions = () => {
         setModalOpen({
           actionOpen: true,
           actionMessage: "Contract ABI Outputs Missing. Try Again.",
+          actionImage: "",
+        })
+      );
+    } else if (
+      Object.values(CHAIN_NAME).includes(
+        newContractConditionInformation.chainId
+      )
+    ) {
+      checker = false;
+      dispatch(
+        setModalOpen({
+          actionOpen: true,
+          actionMessage: "Chain Name Invalid. Try Again.",
+          actionImage: "",
         })
       );
     } else {
@@ -291,6 +330,7 @@ const useSetConditions = () => {
             actionOpen: true,
             actionMessage:
               "Match, Error & UnMatch Functions Invalid. Try Again.",
+            actionImage: "",
           })
         );
       }
@@ -320,6 +360,7 @@ const useSetConditions = () => {
         setModalOpen({
           actionOpen: true,
           actionMessage: "Base URL Missing. Try Again.",
+          actionImage: "",
         })
       );
     } else if (
@@ -331,6 +372,7 @@ const useSetConditions = () => {
         setModalOpen({
           actionOpen: true,
           actionMessage: "Endpoint Missing. Try Again.",
+          actionImage: "",
         })
       );
     } else if (!checkBaseURL(newWebhookConditionInformation?.baseUrl)) {
@@ -339,6 +381,7 @@ const useSetConditions = () => {
         setModalOpen({
           actionOpen: true,
           actionMessage: "Base URL Invalid. Try Again.",
+          actionImage: "",
         })
       );
     } else if (!checkEndpoint(newWebhookConditionInformation?.endpoint)) {
@@ -347,6 +390,7 @@ const useSetConditions = () => {
         setModalOpen({
           actionOpen: true,
           actionMessage: "Endpoint Invalid. Try Again.",
+          actionImage: "",
         })
       );
     } else if (
@@ -358,6 +402,7 @@ const useSetConditions = () => {
         setModalOpen({
           actionOpen: true,
           actionMessage: "Match Operator Missing. Try Again.",
+          actionImage: "",
         })
       );
     } else if (
@@ -368,6 +413,7 @@ const useSetConditions = () => {
         setModalOpen({
           actionOpen: true,
           actionMessage: "Invalid Match Operator. Try Again.",
+          actionImage: "",
         })
       );
     } else if (
@@ -379,6 +425,7 @@ const useSetConditions = () => {
         setModalOpen({
           actionOpen: true,
           actionMessage: "Response Path Missing. Try Again.",
+          actionImage: "",
         })
       );
     } else if (
@@ -389,6 +436,7 @@ const useSetConditions = () => {
         setModalOpen({
           actionOpen: true,
           actionMessage: "Response Path Invalid. Try Again.",
+          actionImage: "",
         })
       );
     } else if (
@@ -400,6 +448,7 @@ const useSetConditions = () => {
         setModalOpen({
           actionOpen: true,
           actionMessage: "Expected Value Missing. Try Again.",
+          actionImage: "",
         })
       );
     } else {
@@ -431,6 +480,7 @@ const useSetConditions = () => {
             actionOpen: true,
             actionMessage:
               "Match, Error & UnMatch Functions Invalid. Try Again.",
+            actionImage: "",
           })
         );
       }
@@ -479,7 +529,7 @@ const useSetConditions = () => {
           ],
         })
       );
-      setNewContractConditionInformation(undefined);
+      dispatch(setNewContractConditionInformation(undefined));
       setInputs([
         {
           indexed: true,
@@ -532,7 +582,7 @@ const useSetConditions = () => {
         })
       );
 
-      setNewWebhookConditionInformation(undefined);
+      dispatch(setNewWebhookConditionInformation(undefined));
       setMatchFunctionsWebhook({
         onMatched: async () => {},
         onUnMatched: async () => {},
@@ -571,7 +621,7 @@ const useSetConditions = () => {
         })
       );
 
-      setNewContractConditionInformation(undefined);
+      dispatch(setNewContractConditionInformation(undefined));
       setInputs([
         {
           indexed: true,
@@ -618,7 +668,7 @@ const useSetConditions = () => {
         })
       );
 
-      setNewWebhookConditionInformation(undefined);
+      dispatch(setNewWebhookConditionInformation(undefined));
       setMatchFunctionsWebhook({
         onMatched: async () => {},
         onUnMatched: async () => {},
@@ -647,8 +697,6 @@ const useSetConditions = () => {
   return {
     conditionType,
     setConditionType,
-    newContractConditionInformation,
-    setNewContractConditionInformation,
     outputs,
     setOutputs,
     inputs,
@@ -662,8 +710,6 @@ const useSetConditions = () => {
     setExpectedValues,
     matchFunctionsContract,
     setMatchFunctionsContract,
-    newWebhookConditionInformation,
-    setNewWebhookConditionInformation,
     editingState,
     setEditingState,
     handleUpdateCondition,

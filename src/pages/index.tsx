@@ -15,11 +15,15 @@ export default function Home() {
   const circuitInformation = useSelector(
     (state: RootState) => state.app.circuitInformationReducer.value
   );
+  const newContractConditionInformation = useSelector(
+    (state: RootState) => state.app.newContractConditionInformationReducer.value
+  );
+  const newWebhookConditionInformation = useSelector(
+    (state: RootState) => state.app.newWebhookConditionInformationReducer.value
+  );
   const {
     conditionType,
     setConditionType,
-    newContractConditionInformation,
-    setNewContractConditionInformation,
     handleAddConditionAndReset,
     outputs,
     setOutputs,
@@ -33,8 +37,6 @@ export default function Home() {
     setExpectedValues,
     matchFunctionsContract,
     setMatchFunctionsContract,
-    newWebhookConditionInformation,
-    setNewWebhookConditionInformation,
     editingState,
     setEditingState,
     handleUpdateCondition,
@@ -80,9 +82,6 @@ export default function Home() {
           conditionType={conditionType}
           setConditionType={setConditionType}
           newContractConditionInformation={newContractConditionInformation}
-          setNewContractConditionInformation={
-            setNewContractConditionInformation
-          }
           handleAddConditionAndReset={handleAddConditionAndReset}
           outputs={outputs}
           setOutputs={setOutputs}
@@ -96,7 +95,6 @@ export default function Home() {
           setExpectedValues={setExpectedValues}
           matchFunctionsContract={matchFunctionsContract}
           setMatchFunctionsContract={setMatchFunctionsContract}
-          setNewWebhookConditionInformation={setNewWebhookConditionInformation}
           newWebhookConditionInformation={newWebhookConditionInformation}
           editingState={editingState}
           setEditingState={setEditingState}
@@ -122,9 +120,14 @@ export default function Home() {
           }
           dispatch={dispatch}
           circuitFlowIndex={circuitFlowIndex}
+          circuitInformation={circuitInformation}
         />
       </div>
-      <Overview dispatch={dispatch} circuitFlowIndex={circuitFlowIndex} />
+      <Overview
+        dispatch={dispatch}
+        circuitFlowIndex={circuitFlowIndex}
+        circuitInformation={circuitInformation}
+      />
     </div>
   );
 }

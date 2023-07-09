@@ -3,10 +3,10 @@ import ConditionInput from "./ConditionInput";
 import Connector from "../../../Common/Connector";
 import { ContractConditionProps } from "@/components/CircuitFlow/types/circuitflow.types";
 import { IoMdAddCircleOutline } from "react-icons/io";
+import { setNewContractConditionInformation } from "../../../../../../../redux/reducers/newContractConditionInformationSlice";
 
 const ContractCondition: FunctionComponent<ContractConditionProps> = ({
   newContractConditionInformation,
-  setNewContractConditionInformation,
   inputs,
   outputs,
   setInputs,
@@ -19,8 +19,8 @@ const ContractCondition: FunctionComponent<ContractConditionProps> = ({
   setExpectedValues,
   matchFunctionsContract,
   setMatchFunctionsContract,
+  dispatch,
 }): JSX.Element => {
-  console.log({ newContractConditionInformation });
   return (
     <div className="relative flex flex-row items-center justify-center w-fit h-fit">
       <div
@@ -43,10 +43,12 @@ const ContractCondition: FunctionComponent<ContractConditionProps> = ({
                 className="bg-aBlack w-full h-10 p-1 text-white font-vcr text-sm justify-start items-start flex"
                 id="borderLight"
                 onChange={(e) =>
-                  setNewContractConditionInformation({
-                    ...newContractConditionInformation!,
-                    contractAddress: e.target.value as any,
-                  })
+                  dispatch(
+                    setNewContractConditionInformation({
+                      ...newContractConditionInformation!,
+                      contractAddress: e.target.value as any,
+                    })
+                  )
                 }
               />
             </div>
@@ -634,10 +636,12 @@ const ContractCondition: FunctionComponent<ContractConditionProps> = ({
                 className="bg-aBlack w-full h-10 p-1 text-white font-vcr text-sm justify-start items-start flex"
                 id="borderLight"
                 onChange={(e) =>
-                  setNewContractConditionInformation({
-                    ...newContractConditionInformation!,
-                    eventName: e.target.value as any,
-                  })
+                  dispatch(
+                    setNewContractConditionInformation({
+                      ...newContractConditionInformation!,
+                      eventName: e.target.value as any,
+                    })
+                  )
                 }
               />
             </div>
@@ -686,10 +690,12 @@ const ContractCondition: FunctionComponent<ContractConditionProps> = ({
                 className="bg-aBlack w-full h-10 p-1 text-white font-vcr text-sm justify-start items-start flex"
                 id="borderLight"
                 onChange={(e) =>
-                  setNewContractConditionInformation({
-                    ...newContractConditionInformation!,
-                    chainId: e.target.value as any,
-                  })
+                  dispatch(
+                    setNewContractConditionInformation({
+                      ...newContractConditionInformation!,
+                      chainId: e.target.value as any,
+                    })
+                  )
                 }
               />
             </div>
@@ -717,10 +723,12 @@ const ContractCondition: FunctionComponent<ContractConditionProps> = ({
                 className="bg-aBlack w-full h-10 p-1 text-white font-vcr text-sm justify-start items-start flex"
                 id="borderLight"
                 onChange={(e) =>
-                  setNewContractConditionInformation({
-                    ...newContractConditionInformation!,
-                    matchOperator: e.target.value as any,
-                  })
+                  dispatch(
+                    setNewContractConditionInformation({
+                      ...newContractConditionInformation!,
+                      matchOperator: e.target.value as any,
+                    })
+                  )
                 }
               />
             </div>

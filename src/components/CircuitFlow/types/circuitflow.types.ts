@@ -11,18 +11,17 @@ import {
 export type OverviewProps = {
   circuitFlowIndex: number;
   dispatch: Dispatch<AnyAction>;
+  circuitInformation: CircuitInformation;
 };
 
 export type CircuitSwitchProps = {
   circuitFlowIndex: number;
   dispatch: Dispatch<AnyAction>;
-  circuitInformation: CircuitInformation | undefined;
+  circuitInformation: CircuitInformation;
   conditionType: string;
   setConditionType: (e: string) => void;
   newWebhookConditionInformation: WebhookCondition | undefined;
-  setNewWebhookConditionInformation: (e: WebhookCondition) => void;
   newContractConditionInformation: ContractCondition | undefined;
-  setNewContractConditionInformation: (e: ContractCondition) => void;
   handleAddConditionAndReset: () => void;
   inputs: {
     indexed: boolean;
@@ -95,13 +94,11 @@ export type CircuitSwitchProps = {
 
 export type SetConditionsProps = {
   dispatch: Dispatch<AnyAction>;
-  circuitInformation: CircuitInformation | undefined;
+  circuitInformation: CircuitInformation;
   conditionType: string;
   setConditionType: (e: string) => void;
   newWebhookConditionInformation: WebhookCondition | undefined;
-  setNewWebhookConditionInformation: (e: WebhookCondition) => void;
   newContractConditionInformation: ContractCondition | undefined;
-  setNewContractConditionInformation: (e: ContractCondition) => void;
   handleAddConditionAndReset: () => void;
   inputs: {
     indexed: boolean;
@@ -185,11 +182,10 @@ export interface CircuitInformation {
 }
 
 export type ConditionSwitchProps = {
+  dispatch: Dispatch<AnyAction>;
   conditionType: string;
   newWebhookConditionInformation: WebhookCondition | undefined;
-  setNewWebhookConditionInformation: (e: WebhookCondition) => void;
   newContractConditionInformation: ContractCondition | undefined;
-  setNewContractConditionInformation: (e: ContractCondition) => void;
   inputs: {
     indexed: boolean;
     internalType: string;
@@ -260,13 +256,12 @@ export type NextButtonProps = {
   circuitFlowIndex: number;
   dispatch: Dispatch<AnyAction>;
   text: string;
+  circuitInformation: CircuitInformation;
 };
 
 export type AllConditionsProps = {
-  circuitInformation: CircuitInformation | undefined;
+  circuitInformation: CircuitInformation;
   dispatch: Dispatch<AnyAction>;
-  setNewContractConditionInformation: (e: ContractCondition) => void;
-  setNewWebhookConditionInformation: (e: WebhookCondition) => void;
   setConditionType: (e: string) => void;
   setEditingState: (e: boolean) => void;
 };
@@ -293,7 +288,6 @@ export type ConditionTypeProps = {
 
 export type ContractConditionProps = {
   newContractConditionInformation: ContractCondition | undefined;
-  setNewContractConditionInformation: (e: ContractCondition) => void;
   inputs: {
     indexed: boolean;
     internalType: string;
@@ -348,11 +342,11 @@ export type ContractConditionProps = {
     onUnMatched: () => Promise<void>;
     onError: () => void;
   }) => void;
+  dispatch: Dispatch<AnyAction>;
 };
 
 export type WebhookConditionProps = {
   newWebhookConditionInformation: WebhookCondition | undefined;
-  setNewWebhookConditionInformation: (e: WebhookCondition) => void;
   matchFunctionsWebhook: {
     onMatched: () => Promise<void>;
     onUnMatched: () => Promise<void>;
@@ -363,4 +357,5 @@ export type WebhookConditionProps = {
     onUnMatched: () => Promise<void>;
     onError: () => void;
   }) => void;
+  dispatch: Dispatch<AnyAction>;
 };

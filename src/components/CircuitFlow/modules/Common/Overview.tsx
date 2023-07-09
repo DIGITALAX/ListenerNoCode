@@ -1,9 +1,11 @@
 import { FunctionComponent } from "react";
 import { OverviewProps } from "../../types/circuitflow.types";
 import { setCircuitFlow } from "../../../../../redux/reducers/circuitFlowSlice";
+import { setModalOpen } from "../../../../../redux/reducers/modalOpenSlice";
 const Overview: FunctionComponent<OverviewProps> = ({
   circuitFlowIndex,
   dispatch,
+  circuitInformation,
 }): JSX.Element => {
   return (
     <div className="relative w-96 h-full border-l-2 border-sol bg-aBlack flex flex-row items-center justify-center p-6">
@@ -43,7 +45,18 @@ const Overview: FunctionComponent<OverviewProps> = ({
                 className={`relative w-full h-fit flex flex-row justify-start items-center gap-3 cursor-pointer active:scale-95 hover:text-sol ${
                   circuitFlowIndex === index ? "text-sol" : "text-rio"
                 }`}
-                onClick={() => dispatch(setCircuitFlow(index))}
+                onClick={() =>
+                  circuitFlowIndex === 0 &&
+                  circuitInformation?.conditions?.length < 1
+                    ? dispatch(
+                        setModalOpen({
+                          actionOpen: true,
+                          actionMessage: "Add Conditions Before Continuing.",
+                          actionImage: "",
+                        })
+                      )
+                    : dispatch(setCircuitFlow(index))
+                }
               >
                 <div className="flex flex-row justify-start items-center w-fit h-fit gap-1.5">
                   <div className="text-white flex relative w-fit h-fit">{`(`}</div>
