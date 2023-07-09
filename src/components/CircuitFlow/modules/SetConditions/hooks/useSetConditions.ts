@@ -20,7 +20,7 @@ const useSetConditions = () => {
     useState<WebhookCondition | undefined>();
   const [eventArgs, setEventArgs] = useState<string[]>([""]);
   const [expectedValues, setExpectedValues] = useState<any[]>([""]);
-  const [matchFunctions, setMatchFunctions] = useState<{
+  const [matchFunctionsContract, setMatchFunctionsContract] = useState<{
     onMatched: () => Promise<void>;
     onUnMatched: () => Promise<void>;
     onError: () => void;
@@ -142,9 +142,9 @@ const useSetConditions = () => {
               abi,
               eventArgName: eventArgs,
               expectedValue: expectedValues,
-              onMatched: matchFunctions.onMatched,
-              onUnMatched: matchFunctions.onUnMatched,
-              onError: matchFunctions.onError,
+              onMatched: matchFunctionsContract.onMatched,
+              onUnMatched: matchFunctionsContract.onUnMatched,
+              onError: matchFunctionsContract.onError,
             } as ContractCondition,
           ],
         })
@@ -165,11 +165,11 @@ const useSetConditions = () => {
           type: "string",
         },
       ]);
-      setMatchFunctions({
+      setMatchFunctionsContract({
         onMatched: async () => {},
         onUnMatched: async () => {},
         onError: () => {},
-      })
+      });
       setEventArgs([""]);
       setExpectedValues([""]);
       setDropDownsOpenContract({
@@ -206,9 +206,9 @@ const useSetConditions = () => {
                     abi,
                     eventArgName: eventArgs,
                     expectedValue: expectedValues,
-                    onMatched: matchFunctions.onMatched,
-                    onUnMatched: matchFunctions.onUnMatched,
-                    onError: matchFunctions.onError,
+                    onMatched: matchFunctionsContract.onMatched,
+                    onUnMatched: matchFunctionsContract.onUnMatched,
+                    onError: matchFunctionsContract.onError,
                   } as ContractCondition),
                 }
               : obj
@@ -232,11 +232,11 @@ const useSetConditions = () => {
           type: "string",
         },
       ]);
-      setMatchFunctions({
+      setMatchFunctionsContract({
         onMatched: async () => {},
         onUnMatched: async () => {},
         onError: () => {},
-      })
+      });
       setEventArgs([""]);
       setExpectedValues([""]);
       setDropDownsOpenContract({
@@ -284,8 +284,8 @@ const useSetConditions = () => {
     setEventArgs,
     expectedValues,
     setExpectedValues,
-    matchFunctions,
-    setMatchFunctions,
+    matchFunctionsContract,
+    setMatchFunctionsContract,
     newWebhookConditionInformation,
     setNewWebhookConditionInformation,
     editingState,

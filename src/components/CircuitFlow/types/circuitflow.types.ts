@@ -68,12 +68,12 @@ export type CircuitSwitchProps = {
   setEventArgs: (e: string[]) => void;
   expectedValues: string[];
   setExpectedValues: (e: string[]) => void;
-  matchFunctions: {
+  matchFunctionsContract: {
     onMatched: () => Promise<void>;
     onUnMatched: () => Promise<void>;
     onError: () => void;
   };
-  setMatchFunctions: (e: {
+  setMatchFunctionsContract: (e: {
     onMatched: () => Promise<void>;
     onUnMatched: () => Promise<void>;
     onError: () => void;
@@ -137,12 +137,12 @@ export type SetConditionsProps = {
   setEventArgs: (e: string[]) => void;
   expectedValues: string[];
   setExpectedValues: (e: string[]) => void;
-  matchFunctions: {
+  matchFunctionsContract: {
     onMatched: () => Promise<void>;
     onUnMatched: () => Promise<void>;
     onError: () => void;
   };
-  setMatchFunctions: (e: {
+  setMatchFunctionsContract: (e: {
     onMatched: () => Promise<void>;
     onUnMatched: () => Promise<void>;
     onError: () => void;
@@ -214,12 +214,12 @@ export type ConditionSwitchProps = {
   setEventArgs: (e: string[]) => void;
   expectedValues: string[];
   setExpectedValues: (e: string[]) => void;
-  matchFunctions: {
+  matchFunctionsContract: {
     onMatched: () => Promise<void>;
     onUnMatched: () => Promise<void>;
     onError: () => void;
   };
-  setMatchFunctions: (e: {
+  setMatchFunctionsContract: (e: {
     onMatched: () => Promise<void>;
     onUnMatched: () => Promise<void>;
     onError: () => void;
@@ -308,12 +308,12 @@ export type ContractConditionProps = {
   setEventArgs: (e: string[]) => void;
   expectedValues: string[];
   setExpectedValues: (e: string[]) => void;
-  matchFunctions: {
+  matchFunctionsContract: {
     onMatched: () => Promise<void>;
     onUnMatched: () => Promise<void>;
     onError: () => void;
   };
-  setMatchFunctions: (e: {
+  setMatchFunctionsContract: (e: {
     onMatched: () => Promise<void>;
     onUnMatched: () => Promise<void>;
     onError: () => void;

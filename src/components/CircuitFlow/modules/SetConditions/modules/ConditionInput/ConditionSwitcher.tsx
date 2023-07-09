@@ -17,8 +17,8 @@ const ConditionSwitch: FunctionComponent<ConditionSwitchProps> = ({
   setEventArgs,
   expectedValues,
   setExpectedValues,
-  matchFunctions,
-  setMatchFunctions,
+  matchFunctionsContract,
+  setMatchFunctionsContract,
   newWebhookConditionInformation,
   setNewWebhookConditionInformation,
 }): JSX.Element => {
@@ -48,8 +48,8 @@ const ConditionSwitch: FunctionComponent<ConditionSwitchProps> = ({
           setEventArgs={setEventArgs}
           expectedValues={expectedValues}
           setExpectedValues={setExpectedValues}
-          matchFunctions={matchFunctions}
-          setMatchFunctions={setMatchFunctions}
+          matchFunctionsContract={matchFunctionsContract}
+          setMatchFunctionsContract={setMatchFunctionsContract}
         />
       );
   }
