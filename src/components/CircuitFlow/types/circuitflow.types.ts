@@ -13,11 +13,24 @@ export type OverviewProps = {
   dispatch: Dispatch<AnyAction>;
   circuitInformation: CircuitInformation;
   handleSetConditionalLogic: () => boolean;
+  handleAddExecutionConstraints: () => void;
 };
 
 export type CircuitSwitchProps = {
   circuitFlowIndex: number;
   dispatch: Dispatch<AnyAction>;
+  time: {
+    startDate: Date | undefined;
+    endDate: Date | undefined;
+  };
+  setTime: (e: {
+    startDate: Date | undefined;
+    endDate: Date | undefined;
+  }) => void;
+  maxLitActionCompletions: number | undefined;
+  setMaxLitActionCompletions: (e: number | undefined) => void;
+  conditionMonitorExecutions: number | undefined;
+  setConditionMonitorExecutions: (e: number | undefined) => void;
   targetConditionOpen: boolean;
   setTargetConditionOpen: (e: boolean) => void;
   circuitInformation: CircuitInformation;
@@ -99,8 +112,8 @@ export type CircuitSwitchProps = {
   setThresholdValue: (e: number) => void;
   targetCondition: number;
   setTargetCondition: (e: number) => void;
-  interval: string;
-  setInterval: (e: string) => void;
+  interval: number;
+  setInterval: (e: number) => void;
 };
 
 export type SetConditionsProps = {
@@ -269,6 +282,7 @@ export type NextButtonProps = {
   text: string;
   circuitInformation: CircuitInformation;
   handleSetConditionalLogic: () => boolean;
+  handleAddExecutionConstraints: () => void;
 };
 
 export type AllConditionsProps = {
@@ -378,8 +392,8 @@ export type LogicOptionsProps = {
 };
 
 export type IntervalProps = {
-  interval: string;
-  setInterval: (e: string) => void;
+  interval: number;
+  setInterval: (e: number) => void;
 };
 
 export type ThresholdProps = {
@@ -402,8 +416,8 @@ export type ConditionalLogicProps = {
   setThresholdValue: (e: number) => void;
   targetCondition: number;
   setTargetCondition: (e: number) => void;
-  interval: string;
-  setInterval: (e: string) => void;
+  interval: number;
+  setInterval: (e: number) => void;
   targetConditionOpen: boolean;
   setTargetConditionOpen: (e: boolean) => void;
   circuitInformation: CircuitInformation;
@@ -418,4 +432,40 @@ export type LogicSwitchProps = {
   targetConditionOpen: boolean;
   setTargetConditionOpen: (e: boolean) => void;
   circuitInformation: CircuitInformation;
+};
+
+export type ExecutionConstraintsProps = {
+  time: {
+    startDate: Date | undefined;
+    endDate: Date | undefined;
+  };
+  setTime: (e: {
+    startDate: Date | undefined;
+    endDate: Date | undefined;
+  }) => void;
+  maxLitActionCompletions: number | undefined;
+  setMaxLitActionCompletions: (e: number | undefined) => void;
+  conditionMonitorExecutions: number | undefined;
+  setConditionMonitorExecutions: (e: number | undefined) => void;
+};
+
+export type EndStartProps = {
+  time: {
+    startDate: Date | undefined;
+    endDate: Date | undefined;
+  };
+  setTime: (e: {
+    startDate: Date | undefined;
+    endDate: Date | undefined;
+  }) => void;
+};
+
+export type MaxConditionsProps = {
+  conditionMonitorExecutions: number | undefined;
+  setConditionMonitorExecutions: (e: number | undefined) => void;
+};
+
+export type MaxExecutionProps = {
+  maxLitActionCompletions: number | undefined;
+  setMaxLitActionCompletions: (e: number | undefined) => void;
 };

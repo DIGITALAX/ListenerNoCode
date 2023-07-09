@@ -12,15 +12,43 @@ const useConditionalLogic = () => {
   const [logicType, setLogicType] = useState<string>("EVERY");
   const [targetConditionOpen, setTargetConditionOpen] =
     useState<boolean>(false);
-  const [interval, setInterval] = useState<string>("120000");
+  const [interval, setInterval] = useState<number>(120000);
   const [thresholdValue, setThresholdValue] = useState<number>(1);
   const [targetCondition, setTargetCondition] = useState<number>(1);
 
   const handleSetConditionalLogic = (): boolean => {
     let logicCorrect = true;
+
+    if (
+      !Number(interval) ||
+      (typeof interval === "number" && interval <= 0)
+    ) {
+      dispatch(
+        setModalOpen({
+          actionOpen: true,
+          actionMessage: "Interval Invalid. Try Again.",
+          actionImage: "",
+        })
+      );
+      return (logicCorrect = false);
+    } else if (
+      logicType === "THRESHOLD" &&
+      thresholdValue > circuitInformation.conditions.length
+    ) {
+      dispatch(
+        setModalOpen({
+          actionOpen: true,
+          actionMessage:
+            "Threshold Number Cannot Exceed Number of Conditions. Try Again.",
+          actionImage: "",
+        })
+      );
+      return (logicCorrect = false);
+    }
+
     let conditionalLogic: any = {
       type: logicType,
-      interval: Number(interval),
+      interval: interval,
     };
 
     if (logicType === "THRESHOLD") {
@@ -37,28 +65,12 @@ const useConditionalLogic = () => {
       };
     }
 
-    if (
-      logicType === "THRESHOLD" &&
-      thresholdValue > circuitInformation.conditions.length
-    ) {
-      console.log("here")
-      dispatch(
-        setModalOpen({
-          actionOpen: true,
-          actionMessage:
-            "Threshold Number Cannot Exceed Number of Conditions. Try Again.",
-          actionImage: "",
-        })
-      );
-      logicCorrect = false;
-    } else {
-      dispatch(
-        setCircuitInformation({
-          ...circuitInformation,
-          conditionalLogic: conditionalLogic as any,
-        })
-      );
-    }
+    dispatch(
+      setCircuitInformation({
+        ...circuitInformation,
+        conditionalLogic: conditionalLogic as any,
+      })
+    );
 
     return logicCorrect;
   };

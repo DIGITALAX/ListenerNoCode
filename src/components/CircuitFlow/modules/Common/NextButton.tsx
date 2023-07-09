@@ -9,6 +9,7 @@ const NextButton: FunctionComponent<NextButtonProps> = ({
   circuitFlowIndex,
   circuitInformation,
   handleSetConditionalLogic,
+  handleAddExecutionConstraints
 }): JSX.Element => {
   return (
     <div className="relative w-full h-fit flex justify-end">

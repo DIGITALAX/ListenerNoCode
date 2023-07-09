@@ -7,6 +7,7 @@ import Overview from "@/components/CircuitFlow/modules/Common/Overview";
 import useSetConditions from "@/components/CircuitFlow/modules/SetConditions/hooks/useSetConditions";
 import NextButton from "@/components/CircuitFlow/modules/Common/NextButton";
 import useConditionalLogic from "@/components/CircuitFlow/modules/ConditionalLogic/hooks/useConditionalLogic";
+import useExecutionConstraints from "@/components/CircuitFlow/modules/ExecutionConstraints/hooks/useExecutionConstraints";
 
 export default function Home() {
   const dispatch = useDispatch();
@@ -44,6 +45,15 @@ export default function Home() {
     matchFunctionsWebhook,
     setMatchFunctionsWebhook,
   } = useSetConditions();
+  const {
+    handleAddExecutionConstraints,
+    time,
+    setTime,
+    maxLitActionCompletions,
+    setMaxLitActionCompletions,
+    conditionMonitorExecutions,
+    setConditionMonitorExecutions,
+  } = useExecutionConstraints();
   const {
     logicType,
     setLogicType,
@@ -125,6 +135,12 @@ export default function Home() {
           setInterval={setInterval}
           targetConditionOpen={targetConditionOpen}
           setTargetConditionOpen={setTargetConditionOpen}
+          time={time}
+          setTime={setTime}
+          maxLitActionCompletions={maxLitActionCompletions}
+          setMaxLitActionCompletions={setMaxLitActionCompletions}
+          conditionMonitorExecutions={conditionMonitorExecutions}
+          setConditionMonitorExecutions={setConditionMonitorExecutions}
         />
         <NextButton
           text={
@@ -146,6 +162,7 @@ export default function Home() {
           circuitFlowIndex={circuitFlowIndex}
           circuitInformation={circuitInformation}
           handleSetConditionalLogic={handleSetConditionalLogic}
+          handleAddExecutionConstraints={handleAddExecutionConstraints}
         />
       </div>
       <Overview
@@ -153,6 +170,7 @@ export default function Home() {
         circuitFlowIndex={circuitFlowIndex}
         circuitInformation={circuitInformation}
         handleSetConditionalLogic={handleSetConditionalLogic}
+        handleAddExecutionConstraints={handleAddExecutionConstraints}
       />
     </div>
   );
