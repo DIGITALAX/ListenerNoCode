@@ -1,8 +1,12 @@
 import { FunctionComponent } from "react";
 import ConditionInput from "./ConditionInput";
 import Connector from "../../../Common/Connector";
+import { WebhookConditionProps } from "@/components/CircuitFlow/types/circuitflow.types";
 
-const WebhookCondition: FunctionComponent = (): JSX.Element => {
+const WebhookCondition: FunctionComponent<WebhookConditionProps> = ({
+  newWebhookConditionInformation,
+  setNewWebhookConditionInformation,
+}): JSX.Element => {
   return (
     <div className="relative flex flex-row items-center justify-center w-fit h-fit">
       <div

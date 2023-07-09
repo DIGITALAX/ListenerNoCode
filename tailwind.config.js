@@ -24,6 +24,9 @@ module.exports = {
       width: {
         100: "33rem",
       },
+      zIndex: {
+        1: 1,
+      },
     },
   },
   plugins: [],

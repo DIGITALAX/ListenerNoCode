@@ -21,6 +21,23 @@ export default function Home() {
     newContractConditionInformation,
     setNewContractConditionInformation,
     handleAddConditionAndReset,
+    outputs,
+    setOutputs,
+    inputs,
+    setInputs,
+    dropDownsOpenContract,
+    setDropDownsOpenContract,
+    eventArgs,
+    setEventArgs,
+    expectedValues,
+    setExpectedValues,
+    matchFunctions,
+    setMatchFunctions,
+    newWebhookConditionInformation,
+    setNewWebhookConditionInformation,
+    editingState,
+    setEditingState,
+    handleUpdateCondition,
   } = useSetConditions();
   return (
     <div className="relative w-full h-full flex flex-row border-t-2 border-sol">
@@ -65,6 +82,23 @@ export default function Home() {
             setNewContractConditionInformation
           }
           handleAddConditionAndReset={handleAddConditionAndReset}
+          outputs={outputs}
+          setOutputs={setOutputs}
+          inputs={inputs}
+          setInputs={setInputs}
+          dropDownsOpenContract={dropDownsOpenContract}
+          setDropDownsOpenContract={setDropDownsOpenContract}
+          eventArgs={eventArgs}
+          setEventArgs={setEventArgs}
+          expectedValues={expectedValues}
+          setExpectedValues={setExpectedValues}
+          matchFunctions={matchFunctions}
+          setMatchFunctions={setMatchFunctions}
+          setNewWebhookConditionInformation={setNewWebhookConditionInformation}
+          newWebhookConditionInformation={newWebhookConditionInformation}
+          editingState={editingState}
+          setEditingState={setEditingState}
+          handleUpdateCondition={handleUpdateCondition}
         />
         <NextButton
           text={

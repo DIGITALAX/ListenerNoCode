@@ -5,6 +5,7 @@ import { ConditionTypeProps } from "@/components/CircuitFlow/types/circuitflow.t
 const ConditionType: FunctionComponent<ConditionTypeProps> = ({
   setConditionType,
   conditionType,
+  editingState,
 }): JSX.Element => {
   return (
     <div
@@ -20,13 +21,17 @@ const ConditionType: FunctionComponent<ConditionTypeProps> = ({
             return (
               <div
                 key={index}
-                className={`relative w-full h-full flex items-center justify-center cursor-pointer hover:opacity-50 active:scale-95 bg-aBlack/40 ${
+                className={`relative w-full h-full flex items-center justify-center ${
+                  !editingState &&
+                  "cursor-pointer hover:opacity-50 active:scale-95"
+                } bg-aBlack/40 ${
                   ((conditionType === "web" && index === 0) ||
                     (conditionType === "contract" && index === 1)) &&
                   "bg-sol/60"
                 }`}
                 id="borderLight"
                 onClick={() =>
+                  !editingState &&
                   setConditionType(index === 0 ? "web" : "contract")
                 }
               >
