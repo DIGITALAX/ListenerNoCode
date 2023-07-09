@@ -8,12 +8,13 @@ import { setModalOpen } from "../../../redux/reducers/modalOpenSlice";
 const General: FunctionComponent<GeneralProps> = ({
   message,
   dispatch,
+  image
 }): JSX.Element => {
   return (
     <div className="inset-0 justify-center fixed z-20 bg-opacity-50 backdrop-blur-sm overflow-y-hidden grid grid-flow-col auto-cols-auto w-full h-auto">
-      <div className="relative w-full lg:w-[30vw] h-fit col-start-1 place-self-center bg-black rounded-lg">
-        <div className="relative w-full row-start-2 h-fit rounded-xl grid grid-flow-col auto-cols-auto">
-          <div className="relative w-full h-full col-start-1 rounded-xl place-self-center">
+      <div className="relative w-full lg:w-[30vw] h-fit col-start-1 place-self-center bg-black">
+        <div className="relative w-full row-start-2 h-fit grid grid-flow-col auto-cols-auto">
+          <div className="relative w-full h-full col-start-1 place-self-center">
             <div className="relative w-full h-full grid grid-flow-row auto-rows-auto gap-4 pb-8">
               <div
                 className="relative w-fit h-fit row-start-1 self-center justify-self-end pr-3 pt-3 cursor-pointer"
@@ -27,6 +28,7 @@ const General: FunctionComponent<GeneralProps> = ({
                       setModalOpen({
                         actionOpen: false,
                         actionMessage: "",
+                        actionImage: "",
                       })
                     )
                   }
@@ -45,7 +47,7 @@ const General: FunctionComponent<GeneralProps> = ({
                 >
                   <div className="relative w-full h-full flex items-center justify-center">
                     <Image
-                      src={`${INFURA_GATEWAY}/ipfs/QmT3m9nRWQTXYuwvyTSFmZixrAxBojAjJa8jPqyKsPHxZX`}
+                      src={`${INFURA_GATEWAY}/ipfs/${image}`}
                       layout="fill"
                       objectFit="cover"
                       className="p-2"

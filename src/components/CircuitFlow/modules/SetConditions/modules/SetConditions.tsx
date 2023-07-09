@@ -5,6 +5,9 @@ import { SetConditionsProps } from "@/components/CircuitFlow/types/circuitflow.t
 import ConditionSwitch from "./ConditionInput/ConditionSwitcher";
 import Connector from "../../Common/Connector";
 import ConditionType from "./ConditionInput/ConditionType";
+import { INFURA_GATEWAY } from "../../../../../../lib/constants";
+import Image from "next/legacy/image";
+import { setPreviewCondition } from "../../../../../../redux/reducers/previewConditionModalSlice";
 
 const SetConditions: FunctionComponent<SetConditionsProps> = ({
   dispatch,
@@ -12,7 +15,6 @@ const SetConditions: FunctionComponent<SetConditionsProps> = ({
   conditionType,
   setConditionType,
   newContractConditionInformation,
-  setNewContractConditionInformation,
   handleAddConditionAndReset,
   outputs,
   setOutputs,
@@ -27,7 +29,6 @@ const SetConditions: FunctionComponent<SetConditionsProps> = ({
   matchFunctionsContract,
   setMatchFunctionsContract,
   newWebhookConditionInformation,
-  setNewWebhookConditionInformation,
   editingState,
   setEditingState,
   handleUpdateCondition,
@@ -40,8 +41,6 @@ const SetConditions: FunctionComponent<SetConditionsProps> = ({
         dispatch={dispatch}
         circuitInformation={circuitInformation}
         setConditionType={setConditionType}
-        setNewContractConditionInformation={setNewContractConditionInformation}
-        setNewWebhookConditionInformation={setNewWebhookConditionInformation}
         setEditingState={setEditingState}
       />
       <div className="relative w-full h-full flex flex-row items-center justify-center">
@@ -52,12 +51,9 @@ const SetConditions: FunctionComponent<SetConditionsProps> = ({
         />
         <Connector topOnly />
         <ConditionSwitch
+          dispatch={dispatch}
           conditionType={conditionType}
           newContractConditionInformation={newContractConditionInformation}
-          setNewContractConditionInformation={
-            setNewContractConditionInformation
-          }
-          setNewWebhookConditionInformation={setNewWebhookConditionInformation}
           newWebhookConditionInformation={newWebhookConditionInformation}
           outputs={outputs}
           setOutputs={setOutputs}
@@ -75,15 +71,33 @@ const SetConditions: FunctionComponent<SetConditionsProps> = ({
           setMatchFunctionsWebhook={setMatchFunctionsWebhook}
         />
       </div>
-      <div className="relative w-full h-fit flex flex-col gap-5 items-center justify-center">
-        <div className="relative w-fit h-fit flex ml-auto right-16">
-          <Connector />
+      <div className="relative flex flex-row w-full h-fit items-center">
+        <div className="relative w-full h-fit flex flex-col gap-5 items-center justify-center">
+          <div className="relative w-fit h-fit flex ml-auto right-16">
+            <Connector />
+          </div>
+          <MoreConditionButton
+            handleAddConditionAndReset={handleAddConditionAndReset}
+            editingState={editingState}
+            handleUpdateCondition={handleUpdateCondition}
+          />
         </div>
-        <MoreConditionButton
-          handleAddConditionAndReset={handleAddConditionAndReset}
-          editingState={editingState}
-          handleUpdateCondition={handleUpdateCondition}
-        />
+        <div
+          className="justify-start items-center flex absolute w-7 h-6 cursor-pointer active:scale-95  mix-blend-hard-light left-20"
+          onClick={() =>
+            dispatch(
+              setPreviewCondition({
+                actionOpen: true,
+                actionMessage: "Preview Your Conditions.",
+              })
+            )
+          }
+        >
+          <Image
+            src={`${INFURA_GATEWAY}/ipfs/QmWmrNXoHWnYkhnAvy6U2xDD4rdLJaBfGrPyLUyU6svZ9s`}
+            layout="fill"
+          />
+        </div>
       </div>
     </div>
   );

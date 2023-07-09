@@ -6,7 +6,6 @@ import { ConditionSwitchProps } from "@/components/CircuitFlow/types/circuitflow
 const ConditionSwitch: FunctionComponent<ConditionSwitchProps> = ({
   conditionType,
   newContractConditionInformation,
-  setNewContractConditionInformation,
   outputs,
   setOutputs,
   inputs,
@@ -20,15 +19,15 @@ const ConditionSwitch: FunctionComponent<ConditionSwitchProps> = ({
   matchFunctionsContract,
   setMatchFunctionsContract,
   newWebhookConditionInformation,
-  setNewWebhookConditionInformation,
   matchFunctionsWebhook,
   setMatchFunctionsWebhook,
+  dispatch,
 }): JSX.Element => {
   switch (conditionType) {
     case "web":
       return (
         <WebhookCondition
-          setNewWebhookConditionInformation={setNewWebhookConditionInformation}
+          dispatch={dispatch}
           newWebhookConditionInformation={newWebhookConditionInformation}
           matchFunctionsWebhook={matchFunctionsWebhook}
           setMatchFunctionsWebhook={setMatchFunctionsWebhook}
@@ -38,10 +37,8 @@ const ConditionSwitch: FunctionComponent<ConditionSwitchProps> = ({
     default:
       return (
         <ContractCondition
+          dispatch={dispatch}
           newContractConditionInformation={newContractConditionInformation}
-          setNewContractConditionInformation={
-            setNewContractConditionInformation
-          }
           outputs={outputs}
           setOutputs={setOutputs}
           inputs={inputs}

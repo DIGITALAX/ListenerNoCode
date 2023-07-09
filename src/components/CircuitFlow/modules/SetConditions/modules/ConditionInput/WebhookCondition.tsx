@@ -2,12 +2,13 @@ import { FunctionComponent } from "react";
 import ConditionInput from "./ConditionInput";
 import Connector from "../../../Common/Connector";
 import { WebhookConditionProps } from "@/components/CircuitFlow/types/circuitflow.types";
+import { setNewWebhookConditionInformation } from "../../../../../../../redux/reducers/newWebhookConditionInformationSlice";
 
 const WebhookCondition: FunctionComponent<WebhookConditionProps> = ({
   newWebhookConditionInformation,
-  setNewWebhookConditionInformation,
   matchFunctionsWebhook,
   setMatchFunctionsWebhook,
+  dispatch,
 }): JSX.Element => {
   return (
     <div className="relative flex flex-row items-center justify-center w-fit h-fit">
@@ -31,10 +32,12 @@ const WebhookCondition: FunctionComponent<WebhookConditionProps> = ({
                 className="bg-aBlack w-full h-10 p-1 text-white font-vcr text-sm justify-start items-start flex"
                 id="borderLight"
                 onChange={(e) =>
-                  setNewWebhookConditionInformation({
-                    ...newWebhookConditionInformation!,
-                    baseUrl: e.target.value as any,
-                  })
+                  dispatch(
+                    setNewWebhookConditionInformation({
+                      ...newWebhookConditionInformation!,
+                      baseUrl: e.target.value as any,
+                    })
+                  )
                 }
               />
             </div>
@@ -51,10 +54,12 @@ const WebhookCondition: FunctionComponent<WebhookConditionProps> = ({
                 className="bg-aBlack w-full h-10 p-1 text-white font-vcr text-sm justify-start items-start flex"
                 id="borderLight"
                 onChange={(e) =>
-                  setNewWebhookConditionInformation({
-                    ...newWebhookConditionInformation!,
-                    endpoint: e.target.value as any,
-                  })
+                  dispatch(
+                    setNewWebhookConditionInformation({
+                      ...newWebhookConditionInformation!,
+                      endpoint: e.target.value as any,
+                    })
+                  )
                 }
               />
             </div>
@@ -71,10 +76,12 @@ const WebhookCondition: FunctionComponent<WebhookConditionProps> = ({
                 className="bg-aBlack w-full h-10 p-1 text-white font-vcr text-sm justify-start items-start flex"
                 id="borderLight"
                 onChange={(e) =>
-                  setNewWebhookConditionInformation({
-                    ...newWebhookConditionInformation!,
-                    responsePath: e.target.value as any,
-                  })
+                  dispatch(
+                    setNewWebhookConditionInformation({
+                      ...newWebhookConditionInformation!,
+                      responsePath: e.target.value as any,
+                    })
+                  )
                 }
               />
             </div>
@@ -92,10 +99,12 @@ const WebhookCondition: FunctionComponent<WebhookConditionProps> = ({
                 className="bg-aBlack w-full h-10 p-1 text-white font-vcr text-sm justify-start items-start flex"
                 id="borderLight"
                 onChange={(e) =>
-                  setNewWebhookConditionInformation({
-                    ...newWebhookConditionInformation!,
-                    apiKey: e.target.value as any,
-                  })
+                  dispatch(
+                    setNewWebhookConditionInformation({
+                      ...newWebhookConditionInformation!,
+                      apiKey: e.target.value as any,
+                    })
+                  )
                 }
               />
             </div>
@@ -119,16 +128,19 @@ const WebhookCondition: FunctionComponent<WebhookConditionProps> = ({
               </div>
               <input
                 value={
-                  newWebhookConditionInformation?.expectedValue?.toString() || ""
+                  newWebhookConditionInformation?.expectedValue?.toString() ||
+                  ""
                 }
                 placeholder="enter chain name"
                 className="bg-aBlack w-full h-10 p-1 text-white font-vcr text-sm justify-start items-start flex"
                 id="borderLight"
                 onChange={(e) =>
-                  setNewWebhookConditionInformation({
-                    ...newWebhookConditionInformation!,
-                    expectedValue: e.target.value as any,
-                  })
+                  dispatch(
+                    setNewWebhookConditionInformation({
+                      ...newWebhookConditionInformation!,
+                      expectedValue: e.target.value as any,
+                    })
+                  )
                 }
               />
             </div>
@@ -145,10 +157,12 @@ const WebhookCondition: FunctionComponent<WebhookConditionProps> = ({
                 className="bg-aBlack w-full h-10 p-1 text-white font-vcr text-sm justify-start items-start flex"
                 id="borderLight"
                 onChange={(e) =>
-                  setNewWebhookConditionInformation({
-                    ...newWebhookConditionInformation!,
-                    matchOperator: e.target.value as any,
-                  })
+                  dispatch(
+                    setNewWebhookConditionInformation({
+                      ...newWebhookConditionInformation!,
+                      matchOperator: e.target.value as any,
+                    })
+                  )
                 }
               />
             </div>

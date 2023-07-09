@@ -7,12 +7,12 @@ import {
 import { FunctionComponent } from "react";
 import { RiCloseCircleFill } from "react-icons/ri";
 import { setCircuitInformation } from "../../../../../../redux/reducers/circuitInformationSlice";
+import { setNewWebhookConditionInformation } from "../../../../../../redux/reducers/newWebhookConditionInformationSlice";
+import { setNewContractConditionInformation } from "../../../../../../redux/reducers/newContractConditionInformationSlice";
 
 const AllConditions: FunctionComponent<AllConditionsProps> = ({
   circuitInformation,
   dispatch,
-  setNewContractConditionInformation,
-  setNewWebhookConditionInformation,
   setConditionType,
   setEditingState,
 }): JSX.Element => {
@@ -31,16 +31,20 @@ const AllConditions: FunctionComponent<AllConditionsProps> = ({
                   id="footerBG"
                   onClick={() => {
                     (condition as ContractCondition)?.chainId
-                      ? setNewContractConditionInformation(
-                          condition as ContractCondition
+                      ? dispatch(
+                          setNewContractConditionInformation(
+                            condition as ContractCondition
+                          )
                         )
-                      : setNewWebhookConditionInformation(
-                          condition as WebhookCondition
+                      : dispatch(
+                          setNewWebhookConditionInformation(
+                            condition as WebhookCondition
+                          )
                         );
                     (condition as ContractCondition)?.chainId
                       ? setConditionType("contract")
                       : setConditionType("web");
-                    setEditingState(true)
+                    setEditingState(true);
                   }}
                 >
                   <div
