@@ -17,8 +17,8 @@ const ContractCondition: FunctionComponent<ContractConditionProps> = ({
   setEventArgs,
   expectedValues,
   setExpectedValues,
-  matchFunctions,
-  setMatchFunctions,
+  matchFunctionsContract,
+  setMatchFunctionsContract,
 }): JSX.Element => {
   console.log({ newContractConditionInformation });
   return (
@@ -38,9 +38,7 @@ const ContractCondition: FunctionComponent<ContractConditionProps> = ({
                 Contract Address
               </div>
               <input
-                value={
-                  newContractConditionInformation?.contractAddress || ""
-                }
+                value={newContractConditionInformation?.contractAddress || ""}
                 placeholder="enter contract address"
                 className="bg-aBlack w-full h-10 p-1 text-white font-vcr text-sm justify-start items-start flex"
                 id="borderLight"
@@ -714,9 +712,7 @@ const ContractCondition: FunctionComponent<ContractConditionProps> = ({
                 Match Operator
               </div>
               <input
-                value={
-                  newContractConditionInformation?.matchOperator || ""
-                }
+                value={newContractConditionInformation?.matchOperator || ""}
                 placeholder="== > < != >= <= === !=="
                 className="bg-aBlack w-full h-10 p-1 text-white font-vcr text-sm justify-start items-start flex"
                 id="borderLight"
@@ -767,23 +763,21 @@ const ContractCondition: FunctionComponent<ContractConditionProps> = ({
               >
                 Matched, UnMatched, Error Functions
               </div>
-              {Object.entries(matchFunctions)?.map(
+              {Object.entries(matchFunctionsContract)?.map(
                 ([propertyName, func]: [string, any], index: number) => {
                   return (
                     <input
                       key={index}
                       placeholder={propertyName}
-                      value={
-                        func !== undefined ? func.toString() : ""
-                      }
+                      value={func !== undefined ? func.toString() : ""}
                       className="bg-aBlack w-full h-10 p-1 text-white font-vcr text-sm justify-start items-start flex"
                       id="borderLight"
                       onChange={(e) => {
                         const updatedMatchFunctions = {
-                          ...matchFunctions,
+                          ...matchFunctionsContract,
                           [propertyName]: e.target.value,
                         };
-                        setMatchFunctions(updatedMatchFunctions);
+                        setMatchFunctionsContract(updatedMatchFunctions);
                       }}
                     />
                   );

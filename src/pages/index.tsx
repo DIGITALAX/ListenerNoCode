@@ -31,8 +31,8 @@ export default function Home() {
     setEventArgs,
     expectedValues,
     setExpectedValues,
-    matchFunctions,
-    setMatchFunctions,
+    matchFunctionsContract,
+    setMatchFunctionsContract,
     newWebhookConditionInformation,
     setNewWebhookConditionInformation,
     editingState,
@@ -92,8 +92,8 @@ export default function Home() {
           setEventArgs={setEventArgs}
           expectedValues={expectedValues}
           setExpectedValues={setExpectedValues}
-          matchFunctions={matchFunctions}
-          setMatchFunctions={setMatchFunctions}
+          matchFunctionsContract={matchFunctionsContract}
+          setMatchFunctionsContract={setMatchFunctionsContract}
           setNewWebhookConditionInformation={setNewWebhookConditionInformation}
           newWebhookConditionInformation={newWebhookConditionInformation}
           editingState={editingState}

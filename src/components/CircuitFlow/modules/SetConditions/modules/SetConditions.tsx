@@ -24,8 +24,8 @@ const SetConditions: FunctionComponent<SetConditionsProps> = ({
   setEventArgs,
   expectedValues,
   setExpectedValues,
-  matchFunctions,
-  setMatchFunctions,
+  matchFunctionsContract,
+  setMatchFunctionsContract,
   newWebhookConditionInformation,
   setNewWebhookConditionInformation,
   editingState,
@@ -67,8 +67,8 @@ const SetConditions: FunctionComponent<SetConditionsProps> = ({
           setEventArgs={setEventArgs}
           expectedValues={expectedValues}
           setExpectedValues={setExpectedValues}
-          matchFunctions={matchFunctions}
-          setMatchFunctions={setMatchFunctions}
+          matchFunctionsContract={matchFunctionsContract}
+          setMatchFunctionsContract={setMatchFunctionsContract}
         />
       </div>
       <div className="relative w-full h-fit flex flex-col gap-5 items-center justify-center">
