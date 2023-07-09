@@ -10,7 +10,24 @@ const CircuitSwitch: FunctionComponent<CircuitSwitchProps> = ({
   conditionType,
   newContractConditionInformation,
   setNewContractConditionInformation,
-  handleAddConditionAndReset
+  handleAddConditionAndReset,
+  outputs,
+  setOutputs,
+  inputs,
+  setInputs,
+  dropDownsOpenContract,
+  setDropDownsOpenContract,
+  eventArgs,
+  setEventArgs,
+  expectedValues,
+  setExpectedValues,
+  matchFunctions,
+  setMatchFunctions,
+  newWebhookConditionInformation,
+  setNewWebhookConditionInformation,
+  editingState,
+  setEditingState,
+  handleUpdateCondition
 }): JSX.Element => {
   switch (circuitFlowIndex) {
     default:
@@ -25,6 +42,23 @@ const CircuitSwitch: FunctionComponent<CircuitSwitchProps> = ({
             setNewContractConditionInformation
           }
           handleAddConditionAndReset={handleAddConditionAndReset}
+          outputs={outputs}
+          setOutputs={setOutputs}
+          inputs={inputs}
+          setInputs={setInputs}
+          dropDownsOpenContract={dropDownsOpenContract}
+          setDropDownsOpenContract={setDropDownsOpenContract}
+          eventArgs={eventArgs}
+          setEventArgs={setEventArgs}
+          expectedValues={expectedValues}
+          setExpectedValues={setExpectedValues}
+          matchFunctions={matchFunctions}
+          setMatchFunctions={setMatchFunctions}
+          setNewWebhookConditionInformation={setNewWebhookConditionInformation}
+          newWebhookConditionInformation={newWebhookConditionInformation}
+          editingState={editingState}
+          setEditingState={setEditingState}
+          handleUpdateCondition={handleUpdateCondition}
         />
       );
   }

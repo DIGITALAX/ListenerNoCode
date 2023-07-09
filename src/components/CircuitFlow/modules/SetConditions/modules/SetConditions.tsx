@@ -14,12 +14,37 @@ const SetConditions: FunctionComponent<SetConditionsProps> = ({
   newContractConditionInformation,
   setNewContractConditionInformation,
   handleAddConditionAndReset,
+  outputs,
+  setOutputs,
+  inputs,
+  setInputs,
+  dropDownsOpenContract,
+  setDropDownsOpenContract,
+  eventArgs,
+  setEventArgs,
+  expectedValues,
+  setExpectedValues,
+  matchFunctions,
+  setMatchFunctions,
+  newWebhookConditionInformation,
+  setNewWebhookConditionInformation,
+  editingState,
+  setEditingState,
+  handleUpdateCondition,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-full flex flex-col">
-      <AllConditions circuitInformation={circuitInformation} />
+      <AllConditions
+        dispatch={dispatch}
+        circuitInformation={circuitInformation}
+        setConditionType={setConditionType}
+        setNewContractConditionInformation={setNewContractConditionInformation}
+        setNewWebhookConditionInformation={setNewWebhookConditionInformation}
+        setEditingState={setEditingState}
+      />
       <div className="relative w-full h-full flex flex-row items-center justify-center">
         <ConditionType
+          editingState={editingState}
           setConditionType={setConditionType}
           conditionType={conditionType}
         />
@@ -30,6 +55,20 @@ const SetConditions: FunctionComponent<SetConditionsProps> = ({
           setNewContractConditionInformation={
             setNewContractConditionInformation
           }
+          setNewWebhookConditionInformation={setNewWebhookConditionInformation}
+          newWebhookConditionInformation={newWebhookConditionInformation}
+          outputs={outputs}
+          setOutputs={setOutputs}
+          inputs={inputs}
+          setInputs={setInputs}
+          dropDownsOpenContract={dropDownsOpenContract}
+          setDropDownsOpenContract={setDropDownsOpenContract}
+          eventArgs={eventArgs}
+          setEventArgs={setEventArgs}
+          expectedValues={expectedValues}
+          setExpectedValues={setExpectedValues}
+          matchFunctions={matchFunctions}
+          setMatchFunctions={setMatchFunctions}
         />
       </div>
       <div className="relative w-full h-fit flex flex-col gap-5 items-center justify-center">
@@ -38,6 +77,8 @@ const SetConditions: FunctionComponent<SetConditionsProps> = ({
         </div>
         <MoreConditionButton
           handleAddConditionAndReset={handleAddConditionAndReset}
+          editingState={editingState}
+          handleUpdateCondition={handleUpdateCondition}
         />
       </div>
     </div>

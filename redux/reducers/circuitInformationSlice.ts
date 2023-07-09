@@ -2,11 +2,26 @@ import { CircuitInformation } from "@/components/CircuitFlow/types/circuitflow.t
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface CircuitInformationState {
-  value: CircuitInformation | undefined;
+  value: CircuitInformation;
 }
 
 const initialCircuitInformationState: CircuitInformationState = {
-  value: undefined,
+  value: {
+    conditions: [],
+    conditionalLogic: {
+      type: "EVERY",
+      interval: 1000,
+    },
+    actions: [],
+    executionConstraints: {
+
+    },
+    IPFSHash: "",
+    PKP: {
+      address: `0x`,
+      publicKey: `0x04` 
+    }
+  }
 };
 
 export const circuitInformationSlice = createSlice({
@@ -15,7 +30,7 @@ export const circuitInformationSlice = createSlice({
   reducers: {
     setCircuitInformation: (
       state: CircuitInformationState,
-      action: PayloadAction<CircuitInformation | undefined>
+      action: PayloadAction<CircuitInformation>
     ) => {
       state.value = action.payload;
     },
