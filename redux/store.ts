@@ -3,11 +3,13 @@ import { configureStore } from "@reduxjs/toolkit";
 import walletConnectedReducer from "./reducers/walletConnectedSlice";
 import circuitFlowReducer from "./reducers/circuitFlowSlice";
 import circuitInformationReducer from "./reducers/circuitInformationSlice";
+import modalOpenReducer from "./reducers/modalOpenSlice";
 
 const reducer = combineReducers({
   walletConnectedReducer,
   circuitFlowReducer,
   circuitInformationReducer,
+  modalOpenReducer,
 });
 
 export const store = configureStore({

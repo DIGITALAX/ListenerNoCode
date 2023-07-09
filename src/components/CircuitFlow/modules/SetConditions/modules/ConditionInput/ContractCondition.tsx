@@ -120,7 +120,7 @@ const ContractCondition: FunctionComponent<ContractConditionProps> = ({
                                 }) as any)
                               }
                             >
-                              {`${input?.indexed}`}
+                              {input?.indexed}
                             </div>
                             {dropDownsOpenContract.indexed[index] && (
                               <div className="z-10 absolute w-full h-fit flex flex-col bg-aBlack">
@@ -215,7 +215,7 @@ const ContractCondition: FunctionComponent<ContractConditionProps> = ({
                                 }) as any)
                               }
                             >
-                              {`${input?.internalType}`}
+                              {input?.internalType}
                             </div>
                             {dropDownsOpenContract.internalTypesInput[
                               index
@@ -451,7 +451,7 @@ const ContractCondition: FunctionComponent<ContractConditionProps> = ({
                                 }) as any)
                               }
                             >
-                              {`${output?.internalType}`}
+                              {output?.internalType}
                             </div>
                             {dropDownsOpenContract.internalTypesOutput[
                               index

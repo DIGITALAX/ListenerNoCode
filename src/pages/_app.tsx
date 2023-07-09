@@ -12,6 +12,7 @@ import { polygon } from "wagmi/chains";
 import { alchemyProvider } from "wagmi/providers/alchemy";
 import { MutableRefObject, useEffect } from "react";
 import { createContext } from "react";
+import Modals from "@/components/Modals/Modals";
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [polygon],
@@ -59,6 +60,7 @@ export default function App({ Component, pageProps }: AppProps) {
             <Header />
             <Component {...pageProps} />
             <Footer />
+            <Modals />
           </div>
         </RainbowKitProvider>
       </WagmiConfig>
