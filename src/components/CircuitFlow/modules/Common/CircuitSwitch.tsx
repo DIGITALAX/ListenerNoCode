@@ -2,6 +2,7 @@ import { FunctionComponent } from "react";
 import { CircuitSwitchProps } from "../../types/circuitflow.types";
 import SetConditions from "../SetConditions/modules/SetConditions";
 import ConditionalLogic from "../ConditionalLogic/ConditionalLogic";
+import ExecutionConstraints from "../ExecutionConstraints/ExecutionConstraints";
 
 const CircuitSwitch: FunctionComponent<CircuitSwitchProps> = ({
   circuitFlowIndex,
@@ -39,8 +40,25 @@ const CircuitSwitch: FunctionComponent<CircuitSwitchProps> = ({
   setInterval,
   targetConditionOpen,
   setTargetConditionOpen,
+  time,
+  setTime,
+  maxLitActionCompletions,
+  setMaxLitActionCompletions,
+  conditionMonitorExecutions,
+  setConditionMonitorExecutions,
 }): JSX.Element => {
   switch (circuitFlowIndex) {
+    case 3:
+      return (
+        <ExecutionConstraints
+          time={time}
+          setTime={setTime}
+          maxLitActionCompletions={maxLitActionCompletions}
+          setMaxLitActionCompletions={setMaxLitActionCompletions}
+          conditionMonitorExecutions={conditionMonitorExecutions}
+          setConditionMonitorExecutions={setConditionMonitorExecutions}
+        />
+      );
     case 1:
       return (
         <ConditionalLogic

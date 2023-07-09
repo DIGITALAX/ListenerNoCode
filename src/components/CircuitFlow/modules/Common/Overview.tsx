@@ -46,16 +46,17 @@ const Overview: FunctionComponent<OverviewProps> = ({
                 className={`relative w-full h-fit flex flex-row justify-start items-center gap-3 cursor-pointer active:scale-95 hover:text-sol ${
                   circuitFlowIndex === index ? "text-sol" : "text-rio"
                 }`}
-                onClick={() =>
+                onClick={
                   circuitFlowIndex === 0 &&
                   circuitInformation?.conditions?.length < 1
-                    ? dispatch(
-                        setModalOpen({
-                          actionOpen: true,
-                          actionMessage: "Add Conditions Before Continuing.",
-                          actionImage: "",
-                        })
-                      )
+                    ? () =>
+                        dispatch(
+                          setModalOpen({
+                            actionOpen: true,
+                            actionMessage: "Add Conditions Before Continuing.",
+                            actionImage: "",
+                          })
+                        )
                     : circuitFlowIndex === 1
                     ? () => {
                         const logicCorrect = handleSetConditionalLogic();
@@ -63,7 +64,7 @@ const Overview: FunctionComponent<OverviewProps> = ({
                           dispatch(setCircuitFlow(circuitFlowIndex + 1));
                         }
                       }
-                    : dispatch(setCircuitFlow(index))
+                    : () => dispatch(setCircuitFlow(index))
                 }
               >
                 <div className="flex flex-row justify-start items-center w-fit h-fit gap-1.5">

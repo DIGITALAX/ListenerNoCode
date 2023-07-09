@@ -1,19 +1,19 @@
 import { FunctionComponent } from "react";
-import { IntervalProps } from "../../types/circuitflow.types";
+import { MaxExecutionProps } from "../../types/circuitflow.types";
 import ConditionInput from "../SetConditions/modules/ConditionInput/ConditionInput";
 
-const Interval: FunctionComponent<IntervalProps> = ({
-  interval,
-  setInterval,
+const MaxExecution: FunctionComponent<MaxExecutionProps> = ({
+  setMaxLitActionCompletions,
+  maxLitActionCompletions,
 }): JSX.Element => {
   return (
     <div
-      className="relative w-60 h-60 flex flex-col p-2 gap-3"
+      className="relative w-60 h-72 flex flex-col p-2 gap-3"
       id="inputBorder"
     >
       <ConditionInput
         text={
-          "How often should your conditions be checked? Enter your interval in milliseconds."
+          "What is the max number of times the circuit can run in total before it is terminated? Leave empty if it should run infinitely."
         }
       />
       <div className="relative w-full h-full gap-1 flex flex-col">
@@ -21,18 +21,18 @@ const Interval: FunctionComponent<IntervalProps> = ({
           className="relative w-fit h-fit justify-start items-start flex font-vcr text-sol text-sm"
           id="blur"
         >
-          Interval
+          No. Of Full Circuit Runs
         </div>
         <input
-          value={interval || ""}
-          placeholder="enter interval"
+          value={maxLitActionCompletions || ""}
+          placeholder="enter max number"
           className="bg-aBlack w-full h-10 p-1 text-white font-vcr text-sm justify-start items-start flex"
           id="borderLight"
-          onChange={(e) => setInterval(Number(e.target.value))}
+          onChange={(e) => setMaxLitActionCompletions(Number(e.target.value))}
         />
       </div>
     </div>
   );
 };
 
-export default Interval;
+export default MaxExecution;
