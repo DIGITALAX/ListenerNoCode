@@ -1,4 +1,5 @@
 import Head from "next/head";
+import Link from "next/link";
 import { FunctionComponent } from "react";
 
 const Custom404: FunctionComponent = (): JSX.Element => {
@@ -9,7 +10,7 @@ const Custom404: FunctionComponent = (): JSX.Element => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className="relative font-vcr text-moda flex items-center justify-center text-lg">
-        No one&apos;s listening. <a href="/">Go home?</a>
+        No one&apos;s listening. <Link href="/">Go home?</Link>
       </div>
     </div>
   );
