@@ -8,22 +8,31 @@ const NextButton: FunctionComponent<NextButtonProps> = ({
   dispatch,
   circuitFlowIndex,
   circuitInformation,
+  handleSetConditionalLogic,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-fit flex justify-end">
       <div
         className="relative w-fit h-fit px-2.5 py-2 flex items-end justify-center cursor-pointer hover:opacity-50 hover:bg-moda/40 hover:text-aBlack active:scale-95"
         id="borderLight"
-        onClick={() =>
+        onClick={
           circuitFlowIndex === 0 && circuitInformation?.conditions?.length < 1
-            ? dispatch(
-                setModalOpen({
-                  actionOpen: true,
-                  actionMessage: "Add Conditions Before Continuing.",
-                  actionImage: "",
-                })
-              )
-            : dispatch(setCircuitFlow(circuitFlowIndex + 1))
+            ? () =>
+                dispatch(
+                  setModalOpen({
+                    actionOpen: true,
+                    actionMessage: "Add Conditions Before Continuing.",
+                    actionImage: "",
+                  })
+                )
+            : circuitFlowIndex === 1
+            ? () => {
+                const logicCorrect = handleSetConditionalLogic();
+                if (logicCorrect) {
+                  dispatch(setCircuitFlow(circuitFlowIndex + 1));
+                }
+              }
+            : () => dispatch(setCircuitFlow(circuitFlowIndex + 1))
         }
       >
         <div

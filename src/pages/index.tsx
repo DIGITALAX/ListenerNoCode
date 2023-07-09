@@ -6,6 +6,7 @@ import CircuitSwitch from "@/components/CircuitFlow/modules/Common/CircuitSwitch
 import Overview from "@/components/CircuitFlow/modules/Common/Overview";
 import useSetConditions from "@/components/CircuitFlow/modules/SetConditions/hooks/useSetConditions";
 import NextButton from "@/components/CircuitFlow/modules/Common/NextButton";
+import useConditionalLogic from "@/components/CircuitFlow/modules/ConditionalLogic/hooks/useConditionalLogic";
 
 export default function Home() {
   const dispatch = useDispatch();
@@ -43,6 +44,19 @@ export default function Home() {
     matchFunctionsWebhook,
     setMatchFunctionsWebhook,
   } = useSetConditions();
+  const {
+    logicType,
+    setLogicType,
+    handleSetConditionalLogic,
+    thresholdValue,
+    setThresholdValue,
+    targetCondition,
+    setTargetCondition,
+    interval,
+    setInterval,
+    targetConditionOpen,
+    setTargetConditionOpen,
+  } = useConditionalLogic();
   return (
     <div className="relative w-full h-full flex flex-row border-t-2 border-sol">
       <div className="absolute w-full h-full flex mix-blend-overlay">
@@ -101,6 +115,16 @@ export default function Home() {
           handleUpdateCondition={handleUpdateCondition}
           matchFunctionsWebhook={matchFunctionsWebhook}
           setMatchFunctionsWebhook={setMatchFunctionsWebhook}
+          logicType={logicType}
+          setLogicType={setLogicType}
+          thresholdValue={thresholdValue}
+          setThresholdValue={setThresholdValue}
+          targetCondition={targetCondition}
+          setTargetCondition={setTargetCondition}
+          interval={interval}
+          setInterval={setInterval}
+          targetConditionOpen={targetConditionOpen}
+          setTargetConditionOpen={setTargetConditionOpen}
         />
         <NextButton
           text={
@@ -121,12 +145,14 @@ export default function Home() {
           dispatch={dispatch}
           circuitFlowIndex={circuitFlowIndex}
           circuitInformation={circuitInformation}
+          handleSetConditionalLogic={handleSetConditionalLogic}
         />
       </div>
       <Overview
         dispatch={dispatch}
         circuitFlowIndex={circuitFlowIndex}
         circuitInformation={circuitInformation}
+        handleSetConditionalLogic={handleSetConditionalLogic}
       />
     </div>
   );

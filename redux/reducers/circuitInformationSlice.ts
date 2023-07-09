@@ -10,18 +10,16 @@ const initialCircuitInformationState: CircuitInformationState = {
     conditions: [],
     conditionalLogic: {
       type: "EVERY",
-      interval: 1000,
+      interval: 120000,
     },
     actions: [],
-    executionConstraints: {
-
-    },
+    executionConstraints: {},
     IPFSHash: "",
     PKP: {
       address: `0x`,
-      publicKey: `0x04` 
-    }
-  }
+      publicKey: `0x04`,
+    },
+  },
 };
 
 export const circuitInformationSlice = createSlice({
