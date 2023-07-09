@@ -29,6 +29,15 @@ const useSetConditions = () => {
     onUnMatched: async () => {},
     onError: () => {},
   });
+  const [matchFunctionsWebhook, setMatchFunctionsWebhook] = useState<{
+    onMatched: () => Promise<void>;
+    onUnMatched: () => Promise<void>;
+    onError: () => void;
+  }>({
+    onMatched: async () => {},
+    onUnMatched: async () => {},
+    onError: () => {},
+  });
   const [dropDownsOpenContract, setDropDownsOpenContract] = useState<{
     internalTypesInput: boolean[];
     typesInput: boolean[];
@@ -180,7 +189,28 @@ const useSetConditions = () => {
         typesOutput: [false],
       });
     } else {
+      dispatch(
+        setCircuitInformation({
+          ...circuitInformation,
+          conditions: [
+            ...circuitInformation.conditions,
+            {
+              ...newWebhookConditionInformation,
+              id:
+                circuitInformation.conditions?.length > 0
+                  ? circuitInformation.conditions?.length?.toString()
+                  : "1",
+            } as WebhookCondition,
+          ],
+        })
+      );
+
       setNewWebhookConditionInformation(undefined);
+      setMatchFunctionsWebhook({
+        onMatched: async () => {},
+        onUnMatched: async () => {},
+        onError: () => {},
+      });
     }
   };
 
@@ -191,8 +221,6 @@ const useSetConditions = () => {
         inputs,
         outputs
       );
-
-      console.log({ newContractConditionInformation });
 
       dispatch(
         setCircuitInformation({
@@ -247,7 +275,28 @@ const useSetConditions = () => {
         typesOutput: [false],
       });
     } else {
+      dispatch(
+        setCircuitInformation({
+          ...circuitInformation,
+          conditions: circuitInformation.conditions.map((obj) =>
+            obj.id === newWebhookConditionInformation?.id
+              ? ({
+                  ...obj,
+                  ...{
+                    ...newWebhookConditionInformation,
+                  },
+                } as WebhookCondition)
+              : obj
+          ),
+        })
+      );
+
       setNewWebhookConditionInformation(undefined);
+      setMatchFunctionsWebhook({
+        onMatched: async () => {},
+        onUnMatched: async () => {},
+        onError: () => {},
+      });
     }
 
     setEditingState(false);
@@ -291,6 +340,8 @@ const useSetConditions = () => {
     editingState,
     setEditingState,
     handleUpdateCondition,
+    matchFunctionsWebhook,
+    setMatchFunctionsWebhook,
   };
 };
 

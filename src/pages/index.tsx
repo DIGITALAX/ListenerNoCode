@@ -38,6 +38,8 @@ export default function Home() {
     editingState,
     setEditingState,
     handleUpdateCondition,
+    matchFunctionsWebhook,
+    setMatchFunctionsWebhook,
   } = useSetConditions();
   return (
     <div className="relative w-full h-full flex flex-row border-t-2 border-sol">
@@ -99,6 +101,8 @@ export default function Home() {
           editingState={editingState}
           setEditingState={setEditingState}
           handleUpdateCondition={handleUpdateCondition}
+          matchFunctionsWebhook={matchFunctionsWebhook}
+          setMatchFunctionsWebhook={setMatchFunctionsWebhook}
         />
         <NextButton
           text={
