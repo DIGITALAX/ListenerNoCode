@@ -6,6 +6,12 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setCircuitInformation } from "../../../../../../redux/reducers/circuitInformationSlice";
 import { RootState } from "../../../../../../redux/store";
+import { setModalOpen } from "../../../../../../redux/reducers/modalOpenSlice";
+import { codeChecker } from "../../../../../../lib/helpers/codeChecker";
+import { checkMatchOperator } from "../../../../../../lib/helpers/checkMatchOperator";
+import { checkResponsePath } from "../../../../../../lib/helpers/checkResponsePath";
+import { checkBaseURL } from "../../../../../../lib/helpers/checkBaseURL";
+import { checkEndpoint } from "../../../../../../lib/helpers/checkEndpoint";
 
 const useSetConditions = () => {
   const dispatch = useDispatch();
@@ -129,12 +135,327 @@ const useSetConditions = () => {
     return abi;
   };
 
+  const checkContractCondition = (): {
+    checker: boolean;
+    newInputs: {
+      indexed: boolean;
+      internalType: string;
+      name: string;
+      type: string;
+    }[];
+    newOutputs: {
+      internalType: string;
+      name: string;
+      type: string;
+    }[];
+    newExpectedValues: string[];
+    newEventArgs: string[];
+  } => {
+    let checker = true;
+    const newInputs = inputs.filter((obj) =>
+      Object.values(obj).every(
+        (value) => typeof value !== "string" || value.trim() !== ""
+      )
+    );
+    const newOutputs = outputs.filter((obj) =>
+      Object.values(obj).every(
+        (value) => typeof value !== "string" || value.trim() !== ""
+      )
+    );
+    const newEventArgs = eventArgs.filter((value) => value?.trim() !== "");
+    const newExpectedValues = expectedValues.filter(
+      (value) => value?.trim() !== ""
+    );
+
+    if (
+      !newContractConditionInformation?.contractAddress ||
+      newContractConditionInformation?.contractAddress?.trim() === ""
+    ) {
+      checker = false;
+      dispatch(
+        setModalOpen({
+          actionOpen: true,
+          actionMessage: "Contract Address Missing. Try Again.",
+        })
+      );
+    } else if (
+      !newContractConditionInformation?.eventName ||
+      newContractConditionInformation?.eventName?.trim() === ""
+    ) {
+      checker = false;
+      dispatch(
+        setModalOpen({
+          actionOpen: true,
+          actionMessage: "Event Name Missing. Try Again.",
+        })
+      );
+    } else if (
+      !newContractConditionInformation?.chainId ||
+      newContractConditionInformation?.chainId?.trim() === ""
+    ) {
+      checker = false;
+      dispatch(
+        setModalOpen({
+          actionOpen: true,
+          actionMessage: "Chain Id Missing. Try Again.",
+        })
+      );
+    } else if (newEventArgs?.length < 1) {
+      checker = false;
+      dispatch(
+        setModalOpen({
+          actionOpen: true,
+          actionMessage: "Event Args Missing. Try Again.",
+        })
+      );
+    } else if (
+      !newContractConditionInformation?.matchOperator ||
+      newContractConditionInformation?.matchOperator?.trim() === ""
+    ) {
+      checker = false;
+      dispatch(
+        setModalOpen({
+          actionOpen: true,
+          actionMessage: "Match Operator Missing. Try Again.",
+        })
+      );
+    } else if (
+      !checkMatchOperator(newContractConditionInformation?.matchOperator)
+    ) {
+      checker = false;
+      dispatch(
+        setModalOpen({
+          actionOpen: true,
+          actionMessage: "Invalid Match Operator. Try Again.",
+        })
+      );
+    } else if (newExpectedValues?.length < 1) {
+      checker = false;
+      dispatch(
+        setModalOpen({
+          actionOpen: true,
+          actionMessage: "Expected Values Missing. Try Again.",
+        })
+      );
+    } else if (expectedValues?.length !== eventArgs?.length) {
+      checker = false;
+      dispatch(
+        setModalOpen({
+          actionOpen: true,
+          actionMessage:
+            "Each Event Arg Needs A Corresponding Expected Value. Try Again.",
+        })
+      );
+    } else if (newInputs?.length < 1) {
+      checker = false;
+      dispatch(
+        setModalOpen({
+          actionOpen: true,
+          actionMessage: "Contract ABI Inputs Missing. Try Again.",
+        })
+      );
+    } else if (newOutputs?.length < 1) {
+      checker = false;
+      dispatch(
+        setModalOpen({
+          actionOpen: true,
+          actionMessage: "Contract ABI Outputs Missing. Try Again.",
+        })
+      );
+    } else {
+      const errorCheck = codeChecker(
+        matchFunctionsContract.onError.toString(),
+        true
+      );
+      const matchCheck = codeChecker(
+        matchFunctionsContract.onMatched.toString(),
+        true
+      );
+      const unMatchCheck = codeChecker(
+        matchFunctionsContract.onUnMatched.toString(),
+        true
+      );
+
+      const errorEmpty = matchFunctionsContract.onError.toString()?.trim();
+      const matchEmpty = matchFunctionsContract.onError.toString()?.trim();
+      const unMatchEmpty = matchFunctionsContract.onError.toString()?.trim();
+
+      if (
+        (!errorCheck && errorEmpty !== "") ||
+        (!matchCheck && matchEmpty !== "") ||
+        (!unMatchCheck && unMatchEmpty !== "")
+      ) {
+        checker = false;
+        dispatch(
+          setModalOpen({
+            actionOpen: true,
+            actionMessage:
+              "Match, Error & UnMatch Functions Invalid. Try Again.",
+          })
+        );
+      }
+    }
+
+    return { checker, newInputs, newOutputs, newExpectedValues, newEventArgs };
+  };
+
+  const checkWebhookCondition = (): {
+    checker: boolean;
+    newBaseURL: string;
+    newEndpoint: string;
+  } => {
+    let checker = true;
+    const newBaseURL = !newWebhookConditionInformation?.baseUrl.endsWith("/")
+      ? newWebhookConditionInformation?.baseUrl + "/"
+      : newWebhookConditionInformation?.baseUrl;
+    const newEndpoint = newWebhookConditionInformation?.endpoint.startsWith("/")
+      ? newWebhookConditionInformation?.endpoint.substring(1)
+      : newWebhookConditionInformation?.endpoint!;
+    if (
+      !newWebhookConditionInformation?.baseUrl ||
+      newWebhookConditionInformation?.baseUrl?.trim() === ""
+    ) {
+      checker = false;
+      dispatch(
+        setModalOpen({
+          actionOpen: true,
+          actionMessage: "Base URL Missing. Try Again.",
+        })
+      );
+    } else if (
+      !newWebhookConditionInformation?.endpoint ||
+      newWebhookConditionInformation?.endpoint?.trim() === ""
+    ) {
+      checker = false;
+      dispatch(
+        setModalOpen({
+          actionOpen: true,
+          actionMessage: "Endpoint Missing. Try Again.",
+        })
+      );
+    } else if (!checkBaseURL(newWebhookConditionInformation?.baseUrl)) {
+      checker = false;
+      dispatch(
+        setModalOpen({
+          actionOpen: true,
+          actionMessage: "Base URL Invalid. Try Again.",
+        })
+      );
+    } else if (!checkEndpoint(newWebhookConditionInformation?.endpoint)) {
+      checker = false;
+      dispatch(
+        setModalOpen({
+          actionOpen: true,
+          actionMessage: "Endpoint Invalid. Try Again.",
+        })
+      );
+    } else if (
+      !newWebhookConditionInformation?.matchOperator ||
+      newWebhookConditionInformation?.matchOperator?.trim() === ""
+    ) {
+      checker = false;
+      dispatch(
+        setModalOpen({
+          actionOpen: true,
+          actionMessage: "Match Operator Missing. Try Again.",
+        })
+      );
+    } else if (
+      !checkMatchOperator(newWebhookConditionInformation?.matchOperator)
+    ) {
+      checker = false;
+      dispatch(
+        setModalOpen({
+          actionOpen: true,
+          actionMessage: "Invalid Match Operator. Try Again.",
+        })
+      );
+    } else if (
+      !newWebhookConditionInformation?.responsePath ||
+      newWebhookConditionInformation?.responsePath?.trim() === ""
+    ) {
+      checker = false;
+      dispatch(
+        setModalOpen({
+          actionOpen: true,
+          actionMessage: "Response Path Missing. Try Again.",
+        })
+      );
+    } else if (
+      !checkResponsePath(newWebhookConditionInformation.responsePath)
+    ) {
+      checker = false;
+      dispatch(
+        setModalOpen({
+          actionOpen: true,
+          actionMessage: "Response Path Invalid. Try Again.",
+        })
+      );
+    } else if (
+      !newWebhookConditionInformation?.expectedValue ||
+      newWebhookConditionInformation?.expectedValue?.toString()?.trim() === ""
+    ) {
+      checker = false;
+      dispatch(
+        setModalOpen({
+          actionOpen: true,
+          actionMessage: "Expected Value Missing. Try Again.",
+        })
+      );
+    } else {
+      const errorCheck = codeChecker(
+        matchFunctionsWebhook.onError.toString(),
+        true
+      );
+      const matchCheck = codeChecker(
+        matchFunctionsWebhook.onMatched.toString(),
+        true
+      );
+      const unMatchCheck = codeChecker(
+        matchFunctionsWebhook.onUnMatched.toString(),
+        true
+      );
+
+      const errorEmpty = matchFunctionsWebhook.onError.toString()?.trim();
+      const matchEmpty = matchFunctionsWebhook.onError.toString()?.trim();
+      const unMatchEmpty = matchFunctionsWebhook.onError.toString()?.trim();
+
+      if (
+        (!errorCheck && errorEmpty !== "") ||
+        (!matchCheck && matchEmpty !== "") ||
+        (!unMatchCheck && unMatchEmpty !== "")
+      ) {
+        checker = false;
+        dispatch(
+          setModalOpen({
+            actionOpen: true,
+            actionMessage:
+              "Match, Error & UnMatch Functions Invalid. Try Again.",
+          })
+        );
+      }
+    }
+
+    return { checker, newBaseURL, newEndpoint };
+  };
+
   const handleAddConditionAndReset = () => {
     if (conditionType === "contract") {
+      const {
+        checker,
+        newInputs,
+        newOutputs,
+        newEventArgs,
+        newExpectedValues,
+      } = checkContractCondition();
+      if (!checker) {
+        return;
+      }
+
       const abi = buildABI(
         newContractConditionInformation?.eventName!,
-        inputs,
-        outputs
+        newInputs,
+        newOutputs
       );
 
       dispatch(
@@ -149,8 +470,8 @@ const useSetConditions = () => {
                   ? circuitInformation.conditions?.length?.toString()
                   : "1",
               abi,
-              eventArgName: eventArgs,
-              expectedValue: expectedValues,
+              eventArgName: newEventArgs,
+              expectedValue: newExpectedValues,
               onMatched: matchFunctionsContract.onMatched,
               onUnMatched: matchFunctionsContract.onUnMatched,
               onError: matchFunctionsContract.onError,
@@ -189,6 +510,10 @@ const useSetConditions = () => {
         typesOutput: [false],
       });
     } else {
+      const { checker, newBaseURL, newEndpoint } = checkWebhookCondition();
+      if (!checker) {
+        return;
+      }
       dispatch(
         setCircuitInformation({
           ...circuitInformation,
@@ -200,6 +525,8 @@ const useSetConditions = () => {
                 circuitInformation.conditions?.length > 0
                   ? circuitInformation.conditions?.length?.toString()
                   : "1",
+              baseUrl: newBaseURL,
+              endpoint: newEndpoint,
             } as WebhookCondition,
           ],
         })
