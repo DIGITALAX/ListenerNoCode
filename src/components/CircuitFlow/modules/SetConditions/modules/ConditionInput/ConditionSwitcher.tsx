@@ -5,13 +5,22 @@ import { ConditionSwitchProps } from "@/components/CircuitFlow/types/circuitflow
 
 const ConditionSwitch: FunctionComponent<ConditionSwitchProps> = ({
   conditionType,
+  newContractConditionInformation,
+  setNewContractConditionInformation,
 }): JSX.Element => {
   switch (conditionType) {
     case "web":
       return <WebhookCondition />;
 
     default:
-      return <ContractCondition />;
+      return (
+        <ContractCondition
+          newContractConditionInformation={newContractConditionInformation}
+          setNewContractConditionInformation={
+            setNewContractConditionInformation
+          }
+        />
+      );
   }
 };
 

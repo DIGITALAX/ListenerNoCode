@@ -87,3 +87,48 @@ html {
   border: 2px solid;
   border-image: linear-gradient(to bottom, #fb88b6, #f5507f) 1;
 }
+
+input:focus {
+  outline-color: #fb88b6 !important;
+}
+
+input:-moz-focus-inner {
+  outline-color: #fb88b6 !important;
+}
+
+html::-webkit-scrollbar {
+  width: 6px;
+  opacity: 0; /* Initially hide the scrollbar */
+  transition: opacity 0.3s ease;
+}
+
+html:hover::-webkit-scrollbar {
+  opacity: 1; /* Show the scrollbar on hover */
+}
+
+html::-webkit-scrollbar-track {
+  background-color: black;
+}
+
+html::-webkit-scrollbar-thumb {
+  background-color: #9ecad0;
+}
+
+
+div::-webkit-scrollbar {
+  width: 6px;
+  opacity: 0; /* Initially hide the scrollbar */
+  transition: opacity 0.3s ease;
+}
+
+div:hover::-webkit-scrollbar {
+  opacity: 1; /* Show the scrollbar on hover */
+}
+
+div::-webkit-scrollbar-track {
+  background-color: black;
+}
+
+div::-webkit-scrollbar-thumb {
+  background-color: #9ecad0;
+}
