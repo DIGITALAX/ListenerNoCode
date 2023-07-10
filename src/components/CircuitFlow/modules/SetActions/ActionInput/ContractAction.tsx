@@ -620,6 +620,7 @@ const ContractAction: FunctionComponent<ContractActionProps> = ({
                     ]).map((state: string, index: number) => {
                       return (
                         <div
+                          key={index}
                           className="relative w-full h-10 bg-aBlack text-white font-vcr text-sm cursor-pointer hover:bg-sol flex items-center justify-center text-center hover:text-black"
                           id="borderLight"
                           onClick={() => {
