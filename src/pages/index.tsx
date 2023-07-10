@@ -11,6 +11,7 @@ import useExecutionConstraints from "@/components/CircuitFlow/modules/ExecutionC
 import useIPFS from "@/components/CircuitFlow/modules/IPFSHash/hooks/useIPFS";
 import usePKP from "@/components/CircuitFlow/modules/MintGrantBurnPKP/hooks/usePKP";
 import useStartCircuit from "@/components/CircuitFlow/modules/StartCircuit/hooks/useStartCircuit";
+import useSetActions from "@/components/CircuitFlow/modules/SetActions/hooks/useSetActions";
 
 export default function Home() {
   const dispatch = useDispatch();
@@ -31,6 +32,12 @@ export default function Home() {
   );
   const newWebhookConditionInformation = useSelector(
     (state: RootState) => state.app.newWebhookConditionInformationReducer.value
+  );
+  const newContractActionInformation = useSelector(
+    (state: RootState) => state.app.newContractActionInformationReducer.value
+  );
+  const newFetchActionInformation = useSelector(
+    (state: RootState) => state.app.newFetchActionInformationReducer.value
   );
   const {
     conditionType,
@@ -54,6 +61,28 @@ export default function Home() {
     matchFunctionsWebhook,
     setMatchFunctionsWebhook,
   } = useSetConditions();
+  const {
+    actionType,
+    setActionType,
+    handleAddActionAndReset,
+    actionOutputs,
+    setActionOutputs,
+    actionInputs,
+    setActionInputs,
+    dropDownsOpenAction,
+    setDropDownsOpenAction,
+    functionArgs,
+    setFunctionArgs,
+    editingStateAction,
+    setEditingStateAction,
+    handleUpdateAction,
+    payable,
+    setPayable,
+    stateMutability,
+    setStateMutability,
+    signConditions,
+    setSignConditions
+  } = useSetActions();
   const { ipfsLoading, handleHashToIPFS } = useIPFS();
   const { handleMintGrantBurnPKP, pkpLoading } = usePKP();
   const {
@@ -175,6 +204,28 @@ export default function Home() {
           handleMintGrantBurnPKP={handleMintGrantBurnPKP}
           circuitRunning={circuitRunning}
           handleRunCircuit={handleRunCircuit}
+          actionType={actionType}
+          newContractActionInformation={newContractActionInformation}
+          newFetchActionInformation={newFetchActionInformation}
+          actionOutputs={actionOutputs}
+          setActionOutputs={setActionOutputs}
+          actionInputs={actionInputs}
+          setActionInputs={setActionInputs}
+          dropDownsOpenAction={dropDownsOpenAction}
+          setDropDownsOpenAction={setDropDownsOpenAction}
+          functionArgs={functionArgs}
+          setFunctionArgs={setFunctionArgs}
+          payable={payable}
+          setPayable={setPayable}
+          stateMutability={stateMutability}
+          setStateMutability={setStateMutability}
+          handleAddActionAndReset={handleAddActionAndReset}
+          handleUpdateAction={handleUpdateAction}
+          setActionType={setActionType}
+          setEditingStateAction={setEditingStateAction}
+          editingStateAction={editingStateAction}
+          signConditions={signConditions}
+          setSignConditions={setSignConditions}
         />
         {circuitFlowIndex !== 6 && (
           <NextButton

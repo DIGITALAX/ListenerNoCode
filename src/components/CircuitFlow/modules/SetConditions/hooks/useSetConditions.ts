@@ -319,15 +319,6 @@ const useSetConditions = () => {
       const matchEmpty = matchFunctionsContract.onError.toString()?.trim();
       const unMatchEmpty = matchFunctionsContract.onError.toString()?.trim();
 
-      console.log(
-        errorCheck,
-        errorEmpty,
-        matchCheck,
-        matchEmpty,
-        unMatchCheck,
-        unMatchEmpty
-      );
-
       if (
         (!errorCheck && errorEmpty !== "") ||
         (!matchCheck && matchEmpty !== "") ||
@@ -602,10 +593,21 @@ const useSetConditions = () => {
 
   const handleUpdateCondition = () => {
     if (conditionType === "contract") {
+      const {
+        checker,
+        newInputs,
+        newOutputs,
+        newEventArgs,
+        newExpectedValues,
+      } = checkContractCondition();
+      if (!checker) {
+        return;
+      }
+
       const abi = buildABI(
         newContractConditionInformation?.eventName!,
-        inputs,
-        outputs
+        newInputs,
+        newOutputs
       );
 
       dispatch(
@@ -618,8 +620,8 @@ const useSetConditions = () => {
                   ...({
                     ...newContractConditionInformation,
                     abi,
-                    eventArgName: eventArgs,
-                    expectedValue: expectedValues,
+                    eventArgName: newEventArgs,
+                    expectedValue: newExpectedValues,
                     onMatched: matchFunctionsContract.onMatched,
                     onUnMatched: matchFunctionsContract.onUnMatched,
                     onError: matchFunctionsContract.onError,
@@ -661,6 +663,11 @@ const useSetConditions = () => {
         typesOutput: [false],
       });
     } else {
+      const { checker, newBaseURL, newEndpoint } = checkWebhookCondition();
+      if (!checker) {
+        return;
+      }
+
       dispatch(
         setCircuitInformation({
           ...circuitInformation,
@@ -670,6 +677,8 @@ const useSetConditions = () => {
                   ...obj,
                   ...{
                     ...newWebhookConditionInformation,
+                    baseUrl: newBaseURL,
+                    endpoint: newEndpoint
                   },
                 } as WebhookCondition)
               : obj

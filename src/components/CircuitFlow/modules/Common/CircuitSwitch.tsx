@@ -6,6 +6,7 @@ import ExecutionConstraints from "../ExecutionConstraints/ExecutionConstraints";
 import IPFS from "../IPFSHash/IPFS";
 import MintGrantBurn from "../MintGrantBurnPKP/MintGrantBurn";
 import RunCircuit from "../StartCircuit/RunCircuit";
+import SetActions from "../SetActions/SetActions";
 
 const CircuitSwitch: FunctionComponent<CircuitSwitchProps> = ({
   circuitFlowIndex,
@@ -57,6 +58,28 @@ const CircuitSwitch: FunctionComponent<CircuitSwitchProps> = ({
   pkpLoading,
   handleRunCircuit,
   circuitRunning,
+  actionType,
+  setActionType,
+  newContractActionInformation,
+  handleAddActionAndReset,
+  actionOutputs,
+  setActionOutputs,
+  actionInputs,
+  setActionInputs,
+  dropDownsOpenAction,
+  setDropDownsOpenAction,
+  functionArgs,
+  setFunctionArgs,
+  newFetchActionInformation,
+  editingStateAction,
+  setEditingStateAction,
+  handleUpdateAction,
+  payable,
+  setPayable,
+  stateMutability,
+  setStateMutability,
+  signConditions,
+  setSignConditions,
 }): JSX.Element => {
   switch (circuitFlowIndex) {
     case 6:
@@ -100,6 +123,37 @@ const CircuitSwitch: FunctionComponent<CircuitSwitchProps> = ({
           setConditionMonitorExecutions={setConditionMonitorExecutions}
         />
       );
+
+    case 2:
+      return (
+        <SetActions
+          dispatch={dispatch}
+          actionType={actionType}
+          newContractActionInformation={newContractActionInformation}
+          newFetchActionInformation={newFetchActionInformation}
+          actionOutputs={actionOutputs}
+          setActionOutputs={setActionOutputs}
+          actionInputs={actionInputs}
+          setActionInputs={setActionInputs}
+          dropDownsOpenAction={dropDownsOpenAction}
+          setDropDownsOpenAction={setDropDownsOpenAction}
+          functionArgs={functionArgs}
+          setFunctionArgs={setFunctionArgs}
+          payable={payable}
+          setPayable={setPayable}
+          stateMutability={stateMutability}
+          setStateMutability={setStateMutability}
+          handleAddActionAndReset={handleAddActionAndReset}
+          handleUpdateAction={handleUpdateAction}
+          setActionType={setActionType}
+          setEditingStateAction={setEditingStateAction}
+          editingStateAction={editingStateAction}
+          circuitInformation={circuitInformation}
+          signConditions={signConditions}
+          setSignConditions={setSignConditions}
+        />
+      );
+
     case 1:
       return (
         <ConditionalLogic
