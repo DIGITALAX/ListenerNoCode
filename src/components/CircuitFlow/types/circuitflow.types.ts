@@ -2,7 +2,9 @@ import { AnyAction, Dispatch } from "redux";
 import {
   Action,
   Condition,
+  ContractAction,
   ContractCondition,
+  FetchAction,
   IConditionalLogic,
   IExecutionConstraints,
   WebhookCondition,
@@ -20,6 +22,78 @@ export type OverviewProps = {
 export type CircuitSwitchProps = {
   circuitFlowIndex: number;
   dispatch: Dispatch<AnyAction>;
+  signConditions: {
+    type: string;
+    operator: string;
+    value: boolean | number | string;
+    valueType: boolean | number | string;
+  }[];
+  setSignConditions: (
+    e: {
+      type: string;
+      operator: string;
+      value: boolean | number | string;
+      valueType: boolean | number | string;
+    }[]
+  ) => void;
+  handleAddActionAndReset: () => void;
+  handleUpdateAction: () => void;
+  editingStateAction: boolean;
+  actionInputs: {
+    internalType: string;
+    name: string;
+    type: string;
+  }[];
+  actionOutputs: {
+    internalType: string;
+    name: string;
+    type: string;
+  }[];
+  setActionInputs: (
+    e: {
+      internalType: string;
+      name: string;
+      type: string;
+    }[]
+  ) => void;
+  setActionOutputs: (
+    e: {
+      internalType: string;
+      name: string;
+      type: string;
+    }[]
+  ) => void;
+  dropDownsOpenAction: {
+    internalTypesInput: boolean[];
+    typesInput: boolean[];
+    internalTypesOutput: boolean[];
+    typesOutput: boolean[];
+    payable: boolean;
+    stateMutability: boolean;
+    signType: boolean[];
+    valueType: boolean[];
+  };
+  setDropDownsOpenAction: (e: {
+    internalTypesInput: boolean[];
+    typesInput: boolean[];
+    internalTypesOutput: boolean[];
+    typesOutput: boolean[];
+    payable: boolean;
+    stateMutability: boolean;
+    signType: boolean[];
+    valueType: boolean[];
+  }) => void;
+  functionArgs: string[];
+  setFunctionArgs: (e: string[]) => void;
+  newContractActionInformation: ContractAction | undefined;
+  newFetchActionInformation: FetchAction | undefined;
+  payable: boolean;
+  setPayable: (e: boolean) => void;
+  stateMutability: string;
+  setStateMutability: (e: string) => void;
+  actionType: string;
+  setActionType: (e: string) => void;
+  setEditingStateAction: (e: boolean) => void;
   handleRunCircuit: () => Promise<void>;
   circuitRunning: boolean;
   handleMintGrantBurnPKP: () => Promise<void>;
@@ -129,6 +203,7 @@ export type SetConditionsProps = {
   dispatch: Dispatch<AnyAction>;
   circuitInformation: CircuitInformation;
   conditionType: string;
+
   setConditionType: (e: string) => void;
   newWebhookConditionInformation: WebhookCondition | undefined;
   newContractConditionInformation: ContractCondition | undefined;
@@ -536,4 +611,265 @@ export type RunCircuitProps = {
   circuitRunning: boolean;
   circuitInformation: CircuitInformation;
   ipfsHash: string;
+};
+
+export type FetchActionProps = {
+  dropDownsOpenAction: {
+    internalTypesInput: boolean[];
+    typesInput: boolean[];
+    internalTypesOutput: boolean[];
+    typesOutput: boolean[];
+    payable: boolean;
+    stateMutability: boolean;
+    signType: boolean[];
+    valueType: boolean[];
+  };
+  setDropDownsOpenAction: (e: {
+    internalTypesInput: boolean[];
+    typesInput: boolean[];
+    internalTypesOutput: boolean[];
+    typesOutput: boolean[];
+    payable: boolean;
+    stateMutability: boolean;
+    signType: boolean[];
+    valueType: boolean[];
+  }) => void;
+  newFetchActionInformation: FetchAction | undefined;
+  dispatch: Dispatch<AnyAction>;
+  signConditions: {
+    type: string;
+    operator: string;
+    value: boolean | number | string;
+    valueType: boolean | number | string;
+  }[];
+  setSignConditions: (
+    e: {
+      type: string;
+      operator: string;
+      value: boolean | number | string;
+      valueType: boolean | number | string;
+    }[]
+  ) => void;
+};
+
+export type ActionSwitchProps = {
+  actionType: string;
+  actionInputs: {
+    internalType: string;
+    name: string;
+    type: string;
+  }[];
+  actionOutputs: {
+    internalType: string;
+    name: string;
+    type: string;
+  }[];
+  setActionInputs: (
+    e: {
+      internalType: string;
+      name: string;
+      type: string;
+    }[]
+  ) => void;
+  setActionOutputs: (
+    e: {
+      internalType: string;
+      name: string;
+      type: string;
+    }[]
+  ) => void;
+  dropDownsOpenAction: {
+    internalTypesInput: boolean[];
+    typesInput: boolean[];
+    internalTypesOutput: boolean[];
+    typesOutput: boolean[];
+    payable: boolean;
+    stateMutability: boolean;
+    signType: boolean[];
+    valueType: boolean[];
+  };
+  setDropDownsOpenAction: (e: {
+    internalTypesInput: boolean[];
+    typesInput: boolean[];
+    internalTypesOutput: boolean[];
+    typesOutput: boolean[];
+    payable: boolean;
+    stateMutability: boolean;
+    signType: boolean[];
+    valueType: boolean[];
+  }) => void;
+  functionArgs: string[];
+  setFunctionArgs: (e: string[]) => void;
+  newContractActionInformation: ContractAction | undefined;
+  newFetchActionInformation: FetchAction | undefined;
+  dispatch: Dispatch<AnyAction>;
+  payable: boolean;
+  setPayable: (e: boolean) => void;
+  stateMutability: string;
+  setStateMutability: (e: string) => void;
+  signConditions: {
+    type: string;
+    operator: string;
+    value: boolean | number | string;
+    valueType: boolean | number | string;
+  }[];
+  setSignConditions: (
+    e: {
+      type: string;
+      operator: string;
+      value: boolean | number | string;
+      valueType: boolean | number | string;
+    }[]
+  ) => void;
+};
+
+export type ContractActionProps = {
+  actionInputs: {
+    internalType: string;
+    name: string;
+    type: string;
+  }[];
+  actionOutputs: {
+    internalType: string;
+    name: string;
+    type: string;
+  }[];
+  setActionInputs: (
+    e: {
+      internalType: string;
+      name: string;
+      type: string;
+    }[]
+  ) => void;
+  setActionOutputs: (
+    e: {
+      internalType: string;
+      name: string;
+      type: string;
+    }[]
+  ) => void;
+  dropDownsOpenAction: {
+    internalTypesInput: boolean[];
+    typesInput: boolean[];
+    internalTypesOutput: boolean[];
+    typesOutput: boolean[];
+    payable: boolean;
+    stateMutability: boolean;
+    signType: boolean[];
+    valueType: boolean[];
+  };
+  setDropDownsOpenAction: (e: {
+    internalTypesInput: boolean[];
+    typesInput: boolean[];
+    internalTypesOutput: boolean[];
+    typesOutput: boolean[];
+    payable: boolean;
+    stateMutability: boolean;
+    signType: boolean[];
+    valueType: boolean[];
+  }) => void;
+  functionArgs: string[];
+  setFunctionArgs: (e: string[]) => void;
+  newContractActionInformation: ContractAction | undefined;
+  dispatch: Dispatch<AnyAction>;
+  payable: boolean;
+  setPayable: (e: boolean) => void;
+  stateMutability: string;
+  setStateMutability: (e: string) => void;
+};
+
+export type AllActionsProps = {
+  circuitInformation: CircuitInformation;
+  dispatch: Dispatch<AnyAction>;
+  setActionType: (e: string) => void;
+  setEditingStateAction: (e: boolean) => void;
+};
+
+export type MoreActionButtonProps = {
+  handleAddActionAndReset: () => void;
+  handleUpdateAction: () => void;
+  editingStateAction: boolean;
+};
+
+export type SetActionsProps = {
+  handleAddActionAndReset: () => void;
+  handleUpdateAction: () => void;
+  signConditions: {
+    type: string;
+    operator: string;
+    value: boolean | number | string;
+    valueType: boolean | number | string;
+  }[];
+  setSignConditions: (
+    e: {
+      type: string;
+      operator: string;
+      value: boolean | number | string;
+      valueType: boolean | number | string;
+    }[]
+  ) => void;
+  editingStateAction: boolean;
+  actionInputs: {
+    internalType: string;
+    name: string;
+    type: string;
+  }[];
+  actionOutputs: {
+    internalType: string;
+    name: string;
+    type: string;
+  }[];
+  setActionInputs: (
+    e: {
+      internalType: string;
+      name: string;
+      type: string;
+    }[]
+  ) => void;
+  setActionOutputs: (
+    e: {
+      internalType: string;
+      name: string;
+      type: string;
+    }[]
+  ) => void;
+  dropDownsOpenAction: {
+    internalTypesInput: boolean[];
+    typesInput: boolean[];
+    internalTypesOutput: boolean[];
+    typesOutput: boolean[];
+    payable: boolean;
+    stateMutability: boolean;
+    signType: boolean[];
+    valueType: boolean[];
+  };
+  setDropDownsOpenAction: (e: {
+    internalTypesInput: boolean[];
+    typesInput: boolean[];
+    internalTypesOutput: boolean[];
+    typesOutput: boolean[];
+    payable: boolean;
+    stateMutability: boolean;
+    signType: boolean[];
+    valueType: boolean[];
+  }) => void;
+  functionArgs: string[];
+  setFunctionArgs: (e: string[]) => void;
+  newContractActionInformation: ContractAction | undefined;
+  newFetchActionInformation: FetchAction | undefined;
+  dispatch: Dispatch<AnyAction>;
+  payable: boolean;
+  setPayable: (e: boolean) => void;
+  stateMutability: string;
+  setStateMutability: (e: string) => void;
+  actionType: string;
+  circuitInformation: CircuitInformation;
+  setActionType: (e: string) => void;
+  setEditingStateAction: (e: boolean) => void;
+};
+
+export type ActionTypeProps = {
+  setActionType: (e: string) => void;
+  actionType: string;
+  editingStateAction: boolean;
 };

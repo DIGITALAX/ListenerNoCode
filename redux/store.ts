@@ -10,6 +10,8 @@ import newWebhookConditionInformationReducer from "./reducers/newWebhookConditio
 import litActionCodeModalReducer from "./reducers/litActionCodeModalSlice";
 import litActionCodeReducer from "./reducers/litActionCodeSlice";
 import ipfsHashReducer from "./reducers/ipfsHashSlice";
+import newContractActionInformationReducer from "./reducers/newContractActionInformationSlice";
+import newFetchActionInformationReducer from "./reducers/newFetchActionInformationSlice";
 
 const reducer = combineReducers({
   walletConnectedReducer,
@@ -22,6 +24,8 @@ const reducer = combineReducers({
   litActionCodeModalReducer,
   litActionCodeReducer,
   ipfsHashReducer,
+  newContractActionInformationReducer,
+  newFetchActionInformationReducer,
 });
 
 export const store = configureStore({
