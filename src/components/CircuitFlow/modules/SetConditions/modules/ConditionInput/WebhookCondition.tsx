@@ -1,5 +1,5 @@
 import { FunctionComponent } from "react";
-import ConditionInput from "./ConditionInput";
+import Input from "../../../Common/Input";
 import Connector from "../../../Common/Connector";
 import { WebhookConditionProps } from "@/components/CircuitFlow/types/circuitflow.types";
 import { setNewWebhookConditionInformation } from "../../../../../../../redux/reducers/newWebhookConditionInformationSlice";
@@ -16,7 +16,7 @@ const WebhookCondition: FunctionComponent<WebhookConditionProps> = ({
         className="relative w-60 h-60 flex flex-col p-2 gap-3"
         id="inputBorder"
       >
-        <ConditionInput text="Enter API base URL, endpoint, value path and an API Key if required." />
+        <Input text="Enter API base URL, endpoint, value path and an API Key if required." />
         <div className="flex w-full h-full border-4 border-moda overflow-y-scroll">
           <div className="relative w-full h-fit gap-6 flex flex-col px-1.5 py-2.5">
             <div className="relative w-full h-fit gap-1 flex flex-col">
@@ -116,7 +116,7 @@ const WebhookCondition: FunctionComponent<WebhookConditionProps> = ({
         className="relative w-60 h-60 flex flex-col p-2 gap-3"
         id="inputBorder"
       >
-        <ConditionInput text="Enter expected value and match operator and match functions." />
+        <Input text="Enter expected value and match operator and match functions." />
         <div className="flex w-full h-full border-4 border-moda overflow-y-scroll">
           <div className="relative w-full h-fit gap-6 flex flex-col px-1.5 py-2.5">
             <div className="relative w-full h-fit gap-1 flex flex-col">

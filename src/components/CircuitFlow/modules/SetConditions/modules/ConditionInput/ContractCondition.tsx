@@ -1,5 +1,5 @@
 import { FunctionComponent } from "react";
-import ConditionInput from "./ConditionInput";
+import Input from "../../../Common/Input";
 import Connector from "../../../Common/Connector";
 import { ContractConditionProps } from "@/components/CircuitFlow/types/circuitflow.types";
 import { IoMdAddCircleOutline } from "react-icons/io";
@@ -27,7 +27,7 @@ const ContractCondition: FunctionComponent<ContractConditionProps> = ({
         className="relative w-60 h-60 flex flex-col p-2 gap-3"
         id="inputBorder"
       >
-        <ConditionInput text="Enter contract address, ABI, event name, args and chain information." />
+        <Input text="Enter contract address, ABI, event name, args and chain information." />
         <div className="flex w-full h-full border-4 border-moda overflow-y-scroll">
           <div className="relative w-full h-fit gap-6 flex flex-col px-1.5 py-2.5">
             <div className="relative w-full h-fit gap-1 flex flex-col">
@@ -707,7 +707,7 @@ const ContractCondition: FunctionComponent<ContractConditionProps> = ({
         className="relative w-60 h-60 flex flex-col p-2 gap-3"
         id="inputBorder"
       >
-        <ConditionInput text="Enter expected values, match operator and match functions." />
+        <Input text="Enter expected values, match operator and match functions." />
         <div className="flex w-full h-full border-4 border-moda overflow-y-scroll">
           <div className="relative w-full h-fit gap-6 flex flex-col px-1.5 py-2.5">
             <div className="relative w-full h-fit gap-1 flex flex-col">

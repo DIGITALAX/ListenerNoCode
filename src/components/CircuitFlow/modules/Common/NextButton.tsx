@@ -9,7 +9,8 @@ const NextButton: FunctionComponent<NextButtonProps> = ({
   circuitFlowIndex,
   circuitInformation,
   handleSetConditionalLogic,
-  handleAddExecutionConstraints
+  handleAddExecutionConstraints,
+  ipfsHash,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-fit flex justify-end">
@@ -23,7 +24,7 @@ const NextButton: FunctionComponent<NextButtonProps> = ({
                   setModalOpen({
                     actionOpen: true,
                     actionMessage: "Add Conditions Before Continuing.",
-                    actionImage: "",
+                    actionImage: "Qmam45hAbVeeq4RaJ2Dz4kTw7iea42rmvrgJySJBdSJuFS",
                   })
                 )
             : circuitFlowIndex === 1
@@ -33,6 +34,20 @@ const NextButton: FunctionComponent<NextButtonProps> = ({
                   dispatch(setCircuitFlow(circuitFlowIndex + 1));
                 }
               }
+            : circuitFlowIndex === 2
+            ? () => {
+                handleAddExecutionConstraints();
+                dispatch(setCircuitFlow(circuitFlowIndex + 1));
+              }
+            : circuitFlowIndex === 4 && ipfsHash?.trim() === ""
+            ? () =>
+                dispatch(
+                  setModalOpen({
+                    actionOpen: true,
+                    actionMessage: "Hash to IPFS before continuing.",
+                    actionImage: "QmSjfHHFeLfMhgdwjuvczjxqDbRhs3rW3z4kvo1Jqf9TfM",
+                  })
+                )
             : () => dispatch(setCircuitFlow(circuitFlowIndex + 1))
         }
       >

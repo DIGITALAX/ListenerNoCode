@@ -7,6 +7,8 @@ const Overview: FunctionComponent<OverviewProps> = ({
   dispatch,
   circuitInformation,
   handleSetConditionalLogic,
+  ipfsHash,
+  handleAddExecutionConstraints,
 }): JSX.Element => {
   return (
     <div className="relative w-96 h-full border-l-2 border-sol bg-aBlack flex flex-row items-center justify-center p-6">
@@ -54,16 +56,30 @@ const Overview: FunctionComponent<OverviewProps> = ({
                           setModalOpen({
                             actionOpen: true,
                             actionMessage: "Add Conditions Before Continuing.",
-                            actionImage: "",
+                            actionImage: "QmRyJipNKXxRDRc5B89Xy5dSxqAZoydHSqZrxbAqaQJKpb",
                           })
                         )
                     : circuitFlowIndex === 1
                     ? () => {
                         const logicCorrect = handleSetConditionalLogic();
                         if (logicCorrect) {
-                          dispatch(setCircuitFlow(circuitFlowIndex + 1));
+                          dispatch(setCircuitFlow(index));
                         }
                       }
+                    : circuitFlowIndex === 2
+                    ? () => {
+                        handleAddExecutionConstraints();
+                        dispatch(setCircuitFlow(index));
+                      }
+                    : circuitFlowIndex === 4 && ipfsHash?.trim() === ""
+                    ? () =>
+                        dispatch(
+                          setModalOpen({
+                            actionOpen: true,
+                            actionMessage: "Hash to IPFS before continuing.",
+                            actionImage: "QmehNYsJB4MBfwr1SmZMGmAsdcVBFYa1cbyMq68RjgRf6J",
+                          })
+                        )
                     : () => dispatch(setCircuitFlow(index))
                 }
               >

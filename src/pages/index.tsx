@@ -8,11 +8,20 @@ import useSetConditions from "@/components/CircuitFlow/modules/SetConditions/hoo
 import NextButton from "@/components/CircuitFlow/modules/Common/NextButton";
 import useConditionalLogic from "@/components/CircuitFlow/modules/ConditionalLogic/hooks/useConditionalLogic";
 import useExecutionConstraints from "@/components/CircuitFlow/modules/ExecutionConstraints/hooks/useExecutionConstraints";
+import useIPFS from "@/components/CircuitFlow/modules/IPFSHash/hooks/useIPFS";
+import usePKP from "@/components/CircuitFlow/modules/MintGrantBurnPKP/hooks/usePKP";
+import useStartCircuit from "@/components/CircuitFlow/modules/StartCircuit/hooks/useStartCircuit";
 
 export default function Home() {
   const dispatch = useDispatch();
   const circuitFlowIndex = useSelector(
     (state: RootState) => state.app.circuitFlowReducer.value
+  );
+  const litActionCode = useSelector(
+    (state: RootState) => state.app.litActionCodeReducer.value
+  );
+  const ipfsHash = useSelector(
+    (state: RootState) => state.app.ipfsHashReducer.value
   );
   const circuitInformation = useSelector(
     (state: RootState) => state.app.circuitInformationReducer.value
@@ -45,6 +54,8 @@ export default function Home() {
     matchFunctionsWebhook,
     setMatchFunctionsWebhook,
   } = useSetConditions();
+  const { ipfsLoading, handleHashToIPFS } = useIPFS();
+  const { handleMintGrantBurnPKP, pkpLoading } = usePKP();
   const {
     handleAddExecutionConstraints,
     time,
@@ -67,6 +78,7 @@ export default function Home() {
     targetConditionOpen,
     setTargetConditionOpen,
   } = useConditionalLogic();
+  const { handleRunCircuit, circuitRunning } = useStartCircuit();
   return (
     <div className="relative w-full h-full flex flex-row border-t-2 border-sol">
       <div className="absolute w-full h-full flex mix-blend-overlay">
@@ -88,9 +100,23 @@ export default function Home() {
         />
       </div>
       <div className="relative w-fit h-full flex gap-3 items-center justify-start pl-10">
-        <div className="relative w-60 h-3/4 rounded-lg border-2 border-sol items-center justify-center flex">
+        <div className="relative w-60 h-3/4 rounded-lg border-2 border-sol items-center justify-center flex bg-aBlack">
           <Image
-            src={`${INFURA_GATEWAY}/ipfs/Qmb8nqNPpXRrJTLgKJtRF6n9AW7cvKojtRSBLsbGoD1Ug2`}
+            src={`${INFURA_GATEWAY}/ipfs/${
+              circuitFlowIndex === 0
+                ? "Qmb8nqNPpXRrJTLgKJtRF6n9AW7cvKojtRSBLsbGoD1Ug2"
+                : circuitFlowIndex === 1
+                ? "QmYbHNMXNxYsEBnrGmg2WKVH8H6NNJWq1eaMYG4myBcEwk"
+                : circuitFlowIndex === 2
+                ? "Qmds4rHdz5c1vafYoaoU77WW38JAwpJaYQ6wPV2EEVYZdt"
+                : circuitFlowIndex === 3
+                ? "Qmf1SAwfTX6nP54QAaahLNspBeyBginWMeApCG4U6skGRm"
+                : circuitFlowIndex === 4
+                ? "QmRmqEJTp2faMA3eqfUitLYGPLJYpLfZ6sC2VUKL6Cbsm9"
+                : circuitFlowIndex === 5
+                ? "QmSuaus6LZkx1mpuqEJFNtG65gAXHt2yXCx2dZKLn1bPx1"
+                : "QmaYQxBhpB8DqkX6Z1swzDD6iUaWgPowz8428YNSK2XWK2"
+            }`}
             layout="fill"
             objectFit="cover"
             className="rounded-lg"
@@ -141,29 +167,38 @@ export default function Home() {
           setMaxLitActionCompletions={setMaxLitActionCompletions}
           conditionMonitorExecutions={conditionMonitorExecutions}
           setConditionMonitorExecutions={setConditionMonitorExecutions}
+          handleHashToIPFS={handleHashToIPFS}
+          ipfsHash={ipfsHash}
+          ipfsLoading={ipfsLoading}
+          litActionCode={litActionCode}
+          pkpLoading={pkpLoading}
+          handleMintGrantBurnPKP={handleMintGrantBurnPKP}
+          circuitRunning={circuitRunning}
+          handleRunCircuit={handleRunCircuit}
         />
-        <NextButton
-          text={
-            circuitFlowIndex === 0
-              ? "set circuit conditions"
-              : circuitFlowIndex === 1
-              ? "set conditional logic"
-              : circuitFlowIndex === 2
-              ? "set circuit actions"
-              : circuitFlowIndex === 3
-              ? "set execution constraints"
-              : circuitFlowIndex === 4
-              ? "hash to ipfs"
-              : circuitFlowIndex === 5
-              ? "mintgrantburn pkp"
-              : "run circuit"
-          }
-          dispatch={dispatch}
-          circuitFlowIndex={circuitFlowIndex}
-          circuitInformation={circuitInformation}
-          handleSetConditionalLogic={handleSetConditionalLogic}
-          handleAddExecutionConstraints={handleAddExecutionConstraints}
-        />
+        {circuitFlowIndex !== 6 && (
+          <NextButton
+            text={
+              circuitFlowIndex === 0
+                ? "conditional logic >>>"
+                : circuitFlowIndex === 1
+                ? "circuit actions >>>"
+                : circuitFlowIndex === 2
+                ? "execution constraints >>>"
+                : circuitFlowIndex === 3
+                ? "ipfs hash >>>"
+                : circuitFlowIndex === 4
+                ? "mintgrantburn pkp >>>"
+                : "run circuit >>>"
+            }
+            dispatch={dispatch}
+            circuitFlowIndex={circuitFlowIndex}
+            circuitInformation={circuitInformation}
+            handleSetConditionalLogic={handleSetConditionalLogic}
+            handleAddExecutionConstraints={handleAddExecutionConstraints}
+            ipfsHash={ipfsHash}
+          />
+        )}
       </div>
       <Overview
         dispatch={dispatch}
@@ -171,6 +206,7 @@ export default function Home() {
         circuitInformation={circuitInformation}
         handleSetConditionalLogic={handleSetConditionalLogic}
         handleAddExecutionConstraints={handleAddExecutionConstraints}
+        ipfsHash={ipfsHash}
       />
     </div>
   );

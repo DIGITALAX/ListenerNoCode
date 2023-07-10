@@ -3,6 +3,9 @@ import { CircuitSwitchProps } from "../../types/circuitflow.types";
 import SetConditions from "../SetConditions/modules/SetConditions";
 import ConditionalLogic from "../ConditionalLogic/ConditionalLogic";
 import ExecutionConstraints from "../ExecutionConstraints/ExecutionConstraints";
+import IPFS from "../IPFSHash/IPFS";
+import MintGrantBurn from "../MintGrantBurnPKP/MintGrantBurn";
+import RunCircuit from "../StartCircuit/RunCircuit";
 
 const CircuitSwitch: FunctionComponent<CircuitSwitchProps> = ({
   circuitFlowIndex,
@@ -46,8 +49,46 @@ const CircuitSwitch: FunctionComponent<CircuitSwitchProps> = ({
   setMaxLitActionCompletions,
   conditionMonitorExecutions,
   setConditionMonitorExecutions,
+  ipfsHash,
+  ipfsLoading,
+  handleHashToIPFS,
+  litActionCode,
+  handleMintGrantBurnPKP,
+  pkpLoading,
+  handleRunCircuit,
+  circuitRunning,
 }): JSX.Element => {
   switch (circuitFlowIndex) {
+    case 6:
+      return (
+        <RunCircuit
+          circuitInformation={circuitInformation}
+          handleRunCircuit={handleRunCircuit}
+          circuitRunning={circuitRunning}
+          ipfsHash={ipfsHash}
+        />
+      );
+
+    case 5:
+      return (
+        <MintGrantBurn
+          pkpLoading={pkpLoading}
+          handleMintGrantBurnPKP={handleMintGrantBurnPKP}
+          circuitInformation={circuitInformation}
+        />
+      );
+
+    case 4:
+      return (
+        <IPFS
+          litActionCode={litActionCode}
+          dispatch={dispatch}
+          handleHashToIPFS={handleHashToIPFS}
+          ipfsHash={ipfsHash}
+          ipfsLoading={ipfsLoading}
+        />
+      );
+
     case 3:
       return (
         <ExecutionConstraints

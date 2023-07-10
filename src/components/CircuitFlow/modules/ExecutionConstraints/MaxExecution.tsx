@@ -1,6 +1,6 @@
 import { FunctionComponent } from "react";
 import { MaxExecutionProps } from "../../types/circuitflow.types";
-import ConditionInput from "../SetConditions/modules/ConditionInput/ConditionInput";
+import Input from "../Common/Input";
 
 const MaxExecution: FunctionComponent<MaxExecutionProps> = ({
   setMaxLitActionCompletions,
@@ -11,7 +11,7 @@ const MaxExecution: FunctionComponent<MaxExecutionProps> = ({
       className="relative w-60 h-72 flex flex-col p-2 gap-3"
       id="inputBorder"
     >
-      <ConditionInput
+      <Input
         text={
           "What is the max number of times the circuit can run in total before it is terminated? Leave empty if it should run infinitely."
         }

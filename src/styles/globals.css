@@ -88,6 +88,11 @@ html {
   border-image: linear-gradient(to bottom, #fb88b6, #f5507f) 1;
 }
 
+#outputBorder {
+  border: 2px solid;
+  border-image: linear-gradient(to bottom, #2cc5af, #21e8c5) 1;
+}
+
 input:focus {
   outline-color: #fb88b6 !important;
 }
