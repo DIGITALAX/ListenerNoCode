@@ -4,6 +4,7 @@ export default function Document() {
   return (
     <Html lang="en">
       <meta name="og:url" content="https://listener.irrevocable.dev" />
+      <link rel="icon" href="/favicon.ico" />
       <meta name="og:title" content="No-Code Lit Listener" />
       <meta name="og:description" content="" />
       <meta

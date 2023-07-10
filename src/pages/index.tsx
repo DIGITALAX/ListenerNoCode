@@ -12,6 +12,7 @@ import useIPFS from "@/components/CircuitFlow/modules/IPFSHash/hooks/useIPFS";
 import usePKP from "@/components/CircuitFlow/modules/MintGrantBurnPKP/hooks/usePKP";
 import useStartCircuit from "@/components/CircuitFlow/modules/StartCircuit/hooks/useStartCircuit";
 import useSetActions from "@/components/CircuitFlow/modules/SetActions/hooks/useSetActions";
+import Head from "next/head";
 
 export default function Home() {
   const dispatch = useDispatch();
@@ -81,7 +82,7 @@ export default function Home() {
     stateMutability,
     setStateMutability,
     signConditions,
-    setSignConditions
+    setSignConditions,
   } = useSetActions();
   const { ipfsLoading, handleHashToIPFS } = useIPFS();
   const { handleMintGrantBurnPKP, pkpLoading } = usePKP();
@@ -110,6 +111,10 @@ export default function Home() {
   const { handleRunCircuit, circuitRunning } = useStartCircuit();
   return (
     <div className="relative w-full h-full flex flex-row border-t-2 border-sol">
+      <Head>
+        <title>No-Code Lit Listener</title>
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
       <div className="absolute w-full h-full flex mix-blend-overlay">
         <Image
           src={`${INFURA_GATEWAY}/ipfs/QmZ3DdVrAmYaJTgXHu56eUGGLzLeQkhLeTc433wpxppu4S`}
