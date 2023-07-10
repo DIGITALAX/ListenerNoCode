@@ -14,11 +14,20 @@ export type OverviewProps = {
   circuitInformation: CircuitInformation;
   handleSetConditionalLogic: () => boolean;
   handleAddExecutionConstraints: () => void;
+  ipfsHash: string;
 };
 
 export type CircuitSwitchProps = {
   circuitFlowIndex: number;
   dispatch: Dispatch<AnyAction>;
+  handleRunCircuit: () => Promise<void>;
+  circuitRunning: boolean;
+  handleMintGrantBurnPKP: () => Promise<void>;
+  pkpLoading: boolean;
+  handleHashToIPFS: () => Promise<void>;
+  litActionCode: string;
+  ipfsLoading: boolean;
+  ipfsHash: string;
   time: {
     startDate: Date | undefined;
     endDate: Date | undefined;
@@ -283,6 +292,7 @@ export type NextButtonProps = {
   circuitInformation: CircuitInformation;
   handleSetConditionalLogic: () => boolean;
   handleAddExecutionConstraints: () => void;
+  ipfsHash: string;
 };
 
 export type AllConditionsProps = {
@@ -302,7 +312,7 @@ export type MoreConditionButtonProps = {
   handleUpdateCondition: () => void;
 };
 
-export type ConditionInputProps = {
+export type InputProps = {
   text: string;
 };
 
@@ -468,4 +478,62 @@ export type MaxConditionsProps = {
 export type MaxExecutionProps = {
   maxLitActionCompletions: number | undefined;
   setMaxLitActionCompletions: (e: number | undefined) => void;
+};
+
+export type LitActionProps = {
+  dispatch: Dispatch<AnyAction>;
+  litActionCode: string;
+};
+
+export type IPFSProps = {
+  ipfsHash: string;
+  dispatch: Dispatch<AnyAction>;
+  litActionCode: string;
+  handleHashToIPFS: () => Promise<void>;
+  ipfsLoading: boolean;
+};
+
+export type HashIPFSProps = {
+  handleHashToIPFS: () => Promise<void>;
+  ipfsLoading: boolean;
+};
+
+export type ResultIPFSProps = {
+  ipfsLoading: boolean;
+  ipfsHash: string;
+};
+
+export type MintGrantBurnProps = {
+  handleMintGrantBurnPKP: () => Promise<void>;
+  pkpLoading: boolean;
+  circuitInformation: CircuitInformation;
+};
+
+export type MintPKPProps = {
+  handleMintGrantBurnPKP: () => Promise<void>;
+  pkpLoading: boolean;
+};
+
+export type PKPResultProps = {
+  circuitInformation: CircuitInformation;
+};
+
+export type CircuitInputProps = {
+  circuitInformation: CircuitInformation;
+  ipfsHash: string;
+};
+export type CircuitStartProps = {
+  handleRunCircuit: () => Promise<void>;
+  circuitRunning: boolean;
+};
+
+export type ViewInAccountProps = {
+  circuitRunning: boolean;
+};
+
+export type RunCircuitProps = {
+  handleRunCircuit: () => Promise<void>;
+  circuitRunning: boolean;
+  circuitInformation: CircuitInformation;
+  ipfsHash: string;
 };

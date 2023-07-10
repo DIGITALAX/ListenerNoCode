@@ -1,6 +1,6 @@
 import { FunctionComponent } from "react";
 import { LogicOptionsProps } from "@/components/CircuitFlow/types/circuitflow.types";
-import ConditionInput from "../SetConditions/modules/ConditionInput/ConditionInput";
+import Input from "../Common/Input";
 
 const LogicOptions: FunctionComponent<LogicOptionsProps> = ({
   logicType,
@@ -11,7 +11,7 @@ const LogicOptions: FunctionComponent<LogicOptionsProps> = ({
       className="relative w-72 h-60 flex flex-col p-2 gap-3"
       id="inputBorder"
     >
-      <ConditionInput
+      <Input
         text={
           "Does every condition need to pass? A threshold number? Is there a target condition?"
         }

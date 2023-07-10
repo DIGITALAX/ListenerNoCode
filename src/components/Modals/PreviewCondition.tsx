@@ -33,7 +33,8 @@ const PreviewCondition: FunctionComponent<PreviewConditionProps> = ({
                       setPreviewCondition({
                         actionOpen: false,
                         actionMessage: "",
-                        actionImage: "",
+                        actionImage:
+                          "",
                       })
                     )
                   }

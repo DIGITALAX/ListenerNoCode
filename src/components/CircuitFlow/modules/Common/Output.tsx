@@ -1,7 +1,7 @@
-import { ConditionInputProps } from "@/components/CircuitFlow/types/circuitflow.types";
+import { InputProps } from "@/components/CircuitFlow/types/circuitflow.types";
 import { FunctionComponent } from "react";
 
-const ConditionInput: FunctionComponent<ConditionInputProps> = ({
+const Output: FunctionComponent<InputProps> = ({
   text,
 }): JSX.Element => {
   return (
@@ -18,7 +18,7 @@ const ConditionInput: FunctionComponent<ConditionInputProps> = ({
             className="uppercase text-xl font-vcr text-moda px-1 flex items-start justify-center w-fit h-fit -top-2"
             id="blur"
           >
-            input
+            output
           </div>
           <div
             className="relative h-3 w-4 flex items-center justify-center -top-0.5"
@@ -39,4 +39,4 @@ const ConditionInput: FunctionComponent<ConditionInputProps> = ({
   );
 };
 
-export default ConditionInput;
+export default Output;

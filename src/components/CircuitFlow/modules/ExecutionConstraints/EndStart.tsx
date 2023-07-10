@@ -1,6 +1,6 @@
 import { FunctionComponent } from "react";
 import { EndStartProps } from "../../types/circuitflow.types";
-import ConditionInput from "../SetConditions/modules/ConditionInput/ConditionInput";
+import Input from "../Common/Input";
 import DatePicker from "react-datepicker";
 
 const EndStart: FunctionComponent<EndStartProps> = ({
@@ -12,10 +12,8 @@ const EndStart: FunctionComponent<EndStartProps> = ({
       className="relative w-60 h-72 flex flex-col p-2 gap-3"
       id="inputBorder"
     >
-      <ConditionInput
-        text={
-          "Should the circuit start & stop at certain dates? Leave empty if it should run immediately and there is no specific end date. Dates run in EST."
-        }
+      <Input
+        text={"When does the circuit start & terminate? Dates run in EST."}
       />
       <div className="relative w-full h-full gap-2 flex flex-col">
         <div className="relative w-full h-full flex flex-col gap-1">

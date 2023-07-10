@@ -7,6 +7,9 @@ import modalOpenReducer from "./reducers/modalOpenSlice";
 import previewConditionModalReducer from "./reducers/previewConditionModalSlice";
 import newContractConditionInformationReducer from "./reducers/newContractConditionInformationSlice";
 import newWebhookConditionInformationReducer from "./reducers/newWebhookConditionInformationSlice";
+import litActionCodeModalReducer from "./reducers/litActionCodeModalSlice";
+import litActionCodeReducer from "./reducers/litActionCodeSlice";
+import ipfsHashReducer from "./reducers/ipfsHashSlice";
 
 const reducer = combineReducers({
   walletConnectedReducer,
@@ -16,6 +19,9 @@ const reducer = combineReducers({
   previewConditionModalReducer,
   newContractConditionInformationReducer,
   newWebhookConditionInformationReducer,
+  litActionCodeModalReducer,
+  litActionCodeReducer,
+  ipfsHashReducer,
 });
 
 export const store = configureStore({

@@ -5,9 +5,6 @@ import { SetConditionsProps } from "@/components/CircuitFlow/types/circuitflow.t
 import ConditionSwitch from "./ConditionInput/ConditionSwitcher";
 import Connector from "../../Common/Connector";
 import ConditionType from "./ConditionInput/ConditionType";
-import { INFURA_GATEWAY } from "../../../../../../lib/constants";
-import Image from "next/legacy/image";
-import { setPreviewCondition } from "../../../../../../redux/reducers/previewConditionModalSlice";
 
 const SetConditions: FunctionComponent<SetConditionsProps> = ({
   dispatch,
@@ -73,29 +70,13 @@ const SetConditions: FunctionComponent<SetConditionsProps> = ({
       </div>
       <div className="relative flex flex-row w-full h-fit items-center">
         <div className="relative w-full h-fit flex flex-col gap-5 items-center justify-center">
-          <div className="relative w-fit h-fit flex ml-auto right-16">
+          <div className="relative w-fit h-fit flex ml-auto right-16 top-2">
             <Connector />
           </div>
           <MoreConditionButton
             handleAddConditionAndReset={handleAddConditionAndReset}
             editingState={editingState}
             handleUpdateCondition={handleUpdateCondition}
-          />
-        </div>
-        <div
-          className="justify-start items-center flex absolute w-7 h-6 cursor-pointer active:scale-95  mix-blend-hard-light left-20"
-          onClick={() =>
-            dispatch(
-              setPreviewCondition({
-                actionOpen: true,
-                actionMessage: "Preview Your Conditions.",
-              })
-            )
-          }
-        >
-          <Image
-            src={`${INFURA_GATEWAY}/ipfs/QmWmrNXoHWnYkhnAvy6U2xDD4rdLJaBfGrPyLUyU6svZ9s`}
-            layout="fill"
           />
         </div>
       </div>

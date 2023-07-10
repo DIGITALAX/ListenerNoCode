@@ -27,7 +27,7 @@ const useConditionalLogic = () => {
         setModalOpen({
           actionOpen: true,
           actionMessage: "Interval Invalid. Try Again.",
-          actionImage: "",
+          actionImage: "QmcrvQW8jQLNqGzBsmTnZooQdiqhRXGUsJyiMUR5EMdoZA",
         })
       );
       return (logicCorrect = false);
@@ -40,7 +40,7 @@ const useConditionalLogic = () => {
           actionOpen: true,
           actionMessage:
             "Threshold Number Cannot Exceed Number of Conditions. Try Again.",
-          actionImage: "",
+          actionImage: "QmemD9mkEusskUc8aUtdp4RF2rHJBpWQHgZUoM9DFvw8jw",
         })
       );
       return (logicCorrect = false);

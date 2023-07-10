@@ -16,6 +16,7 @@ module.exports = {
         sol: "#EDFF95",
         aBlack: "#010101",
         rio: "#8EADB5",
+        verde: "#2CC5AF",
       },
       fontFamily: {
         vcr: "VCR",

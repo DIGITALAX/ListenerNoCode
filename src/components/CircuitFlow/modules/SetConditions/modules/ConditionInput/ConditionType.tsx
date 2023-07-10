@@ -1,5 +1,5 @@
 import { FunctionComponent } from "react";
-import ConditionInput from "./ConditionInput";
+import Input from "../../../Common/Input";
 import { ConditionTypeProps } from "@/components/CircuitFlow/types/circuitflow.types";
 
 const ConditionType: FunctionComponent<ConditionTypeProps> = ({
@@ -12,7 +12,7 @@ const ConditionType: FunctionComponent<ConditionTypeProps> = ({
       className="relative w-60 h-60 flex flex-col p-2 gap-3"
       id="inputBorder"
     >
-      <ConditionInput
+      <Input
         text={"Choose from a condition type. Contract or Webhook Condition?"}
       />
       <div className="flex flex-col w-full h-full border-4 border-moda p-1 gap-1.5">
