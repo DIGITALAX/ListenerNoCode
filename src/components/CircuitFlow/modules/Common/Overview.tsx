@@ -50,34 +50,51 @@ const Overview: FunctionComponent<OverviewProps> = ({
                 }`}
                 onClick={
                   circuitFlowIndex === 0 &&
-                  circuitInformation?.conditions?.length < 1
+                  circuitInformation?.conditions?.length < 1 &&
+                  index > 0
                     ? () =>
                         dispatch(
                           setModalOpen({
                             actionOpen: true,
                             actionMessage: "Add Conditions Before Continuing.",
-                            actionImage: "QmRyJipNKXxRDRc5B89Xy5dSxqAZoydHSqZrxbAqaQJKpb",
+                            actionImage:
+                              "QmRyJipNKXxRDRc5B89Xy5dSxqAZoydHSqZrxbAqaQJKpb",
                           })
                         )
-                    : circuitFlowIndex === 1
+                    : circuitFlowIndex === 1 && index > 1
                     ? () => {
                         const logicCorrect = handleSetConditionalLogic();
                         if (logicCorrect) {
                           dispatch(setCircuitFlow(index));
                         }
                       }
-                    : circuitFlowIndex === 2
+                    : circuitFlowIndex === 2 &&
+                      circuitInformation?.actions?.length < 1 &&
+                      index > 2
+                    ? () =>
+                        dispatch(
+                          setModalOpen({
+                            actionOpen: true,
+                            actionMessage: "Add Actions Before Continuing.",
+                            actionImage:
+                              "Qmam45hAbVeeq4RaJ2Dz4kTw7iea42rmvrgJySJBdSJuFS",
+                          })
+                        )
+                    : circuitFlowIndex === 3 && index > 3
                     ? () => {
                         handleAddExecutionConstraints();
                         dispatch(setCircuitFlow(index));
                       }
-                    : circuitFlowIndex === 4 && ipfsHash?.trim() === ""
+                    : circuitFlowIndex === 4 &&
+                      ipfsHash?.trim() === "" &&
+                      index > 4
                     ? () =>
                         dispatch(
                           setModalOpen({
                             actionOpen: true,
                             actionMessage: "Hash to IPFS before continuing.",
-                            actionImage: "QmehNYsJB4MBfwr1SmZMGmAsdcVBFYa1cbyMq68RjgRf6J",
+                            actionImage:
+                              "QmehNYsJB4MBfwr1SmZMGmAsdcVBFYa1cbyMq68RjgRf6J",
                           })
                         )
                     : () => dispatch(setCircuitFlow(index))

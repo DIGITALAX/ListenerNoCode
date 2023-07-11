@@ -8,8 +8,10 @@ import { RunCircuitProps } from "../../types/circuitflow.types";
 const RunCircuit: FunctionComponent<RunCircuitProps> = ({
   handleRunCircuit,
   circuitRunning,
+  circuitRunLoading,
   circuitInformation,
   ipfsHash,
+  handleClearCircuit
 }): JSX.Element => {
   return (
     <div className="relative w-full h-full flex flex-col">
@@ -22,9 +24,10 @@ const RunCircuit: FunctionComponent<RunCircuitProps> = ({
         <CircuitStart
           handleRunCircuit={handleRunCircuit}
           circuitRunning={circuitRunning}
+          circuitRunLoading={circuitRunLoading}
         />
         <Connector topOnly />
-        <ViewInAccount circuitRunning={circuitRunning} />
+        <ViewInAccount circuitRunning={circuitRunning} handleClearCircuit={handleClearCircuit}/>
       </div>
     </div>
   );

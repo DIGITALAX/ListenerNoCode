@@ -52,7 +52,7 @@ const CircuitSwitch: FunctionComponent<CircuitSwitchProps> = ({
   setConditionMonitorExecutions,
   ipfsHash,
   ipfsLoading,
-  handleHashToIPFS,
+  handleInstantiateCircuit,
   litActionCode,
   handleMintGrantBurnPKP,
   pkpLoading,
@@ -80,6 +80,11 @@ const CircuitSwitch: FunctionComponent<CircuitSwitchProps> = ({
   setStateMutability,
   signConditions,
   setSignConditions,
+  handleClearCircuit,
+  circuitRunLoading,
+  handleSaveToIPFSDB,
+  dbLoading,
+  dbAdded
 }): JSX.Element => {
   switch (circuitFlowIndex) {
     case 6:
@@ -89,6 +94,8 @@ const CircuitSwitch: FunctionComponent<CircuitSwitchProps> = ({
           handleRunCircuit={handleRunCircuit}
           circuitRunning={circuitRunning}
           ipfsHash={ipfsHash}
+          circuitRunLoading={circuitRunLoading}
+          handleClearCircuit={handleClearCircuit}
         />
       );
 
@@ -106,9 +113,13 @@ const CircuitSwitch: FunctionComponent<CircuitSwitchProps> = ({
         <IPFS
           litActionCode={litActionCode}
           dispatch={dispatch}
-          handleHashToIPFS={handleHashToIPFS}
+          handleInstantiateCircuit={handleInstantiateCircuit}
           ipfsHash={ipfsHash}
           ipfsLoading={ipfsLoading}
+          circuitInformation={circuitInformation}
+          handleSaveToIPFSDB={handleSaveToIPFSDB}
+          dbLoading={dbLoading}
+          dbAdded={dbAdded}
         />
       );
 

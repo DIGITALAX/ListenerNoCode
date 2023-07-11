@@ -10,8 +10,12 @@ const IPFS: FunctionComponent<IPFSProps> = ({
   ipfsHash,
   dispatch,
   litActionCode,
-  handleHashToIPFS,
+  handleInstantiateCircuit,
   ipfsLoading,
+  circuitInformation,
+  handleSaveToIPFSDB,
+  dbLoading,
+  dbAdded
 }): JSX.Element => {
   return (
     <div className="relative w-full h-full flex flex-col">
@@ -19,11 +23,19 @@ const IPFS: FunctionComponent<IPFSProps> = ({
         <LitAction dispatch={dispatch} litActionCode={litActionCode} />
         <Connector topOnly />
         <HashIPFS
-          handleHashToIPFS={handleHashToIPFS}
+          dispatch={dispatch}
+          circuitInformation={circuitInformation}
+          handleInstantiateCircuit={handleInstantiateCircuit}
           ipfsLoading={ipfsLoading}
         />
         <Connector topOnly />
-        <ResultIPFS ipfsLoading={ipfsLoading} ipfsHash={ipfsHash} />
+        <ResultIPFS
+        dbAdded={dbAdded}
+          dbLoading={dbLoading}
+          handleSaveToIPFSDB={handleSaveToIPFSDB}
+          ipfsLoading={ipfsLoading}
+          ipfsHash={ipfsHash}
+        />
         <ConnectorRect />
       </div>
     </div>
