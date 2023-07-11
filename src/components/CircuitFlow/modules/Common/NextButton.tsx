@@ -24,7 +24,8 @@ const NextButton: FunctionComponent<NextButtonProps> = ({
                   setModalOpen({
                     actionOpen: true,
                     actionMessage: "Add Conditions Before Continuing.",
-                    actionImage: "Qmam45hAbVeeq4RaJ2Dz4kTw7iea42rmvrgJySJBdSJuFS",
+                    actionImage:
+                      "Qmam45hAbVeeq4RaJ2Dz4kTw7iea42rmvrgJySJBdSJuFS",
                   })
                 )
             : circuitFlowIndex === 1
@@ -34,7 +35,17 @@ const NextButton: FunctionComponent<NextButtonProps> = ({
                   dispatch(setCircuitFlow(circuitFlowIndex + 1));
                 }
               }
-            : circuitFlowIndex === 2
+            : circuitFlowIndex === 2 && circuitInformation?.actions?.length < 1
+            ? () =>
+                dispatch(
+                  setModalOpen({
+                    actionOpen: true,
+                    actionMessage: "Add Actions Before Continuing.",
+                    actionImage:
+                      "Qmam45hAbVeeq4RaJ2Dz4kTw7iea42rmvrgJySJBdSJuFS",
+                  })
+                )
+            : circuitFlowIndex === 3
             ? () => {
                 handleAddExecutionConstraints();
                 dispatch(setCircuitFlow(circuitFlowIndex + 1));
@@ -45,7 +56,8 @@ const NextButton: FunctionComponent<NextButtonProps> = ({
                   setModalOpen({
                     actionOpen: true,
                     actionMessage: "Hash to IPFS before continuing.",
-                    actionImage: "QmSjfHHFeLfMhgdwjuvczjxqDbRhs3rW3z4kvo1Jqf9TfM",
+                    actionImage:
+                      "QmSjfHHFeLfMhgdwjuvczjxqDbRhs3rW3z4kvo1Jqf9TfM",
                   })
                 )
             : () => dispatch(setCircuitFlow(circuitFlowIndex + 1))

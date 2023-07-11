@@ -21,6 +21,11 @@ export type OverviewProps = {
 
 export type CircuitSwitchProps = {
   circuitFlowIndex: number;
+  dbLoading: boolean;
+  dbAdded: boolean;
+  handleSaveToIPFSDB: () => Promise<void>;
+  handleClearCircuit: () => void;
+  circuitRunLoading: boolean;
   dispatch: Dispatch<AnyAction>;
   signConditions: {
     type: string;
@@ -98,7 +103,7 @@ export type CircuitSwitchProps = {
   circuitRunning: boolean;
   handleMintGrantBurnPKP: () => Promise<void>;
   pkpLoading: boolean;
-  handleHashToIPFS: () => Promise<void>;
+  handleInstantiateCircuit: () => Promise<void>;
   litActionCode: string;
   ipfsLoading: boolean;
   ipfsHash: string;
@@ -278,6 +283,7 @@ export type SetConditionsProps = {
 };
 
 export interface CircuitInformation {
+  id: string | undefined;
   conditions: Condition[];
   conditionalLogic: IConditionalLogic;
   actions: Action[];
@@ -287,6 +293,7 @@ export interface CircuitInformation {
     address: `0x${string}`;
     publicKey: `0x04${string}` | string;
   };
+  providerURL?: string;
 }
 
 export type ConditionSwitchProps = {
@@ -564,18 +571,27 @@ export type IPFSProps = {
   ipfsHash: string;
   dispatch: Dispatch<AnyAction>;
   litActionCode: string;
-  handleHashToIPFS: () => Promise<void>;
+  handleInstantiateCircuit: () => Promise<void>;
   ipfsLoading: boolean;
+  circuitInformation: CircuitInformation;
+  handleSaveToIPFSDB: () => Promise<void>;
+  dbLoading: boolean;
+  dbAdded: boolean;
 };
 
 export type HashIPFSProps = {
-  handleHashToIPFS: () => Promise<void>;
+  handleInstantiateCircuit: () => Promise<void>;
   ipfsLoading: boolean;
+  circuitInformation: CircuitInformation;
+  dispatch: Dispatch<AnyAction>;
 };
 
 export type ResultIPFSProps = {
   ipfsLoading: boolean;
   ipfsHash: string;
+  handleSaveToIPFSDB: () => Promise<void>;
+  dbLoading: boolean;
+  dbAdded: boolean;
 };
 
 export type MintGrantBurnProps = {
@@ -600,15 +616,19 @@ export type CircuitInputProps = {
 export type CircuitStartProps = {
   handleRunCircuit: () => Promise<void>;
   circuitRunning: boolean;
+  circuitRunLoading: boolean;
 };
 
 export type ViewInAccountProps = {
   circuitRunning: boolean;
+  handleClearCircuit: () => void;
 };
 
 export type RunCircuitProps = {
   handleRunCircuit: () => Promise<void>;
   circuitRunning: boolean;
+  handleClearCircuit: () => void;
+  circuitRunLoading: boolean;
   circuitInformation: CircuitInformation;
   ipfsHash: string;
 };

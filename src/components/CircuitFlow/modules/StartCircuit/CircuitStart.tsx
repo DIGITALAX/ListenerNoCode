@@ -6,6 +6,7 @@ import { AiOutlineLoading } from "react-icons/ai";
 const CircuitStart: FunctionComponent<CircuitStartProps> = ({
   circuitRunning,
   handleRunCircuit,
+  circuitRunLoading,
 }): JSX.Element => {
   return (
     <div
@@ -17,15 +18,19 @@ const CircuitStart: FunctionComponent<CircuitStartProps> = ({
         <div
           className={`relative w-36 px-1.5 h-10 bg-aBlack text-white font-vcr text-sm flex justify-center items-center text-center cursor-pointer uppercase`}
           id="borderLight"
-          onClick={() => handleRunCircuit()}
+          onClick={() =>
+            !circuitRunLoading && !circuitRunning && handleRunCircuit()
+          }
         >
           <div
             className={`relative w-fit h-fit items-center justify-center flex  ${
-              circuitRunning && "animate-spin"
+              circuitRunLoading && "animate-spin"
             }`}
           >
-            {circuitRunning ? (
+            {circuitRunLoading ? (
               <AiOutlineLoading size={15} color="white" opacity={80} />
+            ) : circuitRunLoading ? (
+              "circuit running"
             ) : (
               "run circuit"
             )}

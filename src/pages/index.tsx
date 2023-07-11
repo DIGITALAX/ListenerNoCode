@@ -84,7 +84,13 @@ export default function Home() {
     signConditions,
     setSignConditions,
   } = useSetActions();
-  const { ipfsLoading, handleHashToIPFS } = useIPFS();
+  const {
+    ipfsLoading,
+    handleInstantiateCircuit,
+    handleSaveToIPFSDB,
+    dbLoading,
+    dbAdded
+  } = useIPFS();
   const { handleMintGrantBurnPKP, pkpLoading } = usePKP();
   const {
     handleAddExecutionConstraints,
@@ -108,7 +114,12 @@ export default function Home() {
     targetConditionOpen,
     setTargetConditionOpen,
   } = useConditionalLogic();
-  const { handleRunCircuit, circuitRunning } = useStartCircuit();
+  const {
+    handleRunCircuit,
+    circuitRunning,
+    handleClearCircuit,
+    circuitRunLoading,
+  } = useStartCircuit();
   return (
     <div className="relative w-full h-full flex flex-row border-t-2 border-sol">
       <Head>
@@ -201,7 +212,7 @@ export default function Home() {
           setMaxLitActionCompletions={setMaxLitActionCompletions}
           conditionMonitorExecutions={conditionMonitorExecutions}
           setConditionMonitorExecutions={setConditionMonitorExecutions}
-          handleHashToIPFS={handleHashToIPFS}
+          handleInstantiateCircuit={handleInstantiateCircuit}
           ipfsHash={ipfsHash}
           ipfsLoading={ipfsLoading}
           litActionCode={litActionCode}
@@ -231,6 +242,11 @@ export default function Home() {
           editingStateAction={editingStateAction}
           signConditions={signConditions}
           setSignConditions={setSignConditions}
+          circuitRunLoading={circuitRunLoading}
+          handleClearCircuit={handleClearCircuit}
+          handleSaveToIPFSDB={handleSaveToIPFSDB}
+          dbLoading={dbLoading}
+          dbAdded={dbAdded}
         />
         {circuitFlowIndex !== 6 && (
           <NextButton

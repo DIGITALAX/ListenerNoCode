@@ -8,14 +8,21 @@ import { store } from "./../../redux/store";
 import { getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { Provider } from "react-redux";
 import { configureChains, createConfig, WagmiConfig } from "wagmi";
-import { polygon } from "wagmi/chains";
+import {
+  polygon,
+  mainnet,
+  arbitrum,
+  polygonMumbai,
+  goerli,
+  optimism,
+} from "wagmi/chains";
 import { alchemyProvider } from "wagmi/providers/alchemy";
 import { MutableRefObject, useEffect } from "react";
 import { createContext } from "react";
 import Modals from "@/components/Modals/Modals";
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
-  [polygon],
+  [polygon, mainnet, arbitrum, polygonMumbai, goerli, optimism],
   [
     alchemyProvider({
       apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY as string,

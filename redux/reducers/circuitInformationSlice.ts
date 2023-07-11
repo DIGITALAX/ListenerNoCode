@@ -7,6 +7,7 @@ export interface CircuitInformationState {
 
 const initialCircuitInformationState: CircuitInformationState = {
   value: {
+    id: undefined,
     conditions: [],
     conditionalLogic: {
       type: "EVERY",
