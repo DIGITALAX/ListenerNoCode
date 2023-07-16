@@ -7,25 +7,44 @@ import "@rainbow-me/rainbowkit/styles.css";
 import { store } from "./../../redux/store";
 import { getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { Provider } from "react-redux";
-import { configureChains, createConfig, WagmiConfig } from "wagmi";
-import {
-  polygon,
-  mainnet,
-  arbitrum,
-  polygonMumbai,
-  goerli,
-  optimism,
-} from "wagmi/chains";
-import { alchemyProvider } from "wagmi/providers/alchemy";
+import { Chain, configureChains, createConfig, WagmiConfig } from "wagmi";
+import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
 import { MutableRefObject, useEffect } from "react";
 import { createContext } from "react";
 import Modals from "@/components/Modals/Modals";
 
+export const chronicle = {
+  id: 175177,
+  name: "Chronicle - Lit Protocol Testnet",
+  network: "chronicle",
+  nativeCurrency: {
+    decimals: 18,
+    name: "LIT",
+    symbol: "LIT",
+  },
+  rpcUrls: {
+    public: { http: ["https://chain-rpc.litprotocol.com/http"] },
+    default: { http: ["https://chain-rpc.litprotocol.com/http"] },
+  },
+  blockExplorers: {
+    etherscan: {
+      name: "Caldera Explorer",
+      url: "https://chain.litprotocol.com/",
+    },
+    default: {
+      name: "Caldera Explorer",
+      url: "https://chain.litprotocol.com/",
+    },
+  },
+} as const satisfies Chain;
+
 const { chains, publicClient, webSocketPublicClient } = configureChains(
-  [polygon, mainnet, arbitrum, polygonMumbai, goerli, optimism],
+  [chronicle],
   [
-    alchemyProvider({
-      apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY as string,
+    jsonRpcProvider({
+      rpc: () => ({
+        http: "https://chain-rpc.litprotocol.com/http",
+      }),
     }),
   ]
 );

@@ -3,8 +3,8 @@ import { CircuitInputProps } from "../../types/circuitflow.types";
 import Input from "../Common/Input";
 
 const CircuitInput: FunctionComponent<CircuitInputProps> = ({
-  circuitInformation,
   ipfsHash,
+  signedPKPTx
 }): JSX.Element => {
   return (
     <div
@@ -26,7 +26,7 @@ const CircuitInput: FunctionComponent<CircuitInputProps> = ({
             className="bg-aBlack w-full h-fit break-all p-1 text-white font-vcr text-sm justify-center items-center flex"
             id="borderLight"
           >
-            {circuitInformation?.PKP?.publicKey}
+            {signedPKPTx?.publicKey}
           </div>
         </div>
         <div className="relative w-full h-fit gap-1 flex flex-col">

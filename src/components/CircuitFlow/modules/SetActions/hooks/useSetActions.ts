@@ -283,7 +283,7 @@ const useSetActions = () => {
       | {
           type: string;
           operator: string;
-          value:  boolean | number | string;
+          value: boolean | number | string;
         }[]
       | undefined;
   } => {
@@ -395,6 +395,7 @@ const useSetActions = () => {
             ...circuitInformation.actions,
             {
               ...newContractActionInformation,
+              type: "contract",
               priority: circuitInformation?.actions?.length + 1,
               abi,
               args: convertedArgs,
@@ -434,6 +435,8 @@ const useSetActions = () => {
       if (!checker) {
         return;
       }
+      const buffer = Buffer.from(newFetchActionInformation?.toSign!);
+
       dispatch(
         setCircuitInformation({
           ...circuitInformation,
@@ -441,10 +444,16 @@ const useSetActions = () => {
             ...circuitInformation.actions,
             {
               ...newFetchActionInformation,
+              type: "fetch",
               priority: circuitInformation?.actions?.length + 1,
               baseUrl: newBaseURL,
               endpoint: newEndpoint,
               signCondition: updatedSignConditions,
+              toSign: new Uint8Array(
+                buffer.buffer,
+                buffer.byteOffset,
+                buffer.byteLength
+              ),
             } as FetchAction,
           ],
         })
@@ -519,6 +528,7 @@ const useSetActions = () => {
       if (!checker) {
         return;
       }
+      const buffer = Buffer.from(newFetchActionInformation?.toSign!);
 
       dispatch(
         setCircuitInformation({
@@ -532,6 +542,11 @@ const useSetActions = () => {
                     baseUrl: newBaseURL,
                     endpoint: newEndpoint,
                     signCondition: updatedSignConditions,
+                    toSign: new Uint8Array(
+                      buffer.buffer,
+                      buffer.byteOffset,
+                      buffer.byteLength
+                    ),
                   },
                 } as FetchAction)
               : obj

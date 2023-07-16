@@ -12,8 +12,6 @@ import litActionCodeReducer from "./reducers/litActionCodeSlice";
 import ipfsHashReducer from "./reducers/ipfsHashSlice";
 import newContractActionInformationReducer from "./reducers/newContractActionInformationSlice";
 import newFetchActionInformationReducer from "./reducers/newFetchActionInformationSlice";
-import pkpTxDataReducer from "./reducers/pkpTxDataSlice";
-import connectedSignerReducer from "./reducers/connectedSignerSlice";
 import signedPKPReducer from "./reducers/signedPKPSlice";
 
 const reducer = combineReducers({
@@ -29,8 +27,6 @@ const reducer = combineReducers({
   ipfsHashReducer,
   newContractActionInformationReducer,
   newFetchActionInformationReducer,
-  pkpTxDataReducer,
-  connectedSignerReducer,
   signedPKPReducer,
 });
 

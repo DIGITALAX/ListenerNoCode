@@ -38,6 +38,7 @@ const HashIPFS: FunctionComponent<HashIPFSProps> = ({
               <input
                 value={circuitInformation?.providerURL || ""}
                 placeholder="enter provider URL"
+                type="password"
                 className="bg-aBlack w-full h-10 p-1 text-white font-vcr text-sm justify-start items-start flex"
                 id="borderLight"
                 onChange={(e) =>

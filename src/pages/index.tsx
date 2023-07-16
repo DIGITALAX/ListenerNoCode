@@ -37,6 +37,9 @@ export default function Home() {
   const newContractActionInformation = useSelector(
     (state: RootState) => state.app.newContractActionInformationReducer.value
   );
+  const signedPKPTx = useSelector(
+    (state: RootState) => state.app.signedPKPReducer.value
+  );
   const newFetchActionInformation = useSelector(
     (state: RootState) => state.app.newFetchActionInformationReducer.value
   );
@@ -89,7 +92,7 @@ export default function Home() {
     handleInstantiateCircuit,
     handleSaveToIPFSDB,
     dbLoading,
-    dbAdded
+    dbAdded,
   } = useIPFS();
   const { handleMintGrantBurnPKP, pkpLoading } = usePKP();
   const {
@@ -247,6 +250,7 @@ export default function Home() {
           handleSaveToIPFSDB={handleSaveToIPFSDB}
           dbLoading={dbLoading}
           dbAdded={dbAdded}
+          signedPKPTx={signedPKPTx}
         />
         {circuitFlowIndex !== 6 && (
           <NextButton

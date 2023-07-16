@@ -15,11 +15,7 @@ const initialCircuitInformationState: CircuitInformationState = {
     },
     actions: [],
     executionConstraints: {},
-    IPFSHash: "",
-    PKP: {
-      address: `0x`,
-      publicKey: `0x04`,
-    },
+    IPFSHash: ""
   },
 };
 

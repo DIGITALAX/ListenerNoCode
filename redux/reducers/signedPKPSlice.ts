@@ -1,11 +1,19 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface SignedPKPState {
-  value: string | undefined;
+  value: {
+    tokenId: string;
+    publicKey: string;
+    address: string;
+  };
 }
 
 const initialSignedPKPState: SignedPKPState = {
-  value: undefined,
+  value: {
+    tokenId: "",
+    publicKey: "",
+    address: "",
+  },
 };
 
 export const signedPKPSlice = createSlice({
@@ -14,7 +22,11 @@ export const signedPKPSlice = createSlice({
   reducers: {
     setSignedPKP: (
       state: SignedPKPState,
-      action: PayloadAction<string | undefined>
+      action: PayloadAction<{
+        tokenId: string;
+        publicKey: string;
+        address: string;
+      }>
     ) => {
       state.value = action.payload;
     },
