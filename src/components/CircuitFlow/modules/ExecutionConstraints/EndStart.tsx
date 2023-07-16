@@ -25,11 +25,11 @@ const EndStart: FunctionComponent<EndStartProps> = ({
           </div>
           <div className="relative w-fit h-fit">
             <DatePicker
-              selected={time?.startDate}
+              selected={new Date(time?.startDate as any)}
               onChange={(date) =>
                 setTime({
                   startDate: date ? date : undefined,
-                  endDate: time?.endDate,
+                  endDate: new Date(time?.endDate as any),
                 })
               }
               showTimeSelect
@@ -47,10 +47,10 @@ const EndStart: FunctionComponent<EndStartProps> = ({
           <div>
             <div className="relative flex w-fit h-fit">
               <DatePicker
-                selected={time?.endDate}
+                selected={new Date(time?.endDate as any)}
                 onChange={(date) =>
                   setTime({
-                    startDate: time?.startDate,
+                    startDate: new Date(time?.startDate as any),
                     endDate: date ? date : undefined,
                   })
                 }

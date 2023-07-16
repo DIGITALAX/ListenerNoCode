@@ -28,14 +28,13 @@ const ResultIPFS: FunctionComponent<ResultIPFSProps> = ({
             <div
               className={`${
                 ipfsLoading && "animate-spin"
-              } flex items-center justify-center break-all whitespace-pre-wrap h-fit text-center`}
+              } flex items-center justify-center break-all whitespace-pre-wrap h-fit text-center text-white font-vcr`}
             >
               {ipfsLoading ? (
                 <AiOutlineLoading size={15} color="white" opacity={80} />
               ) : (
                 ipfsHash
               )}
-              here
             </div>
             <div
               className={`relative w-36 px-1.5 h-10 bg-aBlack text-white font-vcr text-sm flex justify-center items-center text-center cursor-pointer uppercase`}

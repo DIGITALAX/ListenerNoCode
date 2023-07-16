@@ -3,7 +3,7 @@ import { PKPResultProps } from "../../types/circuitflow.types";
 import Output from "../Common/Output";
 
 const PKPResult: FunctionComponent<PKPResultProps> = ({
-  circuitInformation,
+  signedPKPTx,
 }): JSX.Element => {
   return (
     <div
@@ -25,7 +25,7 @@ const PKPResult: FunctionComponent<PKPResultProps> = ({
             className="bg-aBlack w-full h-fit break-all p-1 text-white font-vcr text-sm justify-center items-center flex"
             id="borderLight"
           >
-            {circuitInformation?.PKP?.address}
+            {signedPKPTx?.address}
           </div>
         </div>
         <div className="relative w-full h-fit gap-1 flex flex-col">
@@ -39,7 +39,7 @@ const PKPResult: FunctionComponent<PKPResultProps> = ({
             className="bg-aBlack w-full h-fit break-all p-1 text-white font-vcr text-sm justify-center items-center flex"
             id="borderLight"
           >
-            {circuitInformation?.PKP?.publicKey}
+            {signedPKPTx?.publicKey}
           </div>
         </div>
       </div>

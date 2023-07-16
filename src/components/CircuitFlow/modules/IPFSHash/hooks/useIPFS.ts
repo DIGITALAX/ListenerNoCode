@@ -2,15 +2,10 @@ import { useEffect, useState } from "react";
 import { RootState } from "../../../../../../redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import { setIpfsHash } from "../../../../../../redux/reducers/ipfsHashSlice";
-import WebSocketClient from "./../../../../../../utils/WebSocketClient";
-import { setPkpTxData } from "../../../../../../redux/reducers/pkpTxDataSlice";
 import {
-  CHRONICLE_PROVIDER,
   LIT_DB_CONTRACT,
 } from "../../../../../../lib/constants";
-import { ethers } from "ethers";
 import { setCircuitInformation } from "../../../../../../redux/reducers/circuitInformationSlice";
-import { setConnectedSigner } from "../../../../../../redux/reducers/connectedSignerSlice";
 import {
   Action,
   ContractAction,
@@ -43,11 +38,6 @@ const useIPFS = () => {
 
   const { writeAsync } = useContractWrite(config as any);
 
-  const chronicleProvider = new ethers.providers.JsonRpcProvider(
-    CHRONICLE_PROVIDER,
-    175177
-  );
-
   const handleInstantiateCircuit = async () => {
     if (
       circuitInformation?.actions?.length > 1 &&
@@ -68,18 +58,10 @@ const useIPFS = () => {
 
     setIpfsLoading(true);
     try {
-      const web3Provider = new ethers.providers.Web3Provider(
-        chronicleProvider as any
-      );
-      const connectedSigner = web3Provider.getSigner();
-
-      dispatch(setConnectedSigner(connectedSigner));
-
       const res = await fetch("/api/azure/instantiate", {
         method: "POST",
         body: JSON.stringify({
           provider: circuitInformation?.providerURL,
-          circuitSigner: connectedSigner,
           contractConditions: circuitInformation.conditions,
           contractActions: circuitInformation.actions,
           conditionalLogic: circuitInformation.conditionalLogic,
@@ -87,9 +69,11 @@ const useIPFS = () => {
         }),
       });
       if (res.status === 200) {
+        setIpfsLoading(false);
         setCallSocket(true);
       }
     } catch (err: any) {
+      setIpfsLoading(false);
       console.error(err.message);
     }
     setIpfsLoading(false);
@@ -113,21 +97,34 @@ const useIPFS = () => {
 
   useEffect(() => {
     if (ipfsLoading && callSocket) {
-      WebSocketClient({
-        url: "ws://localhost:3000",
-        onMessage: (message) => {
-          const data = JSON.parse(message);
-          dispatch(
-            setCircuitInformation({
-              ...circuitInformation,
-              id: data?.id,
-            })
-          );
-          dispatch(setIpfsHash(String(data?.ipfs)));
-          dispatch(setPkpTxData(data?.txData));
-          setCallSocket(false);
-        },
+      const websocket = new WebSocket("ws://localhost:3001");
+
+      websocket.addEventListener("open", () => {
+        console.log("WebSocket connection is open");
       });
+
+      websocket.addEventListener("message", (event) => {
+        const message = event.data;
+        console.log("Received message from server:", message);
+
+        const data = JSON.parse(message);
+        dispatch(
+          setCircuitInformation({
+            ...circuitInformation,
+            id: data?.id,
+          })
+        );
+        dispatch(setIpfsHash(String(data?.ipfs)));
+        setCallSocket(false);
+      });
+
+      websocket.addEventListener("close", () => {
+        console.log("WebSocket connection closed");
+      });
+
+      return () => {
+        websocket.close();
+      };
     }
   }, [ipfsLoading, callSocket]);
 

@@ -10,8 +10,9 @@ export default async function handler(
     const agent = new https.Agent({
       rejectUnauthorized: false,
     });
+
     const response = await axios.post(
-      "http://localhost:3001/instantiate",
+      "http://localhost:3001/connect",
       req.body,
       {
         headers: {

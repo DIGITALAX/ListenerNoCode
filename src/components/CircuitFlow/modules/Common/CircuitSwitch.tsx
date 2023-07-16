@@ -84,13 +84,14 @@ const CircuitSwitch: FunctionComponent<CircuitSwitchProps> = ({
   circuitRunLoading,
   handleSaveToIPFSDB,
   dbLoading,
-  dbAdded
+  dbAdded,
+  signedPKPTx,
 }): JSX.Element => {
   switch (circuitFlowIndex) {
     case 6:
       return (
         <RunCircuit
-          circuitInformation={circuitInformation}
+          signedPKPTx={signedPKPTx}
           handleRunCircuit={handleRunCircuit}
           circuitRunning={circuitRunning}
           ipfsHash={ipfsHash}
@@ -104,7 +105,7 @@ const CircuitSwitch: FunctionComponent<CircuitSwitchProps> = ({
         <MintGrantBurn
           pkpLoading={pkpLoading}
           handleMintGrantBurnPKP={handleMintGrantBurnPKP}
-          circuitInformation={circuitInformation}
+          signedPKPTx={signedPKPTx}
         />
       );
 

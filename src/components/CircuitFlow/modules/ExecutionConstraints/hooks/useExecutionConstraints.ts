@@ -10,11 +10,13 @@ const useExecutionConstraints = () => {
     (state: RootState) => state.app.circuitInformationReducer.value
   );
   const [time, setTime] = useState<{
-    startDate: Date | undefined;
-    endDate: Date | undefined;
+    startDate: string | undefined;
+    endDate: string | undefined;
   }>({
-    startDate: new Date(),
-    endDate: new Date(new Date().setDate(new Date().getDate() + 7)),
+    startDate: new Date().toISOString(),
+    endDate: new Date(
+      new Date().setDate(new Date().getDate() + 7)
+    ).toISOString(),
   });
   const [conditionMonitorExecutions, setConditionMonitorExecutions] = useState<
     number | undefined
@@ -74,8 +76,8 @@ const useExecutionConstraints = () => {
           conditionMonitorExecutions: conditionMonitorExecutions
             ? conditionMonitorExecutions
             : undefined,
-          startDate: time?.startDate ? time?.startDate : undefined,
-          endDate: time?.endDate ? time?.endDate : undefined,
+          startDate: time?.startDate ? (time?.startDate as any) : undefined,
+          endDate: time?.endDate ? (time?.endDate as any) : undefined,
         },
       })
     );

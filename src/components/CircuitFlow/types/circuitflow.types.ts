@@ -108,12 +108,12 @@ export type CircuitSwitchProps = {
   ipfsLoading: boolean;
   ipfsHash: string;
   time: {
-    startDate: Date | undefined;
-    endDate: Date | undefined;
+    startDate: string | undefined;
+    endDate: string | undefined;
   };
   setTime: (e: {
-    startDate: Date | undefined;
-    endDate: Date | undefined;
+    startDate: string | undefined;
+    endDate: string | undefined;
   }) => void;
   maxLitActionCompletions: number | undefined;
   setMaxLitActionCompletions: (e: number | undefined) => void;
@@ -202,6 +202,11 @@ export type CircuitSwitchProps = {
   setTargetCondition: (e: number) => void;
   interval: number;
   setInterval: (e: number) => void;
+  signedPKPTx: {
+    tokenId: string;
+    publicKey: string;
+    address: string;
+  }
 };
 
 export type SetConditionsProps = {
@@ -289,10 +294,6 @@ export interface CircuitInformation {
   actions: Action[];
   executionConstraints: IExecutionConstraints;
   IPFSHash: String;
-  PKP: {
-    address: `0x${string}`;
-    publicKey: `0x04${string}` | string;
-  };
   providerURL?: string;
 }
 
@@ -528,12 +529,12 @@ export type LogicSwitchProps = {
 
 export type ExecutionConstraintsProps = {
   time: {
-    startDate: Date | undefined;
-    endDate: Date | undefined;
+    startDate: string | undefined;
+    endDate: string | undefined;
   };
   setTime: (e: {
-    startDate: Date | undefined;
-    endDate: Date | undefined;
+    startDate: string | undefined;
+    endDate: string | undefined;
   }) => void;
   maxLitActionCompletions: number | undefined;
   setMaxLitActionCompletions: (e: number | undefined) => void;
@@ -543,12 +544,12 @@ export type ExecutionConstraintsProps = {
 
 export type EndStartProps = {
   time: {
-    startDate: Date | undefined;
-    endDate: Date | undefined;
+    startDate: string | undefined;
+    endDate: string | undefined;
   };
   setTime: (e: {
-    startDate: Date | undefined;
-    endDate: Date | undefined;
+    startDate: string | undefined;
+    endDate: string | undefined;
   }) => void;
 };
 
@@ -597,7 +598,11 @@ export type ResultIPFSProps = {
 export type MintGrantBurnProps = {
   handleMintGrantBurnPKP: () => Promise<void>;
   pkpLoading: boolean;
-  circuitInformation: CircuitInformation;
+  signedPKPTx: {
+    tokenId: string;
+    publicKey: string;
+    address: string;
+  }
 };
 
 export type MintPKPProps = {
@@ -606,12 +611,20 @@ export type MintPKPProps = {
 };
 
 export type PKPResultProps = {
-  circuitInformation: CircuitInformation;
+  signedPKPTx: {
+    tokenId: string;
+    publicKey: string;
+    address: string;
+  }
 };
 
 export type CircuitInputProps = {
-  circuitInformation: CircuitInformation;
   ipfsHash: string;
+  signedPKPTx: {
+    tokenId: string;
+    publicKey: string;
+    address: string;
+  }
 };
 export type CircuitStartProps = {
   handleRunCircuit: () => Promise<void>;
@@ -629,8 +642,12 @@ export type RunCircuitProps = {
   circuitRunning: boolean;
   handleClearCircuit: () => void;
   circuitRunLoading: boolean;
-  circuitInformation: CircuitInformation;
   ipfsHash: string;
+  signedPKPTx: {
+    tokenId: string;
+    publicKey: string;
+    address: string;
+  }
 };
 
 export type FetchActionProps = {

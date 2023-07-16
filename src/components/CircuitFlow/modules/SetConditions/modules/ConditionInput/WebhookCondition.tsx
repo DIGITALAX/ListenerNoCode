@@ -131,7 +131,7 @@ const WebhookCondition: FunctionComponent<WebhookConditionProps> = ({
                   newWebhookConditionInformation?.expectedValue?.toString() ||
                   ""
                 }
-                placeholder="enter chain name"
+                placeholder="enter expected value"
                 className="bg-aBlack w-full h-10 p-1 text-white font-vcr text-sm justify-start items-start flex"
                 id="borderLight"
                 onChange={(e) =>

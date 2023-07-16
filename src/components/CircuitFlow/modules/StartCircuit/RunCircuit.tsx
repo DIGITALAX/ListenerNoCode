@@ -9,17 +9,14 @@ const RunCircuit: FunctionComponent<RunCircuitProps> = ({
   handleRunCircuit,
   circuitRunning,
   circuitRunLoading,
-  circuitInformation,
   ipfsHash,
-  handleClearCircuit
+  handleClearCircuit,
+  signedPKPTx,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-full flex flex-col">
       <div className="relative w-full h-full flex flex-row items-center justify-center">
-        <CircuitInput
-          circuitInformation={circuitInformation}
-          ipfsHash={ipfsHash}
-        />
+        <CircuitInput ipfsHash={ipfsHash} signedPKPTx={signedPKPTx} />
         <Connector topOnly />
         <CircuitStart
           handleRunCircuit={handleRunCircuit}
@@ -27,7 +24,10 @@ const RunCircuit: FunctionComponent<RunCircuitProps> = ({
           circuitRunLoading={circuitRunLoading}
         />
         <Connector topOnly />
-        <ViewInAccount circuitRunning={circuitRunning} handleClearCircuit={handleClearCircuit}/>
+        <ViewInAccount
+          circuitRunning={circuitRunning}
+          handleClearCircuit={handleClearCircuit}
+        />
       </div>
     </div>
   );

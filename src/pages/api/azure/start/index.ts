@@ -7,18 +7,19 @@ export default async function handler(
 ) {
   try {
     const response = await axios.post(
-      "https://172.173.175.82/start",
+      "http://localhost:3001/start",
       req.body,
       {
         headers: {
           "x-api-key": process.env.SERVER_API_KEY,
+          "Content-Type": "application/json",
         },
       }
     );
     const data = response.data;
-    res.status(200).json(data);
+    return res.status(200).json(data);
   } catch (error: any) {
-    console.error(error);
-    res.status(500).json({ message: error.message });
+    console.error(error.message);
+    return res.status(500).json({ message: error.message });
   }
 }
