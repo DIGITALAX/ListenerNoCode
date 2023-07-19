@@ -1,6 +1,6 @@
 import { FunctionComponent } from "react";
 import { CircuitInputProps } from "../../types/circuitflow.types";
-import Input from "../Common/Input";
+
 
 const CircuitInput: FunctionComponent<CircuitInputProps> = ({
   ipfsHash,
@@ -11,7 +11,6 @@ const CircuitInput: FunctionComponent<CircuitInputProps> = ({
       className="relative w-60 h-60 flex flex-col p-2 gap-3"
       id="inputBorder"
     >
-      <Input text={"Check your Circuit public key & IPFS hash."} />
       <div
         className={`flex flex-col w-full h-full border-4 border-moda p-1 gap-4 items-start justify-start font-vcr text-white overflow-y-scroll`}
       >

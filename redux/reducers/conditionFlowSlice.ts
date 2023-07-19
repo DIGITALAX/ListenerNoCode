@@ -11,8 +11,8 @@ export interface ConditionFlowState {
 const initialConditionFlowState: ConditionFlowState = {
   value: {
     index: 0,
-    webhookCount: 6,
-    contractCount: 6,
+    webhookCount: 7,
+    contractCount: 7,
   },
 };
 

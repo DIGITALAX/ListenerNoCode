@@ -1,6 +1,5 @@
 import { FunctionComponent } from "react";
 import { TargetProps } from "../../types/circuitflow.types";
-import Input from "../Common/Input";
 import { Condition, ContractCondition } from "../../types/litlistener.types";
 
 const Target: FunctionComponent<TargetProps> = ({
@@ -15,9 +14,7 @@ const Target: FunctionComponent<TargetProps> = ({
       className="relative w-60 h-60 flex flex-col p-2 gap-3"
       id="inputBorder"
     >
-      <Input
-        text={"What's the target condition that must pass each interval?"}
-      />
+  
       <div className="relative w-full h-full flex flex-col gap-1">
         <div className="relative w-fit h-fit flex text-sol font-vcr" id="blur">
           Target Condition

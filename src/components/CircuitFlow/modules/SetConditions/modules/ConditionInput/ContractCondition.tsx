@@ -1,6 +1,4 @@
 import { FunctionComponent } from "react";
-import Input from "../../../Common/Input";
-import { ContractConditionProps } from "@/components/CircuitFlow/types/circuitflow.types";
 import { IoMdAddCircleOutline } from "react-icons/io";
 import { setNewContractConditionInformation } from "../../../../../../../redux/reducers/newContractConditionInformationSlice";
 
@@ -16,8 +14,6 @@ const ContractCondition: FunctionComponent<ContractConditionProps> = ({
   setEventArgs,
   expectedValues,
   setExpectedValues,
-  matchFunctionsContract,
-  setMatchFunctionsContract,
   dispatch,
 }): JSX.Element => {
   return (
@@ -26,7 +22,7 @@ const ContractCondition: FunctionComponent<ContractConditionProps> = ({
         className="relative w-60 h-60 flex flex-col p-2 gap-3"
         id="inputBorder"
       >
-        <Input text="Enter contract address, ABI, event name, args and chain information." />
+      
         <div className="flex w-full h-full border-4 border-moda overflow-y-scroll">
           <div className="relative w-full h-fit gap-6 flex flex-col px-1.5 py-2.5">
             <div className="relative w-full h-fit gap-1 flex flex-col">
@@ -706,7 +702,7 @@ const ContractCondition: FunctionComponent<ContractConditionProps> = ({
         className="relative w-60 h-60 flex flex-col p-2 gap-3"
         id="inputBorder"
       >
-        <Input text="Enter expected values, match operator and match functions." />
+  
         <div className="flex w-full h-full border-4 border-moda overflow-y-scroll">
           <div className="relative w-full h-fit gap-6 flex flex-col px-1.5 py-2.5">
             <div className="relative w-full h-fit gap-1 flex flex-col">
@@ -770,26 +766,7 @@ const ContractCondition: FunctionComponent<ContractConditionProps> = ({
               >
                 Matched, UnMatched, Error Functions
               </div>
-              {Object.entries(matchFunctionsContract)?.map(
-                ([propertyName, func]: [string, any], index: number) => {
-                  return (
-                    <input
-                      key={index}
-                      placeholder={propertyName}
-                      value={func !== undefined ? func.toString() : ""}
-                      className="bg-aBlack w-full h-10 p-1 text-white font-vcr text-sm justify-start items-start flex"
-                      id="borderLight"
-                      onChange={(e) => {
-                        const updatedMatchFunctions = {
-                          ...matchFunctionsContract,
-                          [propertyName]: e.target.value,
-                        };
-                        setMatchFunctionsContract(updatedMatchFunctions);
-                      }}
-                    />
-                  );
-                }
-              )}
+              
             </div>
           </div>
         </div>

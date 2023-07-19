@@ -1,5 +1,4 @@
 import { FunctionComponent } from "react";
-import Input from "../../Common/Input";
 import { ContractActionProps } from "@/components/CircuitFlow/types/circuitflow.types";
 import { setNewContractActionInformation } from "../../../../../../redux/reducers/newContractActionInformationSlice";
 import { IoMdAddCircleOutline } from "react-icons/io";
@@ -26,7 +25,6 @@ const ContractAction: FunctionComponent<ContractActionProps> = ({
         className="relative w-60 h-60 flex flex-col p-2 gap-3"
         id="inputBorder"
       >
-        <Input text="Enter contract address, ABI, event name, args and chain information." />
         <div className="flex w-full h-full border-4 border-moda overflow-y-scroll">
           <div className="relative w-full h-fit gap-6 flex flex-col px-1.5 py-2.5">
             <div className="relative w-full h-fit gap-1 flex flex-col">
@@ -670,7 +668,6 @@ const ContractAction: FunctionComponent<ContractActionProps> = ({
         className="relative w-60 h-60 flex flex-col p-2 gap-3"
         id="inputBorder"
       >
-        <Input text="Enter expected values, match operator and match functions." />
         <div className="flex w-full h-full border-4 border-moda overflow-y-scroll">
           <div className="relative w-full h-fit gap-6 flex flex-col px-1.5 py-2.5">
             <div className="relative w-full h-fit gap-1 flex flex-col">

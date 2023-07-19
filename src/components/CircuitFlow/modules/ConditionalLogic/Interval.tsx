@@ -1,6 +1,5 @@
 import { FunctionComponent } from "react";
 import { IntervalProps } from "../../types/circuitflow.types";
-import Input from "../Common/Input";
 
 const Interval: FunctionComponent<IntervalProps> = ({
   interval,
@@ -11,11 +10,6 @@ const Interval: FunctionComponent<IntervalProps> = ({
       className="relative w-60 h-60 flex flex-col p-2 gap-3"
       id="inputBorder"
     >
-      <Input
-        text={
-          "How often should your conditions be checked? Enter your interval in milliseconds."
-        }
-      />
       <div className="relative w-full h-full gap-1 flex flex-col">
         <div
           className="relative w-fit h-fit justify-start items-start flex font-vcr text-sol text-sm"
