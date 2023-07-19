@@ -446,6 +446,8 @@ const useSetConditions = () => {
                   ...obj,
                   ...({
                     ...newContractConditionInformation,
+                    chainId:
+                      newContractConditionInformation?.chainId || "ethereum",
                     abi,
                     eventArgName: newEventArgs,
                     expectedValue: newExpectedValues,
@@ -491,19 +493,22 @@ const useSetConditions = () => {
   };
 
   useEffect(() => {
-    if (expectedValues) {
-      if (expectedValues.length < eventArgs.length) {
-        setExpectedValues((prevExpectedValues) => [
-          ...prevExpectedValues,
-          ...new Array(eventArgs.length - prevExpectedValues.length),
-        ]);
-      } else if (expectedValues.length > eventArgs.length) {
-        setExpectedValues((prevExpectedValues) =>
-          prevExpectedValues.slice(0, eventArgs.length)
-        );
-      }
+    if (expectedValues && expectedValues.length < eventArgs.length) {
+      setExpectedValues((prevExpectedValues) => [
+        ...prevExpectedValues,
+        ...new Array(eventArgs.length - prevExpectedValues.length).fill(
+          undefined
+        ),
+      ]);
+    } else if (eventArgs && eventArgs.length < expectedValues.length) {
+      setEventArgs((prevEventArgs) => [
+        ...prevEventArgs,
+        ...new Array(expectedValues.length - prevEventArgs.length).fill(
+          undefined
+        ),
+      ]);
     }
-  }, [eventArgs]);
+  }, [eventArgs.length, expectedValues.length]);
 
   return {
     conditionType,

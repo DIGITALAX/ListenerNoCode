@@ -8,7 +8,6 @@ const Abi: FunctionComponent<AbiProps> = ({
   dropDownsOpenContract,
   setDropDownsOpenContract,
 }): JSX.Element => {
-  console.log({ dropDownsOpenContract });
   return (
     <div
       className="relative w-72 h-60 flex flex-col p-2 gap-3 justify-start items-center px-4 overflow-y-scroll"

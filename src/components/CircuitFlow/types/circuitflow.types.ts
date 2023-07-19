@@ -754,6 +754,14 @@ export type FinalConditionProps = {
   dispatch: Dispatch<AnyAction>;
   apiPassword?: boolean;
   setApiPassword?: (e: boolean) => void;
+  inputs?: {
+    indexed: boolean;
+    internalType: string;
+    name: string;
+    type: string;
+  }[];
+  expectedValues?: string[];
+  eventArgs?: string[];
 };
 
 export type AbiProps = {
@@ -793,4 +801,12 @@ export type DropDownProps = {
   inputChosen: string;
   dropDownOpen: boolean;
   title: string;
+};
+
+export type ArgsProps = {
+  setAddMoreArgs: () => void;
+  args: string[];
+  setOnChangeArgs: (e: string, index: number) => void;
+  placeholderText: string;
+  nameTitle: string;
 };

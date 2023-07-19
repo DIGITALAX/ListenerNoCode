@@ -34,7 +34,6 @@ const SetConditions: FunctionComponent<SetConditionsProps> = ({
   apiPassword,
   setApiPassword,
 }): JSX.Element => {
-  console.log(newWebhookConditionInformation);
   switch (conditionType) {
     case "contract":
       switch (conditionFlowIndex.index) {
@@ -48,14 +47,43 @@ const SetConditions: FunctionComponent<SetConditionsProps> = ({
               handleAddConditionAndReset={handleAddConditionAndReset}
               handleUpdateCondition={handleUpdateCondition}
               dispatch={dispatch}
+              inputs={inputs}
+              eventArgs={eventArgs}
+              expectedValues={expectedValues}
             />
           );
 
         case 5:
           return (
             <div className="relative w-fit h-fit flex flex-col items-center justify-center gap-3">
-              <Args />
-              <Args />
+              <div className="relative w-full h-fit flex flex-row gap-3">
+                <Args
+                  args={eventArgs}
+                  setOnChangeArgs={(value: string, index: number) => {
+                    const updatedEventArgs = [...eventArgs];
+                    updatedEventArgs[index] = value;
+                    setEventArgs(updatedEventArgs);
+                  }}
+                  setAddMoreArgs={() => setEventArgs([...eventArgs, ""])}
+                  placeholderText={"enter event name arg"}
+                  nameTitle={"Event Name Args"}
+                />
+                <Args
+                  args={expectedValues}
+                  setOnChangeArgs={(value: string, index: number) => {
+                    const updatedExpectedValues = [...expectedValues];
+                    updatedExpectedValues[index] = value;
+                    setExpectedValues(updatedExpectedValues);
+                  }}
+                  setAddMoreArgs={() =>
+                    setExpectedValues([...expectedValues, ""])
+                  }
+                  placeholderText={
+                    "object, number, array, bigint, bytes, string"
+                  }
+                  nameTitle={"Expected Values"}
+                />
+              </div>
               <Input
                 onChangeFunction={[
                   (value: string) =>
@@ -191,7 +219,7 @@ const SetConditions: FunctionComponent<SetConditionsProps> = ({
                   ),
               ]}
               changedValue={[
-                String(newWebhookConditionInformation?.expectedValue),
+                String(newWebhookConditionInformation?.expectedValue || ""),
                 newWebhookConditionInformation?.matchOperator,
               ]}
               text={["Expected Value", "Match Operator"]}
