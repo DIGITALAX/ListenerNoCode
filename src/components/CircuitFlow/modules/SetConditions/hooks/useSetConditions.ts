@@ -30,28 +30,13 @@ const useSetConditions = () => {
   const newWebhookConditionInformation = useSelector(
     (state: RootState) => state.app.newWebhookConditionInformationReducer.value
   );
-  const [conditionType, setConditionType] = useState<string>("contract");
+  const [dropDownChainContract, setDropDownChainContract] =
+    useState<boolean>(false);
+  const [conditionType, setConditionType] = useState<string>("web");
   const [editingState, setEditingState] = useState<boolean>(false);
   const [eventArgs, setEventArgs] = useState<string[]>([""]);
   const [expectedValues, setExpectedValues] = useState<any[]>([""]);
-  const [matchFunctionsContract, setMatchFunctionsContract] = useState<{
-    onMatched: () => Promise<void>;
-    onUnMatched: () => Promise<void>;
-    onError: () => void;
-  }>({
-    onMatched: async () => {},
-    onUnMatched: async () => {},
-    onError: () => {},
-  });
-  const [matchFunctionsWebhook, setMatchFunctionsWebhook] = useState<{
-    onMatched: () => Promise<void>;
-    onUnMatched: () => Promise<void>;
-    onError: () => void;
-  }>({
-    onMatched: async () => {},
-    onUnMatched: async () => {},
-    onError: () => {},
-  });
+  const [apiPassword, setApiPassword] = useState<boolean>(false);
   const [dropDownsOpenContract, setDropDownsOpenContract] = useState<{
     internalTypesInput: boolean[];
     typesInput: boolean[];
@@ -80,19 +65,6 @@ const useSetConditions = () => {
       type: "string",
     },
   ]);
-  const [outputs, setOutputs] = useState<
-    {
-      internalType: string;
-      name: string;
-      type: string;
-    }[]
-  >([
-    {
-      internalType: "string",
-      name: "",
-      type: "string",
-    },
-  ]);
 
   const buildABI = (
     functionName: string,
@@ -101,17 +73,11 @@ const useSetConditions = () => {
       internalType: string;
       name: string;
       type: string;
-    }[],
-    outputs: {
-      internalType: string;
-      name: string;
-      type: string;
-    }[] = []
+    }[]
   ) => {
     const abi = {
       anonymous: false,
       inputs: [],
-      outputs: [],
     } as any;
 
     for (const input of inputs) {
@@ -124,17 +90,6 @@ const useSetConditions = () => {
       };
 
       abi.inputs.push(inputObj);
-    }
-
-    for (const output of outputs) {
-      const { internalType, name, type } = output;
-      const outputObj = {
-        internalType: internalType || "string",
-        name: name || "",
-        type: type || "string",
-      };
-
-      abi.outputs.push(outputObj);
     }
 
     abi.name = functionName;
@@ -151,28 +106,19 @@ const useSetConditions = () => {
       name: string;
       type: string;
     }[];
-    newOutputs: {
-      internalType: string;
-      name: string;
-      type: string;
-    }[];
     newExpectedValues: string[];
     newEventArgs: string[];
   } => {
     let checker = true;
+
+    const newEventArgs = eventArgs.filter((value) => value?.trim() !== "");
+    const newExpectedValues = expectedValues.filter(
+      (value) => value?.trim() !== ""
+    );
     const newInputs = inputs.filter((obj) =>
       Object.values(obj).every(
         (value) => typeof value !== "string" || value.trim() !== ""
       )
-    );
-    const newOutputs = outputs.filter((obj) =>
-      Object.values(obj).every(
-        (value) => typeof value !== "string" || value.trim() !== ""
-      )
-    );
-    const newEventArgs = eventArgs.filter((value) => value?.trim() !== "");
-    const newExpectedValues = expectedValues.filter(
-      (value) => value?.trim() !== ""
     );
 
     if (
@@ -188,7 +134,7 @@ const useSetConditions = () => {
         })
       );
     } else if (
-      !newContractConditionInformation?.contractAddress.startsWith("0x")
+      !newContractConditionInformation?.contractAddress?.startsWith("0x")
     ) {
       checker = false;
       dispatch(
@@ -282,15 +228,6 @@ const useSetConditions = () => {
           actionImage: "QmRWHaMFya1MHuS7ysQesSDYjcqtdygq17aFk4PUdg7dVh",
         })
       );
-    } else if (newOutputs?.length < 1) {
-      checker = false;
-      dispatch(
-        setModalOpen({
-          actionOpen: true,
-          actionMessage: "Contract ABI Outputs Missing. Try Again.",
-          actionImage: "QmWMQKSDzchgfe3KSVSLh98ArZT2k9r8tV772T2EMEH9E4",
-        })
-      );
     } else if (
       !Object.values(CHAIN_NAME)
         .map((enumValue) => enumValue.toLowerCase())
@@ -304,42 +241,9 @@ const useSetConditions = () => {
           actionImage: "QmaLbRzzCP1axGEd6vJsDs7Jm7hyyiBGYsnBfv3jW51KiX",
         })
       );
-    } else {
-      const errorCheck = codeChecker(
-        matchFunctionsContract.onError.toString(),
-        false
-      );
-      const matchCheck = codeChecker(
-        matchFunctionsContract.onMatched.toString(),
-        true
-      );
-      const unMatchCheck = codeChecker(
-        matchFunctionsContract.onUnMatched.toString(),
-        true
-      );
-
-      const errorEmpty = matchFunctionsContract.onError.toString()?.trim();
-      const matchEmpty = matchFunctionsContract.onError.toString()?.trim();
-      const unMatchEmpty = matchFunctionsContract.onError.toString()?.trim();
-
-      if (
-        (!errorCheck && errorEmpty !== "") ||
-        (!matchCheck && matchEmpty !== "") ||
-        (!unMatchCheck && unMatchEmpty !== "")
-      ) {
-        checker = false;
-        dispatch(
-          setModalOpen({
-            actionOpen: true,
-            actionMessage:
-              "Match, Error & UnMatch Functions Invalid. Try Again.",
-            actionImage: "QmWZSgL8Y14FMTq4k2JPKv5mPwyg1LMMjfwPpPE1kjJoj7",
-          })
-        );
-      }
     }
 
-    return { checker, newInputs, newOutputs, newExpectedValues, newEventArgs };
+    return { checker, newInputs, newExpectedValues, newEventArgs };
   };
 
   const checkWebhookCondition = (): {
@@ -348,11 +252,11 @@ const useSetConditions = () => {
     newEndpoint: string;
   } => {
     let checker = true;
-    const newBaseURL = !newWebhookConditionInformation?.baseUrl.endsWith("/")
+    const newBaseURL = !newWebhookConditionInformation?.baseUrl?.endsWith("/")
       ? newWebhookConditionInformation?.baseUrl + "/"
       : newWebhookConditionInformation?.baseUrl;
     const newEndpoint = newWebhookConditionInformation?.endpoint.startsWith("/")
-      ? newWebhookConditionInformation?.endpoint.substring(1)
+      ? newWebhookConditionInformation?.endpoint?.substring(1)
       : newWebhookConditionInformation?.endpoint!;
     if (
       !newWebhookConditionInformation?.baseUrl ||
@@ -454,39 +358,6 @@ const useSetConditions = () => {
           actionImage: "QmUzzkGb1HKfixUnyKbVDHVb9TG9nYpdYQhL6uZckRETow",
         })
       );
-    } else {
-      const errorCheck = codeChecker(
-        matchFunctionsWebhook.onError.toString(),
-        false
-      );
-      const matchCheck = codeChecker(
-        matchFunctionsWebhook.onMatched.toString(),
-        true
-      );
-      const unMatchCheck = codeChecker(
-        matchFunctionsWebhook.onUnMatched.toString(),
-        true
-      );
-
-      const errorEmpty = matchFunctionsWebhook.onError.toString()?.trim();
-      const matchEmpty = matchFunctionsWebhook.onError.toString()?.trim();
-      const unMatchEmpty = matchFunctionsWebhook.onError.toString()?.trim();
-
-      if (
-        (!errorCheck && errorEmpty !== "") ||
-        (!matchCheck && matchEmpty !== "") ||
-        (!unMatchCheck && unMatchEmpty !== "")
-      ) {
-        checker = false;
-        dispatch(
-          setModalOpen({
-            actionOpen: true,
-            actionMessage:
-              "Match, Error & UnMatch Functions Invalid. Try Again.",
-            actionImage: "QmaYQxBhpB8DqkX6Z1swzDD6iUaWgPowz8428YNSK2XWK2",
-          })
-        );
-      }
     }
 
     return { checker, newBaseURL, newEndpoint };
@@ -494,21 +365,15 @@ const useSetConditions = () => {
 
   const handleAddConditionAndReset = () => {
     if (conditionType === "contract" && conditionFlowIndex.index !== 0) {
-      const {
-        checker,
-        newInputs,
-        newOutputs,
-        newEventArgs,
-        newExpectedValues,
-      } = checkContractCondition();
+      const { checker, newInputs, newEventArgs, newExpectedValues } =
+        checkContractCondition();
       if (!checker) {
         return;
       }
 
       const abi = buildABI(
         newContractConditionInformation?.eventName!,
-        newInputs,
-        newOutputs
+        newInputs
       );
 
       dispatch(
@@ -525,43 +390,13 @@ const useSetConditions = () => {
               abi,
               eventArgName: newEventArgs,
               expectedValue: newExpectedValues,
-              onMatched: matchFunctionsContract.onMatched,
-              onUnMatched: matchFunctionsContract.onUnMatched,
-              onError: matchFunctionsContract.onError,
             } as ContractCondition,
           ],
         })
       );
       dispatch(setNewContractConditionInformation(undefined));
-      setInputs([
-        {
-          indexed: true,
-          internalType: "string",
-          name: "",
-          type: "string",
-        },
-      ]);
-      setOutputs([
-        {
-          internalType: "string",
-          name: "",
-          type: "string",
-        },
-      ]);
-      setMatchFunctionsContract({
-        onMatched: async () => {},
-        onUnMatched: async () => {},
-        onError: () => {},
-      });
       setEventArgs([""]);
       setExpectedValues([""]);
-      setDropDownsOpenContract({
-        internalTypesInput: [false],
-        typesInput: [false],
-        indexed: [false],
-        internalTypesOutput: [false],
-        typesOutput: [false],
-      });
     } else if (conditionFlowIndex.index !== 0) {
       const { checker, newBaseURL, newEndpoint } = checkWebhookCondition();
       if (!checker) {
@@ -586,31 +421,20 @@ const useSetConditions = () => {
       );
 
       dispatch(setNewWebhookConditionInformation(undefined));
-      setMatchFunctionsWebhook({
-        onMatched: async () => {},
-        onUnMatched: async () => {},
-        onError: () => {},
-      });
     }
   };
 
   const handleUpdateCondition = () => {
     if (conditionType === "contract") {
-      const {
-        checker,
-        newInputs,
-        newOutputs,
-        newEventArgs,
-        newExpectedValues,
-      } = checkContractCondition();
+      const { checker, newInputs, newEventArgs, newExpectedValues } =
+        checkContractCondition();
       if (!checker) {
         return;
       }
 
       const abi = buildABI(
         newContractConditionInformation?.eventName!,
-        newInputs,
-        newOutputs
+        newInputs
       );
 
       dispatch(
@@ -625,9 +449,6 @@ const useSetConditions = () => {
                     abi,
                     eventArgName: newEventArgs,
                     expectedValue: newExpectedValues,
-                    onMatched: matchFunctionsContract.onMatched,
-                    onUnMatched: matchFunctionsContract.onUnMatched,
-                    onError: matchFunctionsContract.onError,
                   } as ContractCondition),
                 }
               : obj
@@ -636,35 +457,9 @@ const useSetConditions = () => {
       );
 
       dispatch(setNewContractConditionInformation(undefined));
-      setInputs([
-        {
-          indexed: true,
-          internalType: "string",
-          name: "",
-          type: "string",
-        },
-      ]);
-      setOutputs([
-        {
-          internalType: "string",
-          name: "",
-          type: "string",
-        },
-      ]);
-      setMatchFunctionsContract({
-        onMatched: async () => {},
-        onUnMatched: async () => {},
-        onError: () => {},
-      });
+
       setEventArgs([""]);
       setExpectedValues([""]);
-      setDropDownsOpenContract({
-        internalTypesInput: [false],
-        typesInput: [false],
-        indexed: [false],
-        internalTypesOutput: [false],
-        typesOutput: [false],
-      });
     } else {
       const { checker, newBaseURL, newEndpoint } = checkWebhookCondition();
       if (!checker) {
@@ -690,11 +485,6 @@ const useSetConditions = () => {
       );
 
       dispatch(setNewWebhookConditionInformation(undefined));
-      setMatchFunctionsWebhook({
-        onMatched: async () => {},
-        onUnMatched: async () => {},
-        onError: () => {},
-      });
     }
 
     setEditingState(false);
@@ -718,24 +508,22 @@ const useSetConditions = () => {
   return {
     conditionType,
     setConditionType,
-    outputs,
-    setOutputs,
-    inputs,
-    setInputs,
     handleAddConditionAndReset,
-    dropDownsOpenContract,
-    setDropDownsOpenContract,
     eventArgs,
     setEventArgs,
     expectedValues,
     setExpectedValues,
-    matchFunctionsContract,
-    setMatchFunctionsContract,
+    dropDownChainContract,
+    setDropDownChainContract,
     editingState,
     setEditingState,
     handleUpdateCondition,
-    matchFunctionsWebhook,
-    setMatchFunctionsWebhook,
+    inputs,
+    setInputs,
+    dropDownsOpenContract,
+    setDropDownsOpenContract,
+    apiPassword,
+    setApiPassword,
   };
 };
 

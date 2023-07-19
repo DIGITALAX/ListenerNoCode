@@ -1,5 +1,4 @@
 import { FunctionComponent } from "react";
-import Input from "../../Common/Input";
 import { FetchActionProps } from "@/components/CircuitFlow/types/circuitflow.types";
 import { setNewFetchActionInformation } from "../../../../../../redux/reducers/newFetchActionInformationSlice";
 import { IoMdAddCircleOutline } from "react-icons/io";
@@ -18,7 +17,7 @@ const FetchAction: FunctionComponent<FetchActionProps> = ({
         className="relative w-60 h-60 flex flex-col p-2 gap-3"
         id="inputBorder"
       >
-        <Input text="Enter API base URL, endpoint, value path and an API Key if required." />
+
         <div className="flex w-full h-full border-4 border-moda overflow-y-scroll">
           <div className="relative w-full h-fit gap-6 flex flex-col px-1.5 py-2.5">
             <div className="relative w-full h-fit gap-1 flex flex-col">
@@ -118,7 +117,7 @@ const FetchAction: FunctionComponent<FetchActionProps> = ({
         className="relative w-60 h-60 flex flex-col p-2 gap-3"
         id="inputBorder"
       >
-        <Input text="Enter what you'd like to be signed on-chain, the sign condition and it's priority with other actions." />
+      
         <div className="flex w-full h-full border-4 border-moda overflow-y-scroll">
           <div className="relative w-full h-fit gap-6 flex flex-col px-1.5 py-2.5">
             <div className="relative w-full h-fit gap-1 flex flex-col">

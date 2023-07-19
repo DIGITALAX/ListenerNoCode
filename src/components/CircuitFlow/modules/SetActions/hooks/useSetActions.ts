@@ -185,7 +185,7 @@ const useSetActions = () => {
         })
       );
     } else if (
-      !newContractActionInformation?.contractAddress.startsWith("0x")
+      !newContractActionInformation?.contractAddress?.startsWith("0x")
     ) {
       checker = false;
       dispatch(
@@ -288,11 +288,11 @@ const useSetActions = () => {
       | undefined;
   } => {
     let checker = true;
-    const newBaseURL = !newFetchActionInformation?.baseUrl.endsWith("/")
+    const newBaseURL = !newFetchActionInformation?.baseUrl?.endsWith("/")
       ? newFetchActionInformation?.baseUrl + "/"
       : newFetchActionInformation?.baseUrl;
-    const newEndpoint = newFetchActionInformation?.endpoint.startsWith("/")
-      ? newFetchActionInformation?.endpoint.substring(1)
+    const newEndpoint = newFetchActionInformation?.endpoint?.startsWith("/")
+      ? newFetchActionInformation?.endpoint?.substring(1)
       : newFetchActionInformation?.endpoint!;
     const { isValid, updatedSignConditions } =
       checkSignCondition(signConditions);

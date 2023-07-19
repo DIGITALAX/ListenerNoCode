@@ -1,5 +1,5 @@
 import { FunctionComponent } from "react";
-import Input from "../Common/Input";
+
 import { HashIPFSProps } from "../../types/circuitflow.types";
 import { AiOutlineLoading } from "react-icons/ai";
 import { Action, ContractAction } from "../../types/litlistener.types";
@@ -16,13 +16,7 @@ const HashIPFS: FunctionComponent<HashIPFSProps> = ({
       className="relative w-60 h-60 flex flex-col p-2 gap-3"
       id="inputBorder"
     >
-      <Input
-        text={`${
-          circuitInformation?.actions.some(
-            (obj: Action) => (obj as ContractAction).chainId !== undefined
-          ) && "Add a Provider URL for executing your Contract Actions."
-        } Hash your Lit Action Code to IPFS.`}
-      />
+    
       <div className="flex w-full h-full border-4 border-moda overflow-y-scroll">
         <div className="relative w-full h-fit gap-6 flex flex-col px-1.5 py-2.5 justify-start items-center">
           {circuitInformation?.actions.some(

@@ -9,7 +9,6 @@ import { RootState } from "../../redux/store";
 import CircuitSwitch from "@/components/CircuitFlow/modules/Common/CircuitSwitch";
 import Overview from "@/components/CircuitFlow/modules/Common/Overview";
 import useSetConditions from "@/components/CircuitFlow/modules/SetConditions/hooks/useSetConditions";
-import NextButton from "@/components/CircuitFlow/modules/Common/NextButton";
 import useConditionalLogic from "@/components/CircuitFlow/modules/ConditionalLogic/hooks/useConditionalLogic";
 import useExecutionConstraints from "@/components/CircuitFlow/modules/ExecutionConstraints/hooks/useExecutionConstraints";
 import useIPFS from "@/components/CircuitFlow/modules/IPFSHash/hooks/useIPFS";
@@ -19,7 +18,8 @@ import useSetActions from "@/components/CircuitFlow/modules/SetActions/hooks/use
 import Head from "next/head";
 import Steps from "@/components/CircuitFlow/modules/Common/Steps";
 import { useEffect, useState } from "react";
-import MoreConditionButton from "@/components/CircuitFlow/modules/SetConditions/modules/MoreConditionButton";
+import NextButton from "@/components/CircuitFlow/modules/SetConditions/modules/NextButton";
+import { setConditionFlow } from "../../redux/reducers/conditionFlowSlice";
 
 export default function Home() {
   const dispatch = useDispatch();
@@ -59,8 +59,8 @@ export default function Home() {
     conditionType,
     setConditionType,
     handleAddConditionAndReset,
-    outputs,
-    setOutputs,
+    apiPassword,
+    setApiPassword,
     inputs,
     setInputs,
     dropDownsOpenContract,
@@ -69,13 +69,11 @@ export default function Home() {
     setEventArgs,
     expectedValues,
     setExpectedValues,
-    matchFunctionsContract,
-    setMatchFunctionsContract,
     editingState,
     setEditingState,
     handleUpdateCondition,
-    matchFunctionsWebhook,
-    setMatchFunctionsWebhook,
+    setDropDownChainContract,
+    dropDownChainContract,
   } = useSetConditions();
   const {
     actionType,
@@ -139,16 +137,29 @@ export default function Home() {
   useEffect(() => {
     if (circuitFlowIndex === 0) {
       if (conditionType === "web") {
-        console.log(conditionFlowIndex.webhookCount);
         setStepCount(conditionFlowIndex.webhookCount);
+        dispatch(
+          setConditionFlow({
+            index: 0,
+            contractCount: conditionFlowIndex.contractCount,
+            webhookCount: conditionFlowIndex.webhookCount,
+          })
+        );
       } else {
         setStepCount(conditionFlowIndex.contractCount);
+        dispatch(
+          setConditionFlow({
+            index: 0,
+            contractCount: conditionFlowIndex.contractCount,
+            webhookCount: conditionFlowIndex.webhookCount,
+          })
+        );
       }
     }
-  }, [circuitFlowIndex]);
+  }, [circuitFlowIndex, conditionType]);
 
   return (
-    <div className="relative w-full h-full flex flex-row border-t-2 border-sol">
+    <div className="relative w-full h-full flex flex-row border-t-2 border-sol grow">
       <Head>
         <title>No-Code Lit Listener</title>
         <link rel="icon" href="/favicon.ico" />
@@ -171,10 +182,10 @@ export default function Home() {
           draggable={false}
         />
       </div>
-      <div className="relative w-full h-full relative flex flex-col gap-2 items-center justify-center">
-        <div className="relative w-full h-[90%] flex flex-row gap-4 items-center justify-center pt-3">
+      <div className="relative w-full min-h-100 flex items-center justify-center grow">
+        <div className="relative w-full h-full flex flex-row gap-4 items-center justify-center py-3">
           <div className="relative w-fit h-full flex gap-3 items-center justify-start pl-10">
-            <div className="relative w-60 h-100 rounded-lg border-2 border-sol items-center justify-center flex bg-aBlack">
+            <div className="relative w-60 h-full grow rounded-lg border-2 border-sol items-center justify-center flex bg-aBlack">
               <Image
                 src={`${INFURA_GATEWAY}/ipfs/${
                   circuitFlowIndex === 0
@@ -198,7 +209,7 @@ export default function Home() {
               />
             </div>
           </div>
-          <div className="relative w-full h-100 flex flex-col px-3 justify-center items-center">
+          <div className="relative w-full h-full grow flex flex-col px-3 justify-center items-center">
             <div className="relative h-full w-full flex flex-row items-center justify-center rounded-sm border-2 border-sol">
               <div className="absolute w-full h-full mix-blend-darken bg-aBlack opacity-70"></div>
               <div className="relative flex flex-col w-full h-full items-center justify-center">
@@ -214,8 +225,8 @@ export default function Home() {
                       newContractConditionInformation
                     }
                     handleAddConditionAndReset={handleAddConditionAndReset}
-                    outputs={outputs}
-                    setOutputs={setOutputs}
+                    apiPassword={apiPassword}
+                    setApiPassword={setApiPassword}
                     inputs={inputs}
                     setInputs={setInputs}
                     dropDownsOpenContract={dropDownsOpenContract}
@@ -224,16 +235,12 @@ export default function Home() {
                     setEventArgs={setEventArgs}
                     expectedValues={expectedValues}
                     setExpectedValues={setExpectedValues}
-                    matchFunctionsContract={matchFunctionsContract}
-                    setMatchFunctionsContract={setMatchFunctionsContract}
                     newWebhookConditionInformation={
                       newWebhookConditionInformation
                     }
                     editingState={editingState}
                     setEditingState={setEditingState}
                     handleUpdateCondition={handleUpdateCondition}
-                    matchFunctionsWebhook={matchFunctionsWebhook}
-                    setMatchFunctionsWebhook={setMatchFunctionsWebhook}
                     logicType={logicType}
                     setLogicType={setLogicType}
                     thresholdValue={thresholdValue}
@@ -288,6 +295,8 @@ export default function Home() {
                     dbLoading={dbLoading}
                     dbAdded={dbAdded}
                     signedPKPTx={signedPKPTx}
+                    setDropDownChainContract={setDropDownChainContract}
+                    dropDownChainContract={dropDownChainContract}
                   />
                 </div>
                 <Steps
@@ -297,7 +306,7 @@ export default function Home() {
                   currentFlowIndex={conditionFlowIndex}
                 />
               </div>
-              <div className="relative flex flex-col flex-grow h-full items-center justify-center">
+              <div className="relative flex flex-col grow h-full items-center justify-center">
                 <div className="relative w-full h-full flex flex-row items-center justify-center">
                   <div
                     className="relative w-full h-full flex items-center justify-center flex-col gap-2 px-3 py-4"
@@ -342,7 +351,7 @@ export default function Home() {
                     <div className="relative w-60 h-full items-start justify-start overflow-y-scroll flex">
                       <div
                         className="relative w-full h-60 items-start justify-start flex font-vcr text-ballena whitespace-pre-wrap break-words"
-                        style={{wordBreak: "break-word"}}
+                        style={{ wordBreak: "break-word" }}
                         dangerouslySetInnerHTML={{
                           __html:
                             circuitFlowIndex === 0
@@ -359,44 +368,23 @@ export default function Home() {
                     </div>
                   </div>
                 </div>
-                {circuitFlowIndex === 0 && (
-                  <MoreConditionButton
-                    handleAddConditionAndReset={handleAddConditionAndReset}
-                    editingState={editingState}
-                    handleUpdateCondition={handleUpdateCondition}
-                    conditionFlowIndex={conditionFlowIndex}
-                    conditionType={conditionType}
-                    dispatch={dispatch}
-                  />
-                )}
+                <NextButton
+                  handleAddConditionAndReset={handleAddConditionAndReset}
+                  editingState={editingState}
+                  handleUpdateCondition={handleUpdateCondition}
+                  conditionFlowIndex={conditionFlowIndex}
+                  conditionType={conditionType}
+                  dispatch={dispatch}
+                  circuitFlowIndex={circuitFlowIndex}
+                  circuitInformation={circuitInformation}
+                  handleSetConditionalLogic={handleSetConditionalLogic}
+                  handleAddExecutionConstraints={handleAddExecutionConstraints}
+                  ipfsHash={ipfsHash}
+                  stepCount={stepCount}
+                />
               </div>
             </div>
           </div>
-        </div>
-        <div className="relative w-full h-fit flex items-end justify-end pb-2 pr-3">
-          {circuitFlowIndex !== 6 && (
-            <NextButton
-              text={
-                circuitFlowIndex === 0
-                  ? "conditional logic >>>"
-                  : circuitFlowIndex === 1
-                  ? "circuit actions >>>"
-                  : circuitFlowIndex === 2
-                  ? "execution constraints >>>"
-                  : circuitFlowIndex === 3
-                  ? "ipfs hash >>>"
-                  : circuitFlowIndex === 4
-                  ? "mintgrantburn pkp >>>"
-                  : "run circuit >>>"
-              }
-              dispatch={dispatch}
-              circuitFlowIndex={circuitFlowIndex}
-              circuitInformation={circuitInformation}
-              handleSetConditionalLogic={handleSetConditionalLogic}
-              handleAddExecutionConstraints={handleAddExecutionConstraints}
-              ipfsHash={ipfsHash}
-            />
-          )}
         </div>
       </div>
       <Overview

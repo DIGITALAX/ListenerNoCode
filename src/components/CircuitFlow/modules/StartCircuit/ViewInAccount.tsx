@@ -1,6 +1,5 @@
 import { FunctionComponent } from "react";
 import { ViewInAccountProps } from "../../types/circuitflow.types";
-import Output from "../Common/Output";
 import Link from "next/link";
 
 const ViewInAccount: FunctionComponent<ViewInAccountProps> = ({
@@ -12,13 +11,7 @@ const ViewInAccount: FunctionComponent<ViewInAccountProps> = ({
       className="relative w-60 h-60 flex flex-col p-2 gap-3"
       id="outputBorder"
     >
-      <Output
-        text={
-          !circuitRunning
-            ? "Your circuit isn't running yet."
-            : "Your circuit is running. View logs, errors and results in your account page."
-        }
-      />
+
       {circuitRunning && (
         <div
           className={`flex flex-col w-full h-full border-4 border-moda p-1 gap-4 items-center justify-center font-vcr text-white overflow-y-scroll`}

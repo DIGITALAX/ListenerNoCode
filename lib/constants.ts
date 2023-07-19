@@ -16,8 +16,14 @@ export const SET_CONDITIONS_TEXT_WEBHOOK: string[] = [
   `Enter the response path for the value you are querying.<br/><br/> For example, if an API returns { "data": { "user": { "id": 1 } } }, the response path to get the user's ID would be data.user.id.<br/><br/>You need to enter the response path that leads to the specific piece of data that you want to retrieve or use from the API's response.`,
   "Do you need an API key?<br/><br/>If the API you are querying requires a key, make sure to include it here.",
   "Enter the value that you expect to be returned by the API's response path and the corresponding match operator.<br/><br/>The match operator defines the type of comparison to be made between the API's returned response and your expected value.<br/><br/>It might include equality (==, ===), inequality (!=, !==), less than (<), greater than (>), less than or equal to (<=), greater than or equal to (>=).",
+  "Check over your Webhook Condition.<br/><br/>Looking good? When you're ready, add the condition to the circuit.<br/><br/>You can add more conditions or move to the next stage.",
 ];
 
 export const SET_CONDITIONS_TEXT_CONTRACT: string[] = [
   "Choose Between A Webhook or Contract Condition.<br/><br/>Webhook Conditions Monitor triggers or conditions returned via webhooks or APIs.<br/><br/>Contract Conditions monitor emitted contract events on a Blockchain network.",
+  "Enter the contract address that the monitored event will be emitted from.<br/><br/>The contract address should start with 0x.",
+  "Choose the correct Blockchain Network where your contract address is deployed.<br/><br/>For example, if your contract is deployed on Ethereum Mainnet then choose the chain name Ethereum.",
+  "Enter the name of the event that you are monitoring.<br/><br/>For example if you were monitoring when the 'Transfer' event is emitted from your contract, enter 'Transfer'. The event name is case sensitive.",
+  `Enter the input values for your event. This will be used to build your contract ABI.<br/><br/>If you are taking a contract from Etherscan or a similar blockchain explorer, you can find your ABI under the Contract > Code tab. It should look something like this:<br/><br/>{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"parentTokenId","type":"uint256"}],"name":"ParentBurned","type":"event"}.<br/><br/>There will be a box labelled at the bottom 'Contract ABI'. Find the correct object for your monitored event and copy and paste over the input fields, adding more if required.`,
+ 
 ];

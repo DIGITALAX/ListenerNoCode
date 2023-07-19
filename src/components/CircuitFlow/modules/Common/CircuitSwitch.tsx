@@ -16,8 +16,6 @@ const CircuitSwitch: FunctionComponent<CircuitSwitchProps> = ({
   conditionType,
   newContractConditionInformation,
   handleAddConditionAndReset,
-  outputs,
-  setOutputs,
   inputs,
   setInputs,
   dropDownsOpenContract,
@@ -26,14 +24,10 @@ const CircuitSwitch: FunctionComponent<CircuitSwitchProps> = ({
   setEventArgs,
   expectedValues,
   setExpectedValues,
-  matchFunctionsContract,
-  setMatchFunctionsContract,
   newWebhookConditionInformation,
   editingState,
   setEditingState,
   handleUpdateCondition,
-  matchFunctionsWebhook,
-  setMatchFunctionsWebhook,
   logicType,
   setLogicType,
   thresholdValue,
@@ -86,7 +80,11 @@ const CircuitSwitch: FunctionComponent<CircuitSwitchProps> = ({
   dbLoading,
   dbAdded,
   signedPKPTx,
-  conditionFlowIndex
+  conditionFlowIndex,
+  setDropDownChainContract,
+  dropDownChainContract,
+  apiPassword,
+  setApiPassword,
 }): JSX.Element => {
   switch (circuitFlowIndex) {
     case 6:
@@ -194,8 +192,6 @@ const CircuitSwitch: FunctionComponent<CircuitSwitchProps> = ({
           setConditionType={setConditionType}
           newContractConditionInformation={newContractConditionInformation}
           handleAddConditionAndReset={handleAddConditionAndReset}
-          outputs={outputs}
-          setOutputs={setOutputs}
           inputs={inputs}
           setInputs={setInputs}
           dropDownsOpenContract={dropDownsOpenContract}
@@ -204,14 +200,14 @@ const CircuitSwitch: FunctionComponent<CircuitSwitchProps> = ({
           setEventArgs={setEventArgs}
           expectedValues={expectedValues}
           setExpectedValues={setExpectedValues}
-          matchFunctionsContract={matchFunctionsContract}
-          setMatchFunctionsContract={setMatchFunctionsContract}
           newWebhookConditionInformation={newWebhookConditionInformation}
           editingState={editingState}
           setEditingState={setEditingState}
           handleUpdateCondition={handleUpdateCondition}
-          matchFunctionsWebhook={matchFunctionsWebhook}
-          setMatchFunctionsWebhook={setMatchFunctionsWebhook}
+          setDropDownChainContract={setDropDownChainContract}
+          dropDownChainContract={dropDownChainContract}
+          apiPassword={apiPassword}
+          setApiPassword={setApiPassword}
         />
       );
   }

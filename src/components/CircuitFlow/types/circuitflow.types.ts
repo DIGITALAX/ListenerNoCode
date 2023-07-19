@@ -25,6 +25,8 @@ export type CircuitSwitchProps = {
     contractCount: number;
     webhookCount: number;
   };
+  apiPassword: boolean;
+  setApiPassword: (e: boolean) => void;
   circuitFlowIndex: number;
   dbLoading: boolean;
   dbAdded: boolean;
@@ -138,21 +140,9 @@ export type CircuitSwitchProps = {
     name: string;
     type: string;
   }[];
-  outputs: {
-    internalType: string;
-    name: string;
-    type: string;
-  }[];
   setInputs: (
     e: {
       indexed: boolean;
-      internalType: string;
-      name: string;
-      type: string;
-    }[]
-  ) => void;
-  setOutputs: (
-    e: {
       internalType: string;
       name: string;
       type: string;
@@ -176,29 +166,9 @@ export type CircuitSwitchProps = {
   setEventArgs: (e: string[]) => void;
   expectedValues: string[];
   setExpectedValues: (e: string[]) => void;
-  matchFunctionsContract: {
-    onMatched: () => Promise<void>;
-    onUnMatched: () => Promise<void>;
-    onError: () => void;
-  };
-  setMatchFunctionsContract: (e: {
-    onMatched: () => Promise<void>;
-    onUnMatched: () => Promise<void>;
-    onError: () => void;
-  }) => void;
   editingState: boolean;
   setEditingState: (e: boolean) => void;
   handleUpdateCondition: () => void;
-  matchFunctionsWebhook: {
-    onMatched: () => Promise<void>;
-    onUnMatched: () => Promise<void>;
-    onError: () => void;
-  };
-  setMatchFunctionsWebhook: (e: {
-    onMatched: () => Promise<void>;
-    onUnMatched: () => Promise<void>;
-    onError: () => void;
-  }) => void;
   setLogicType: (e: string) => void;
   logicType: string;
   thresholdValue: number;
@@ -212,28 +182,23 @@ export type CircuitSwitchProps = {
     publicKey: string;
     address: string;
   };
+  setDropDownChainContract: (e: boolean) => void;
+  dropDownChainContract: boolean;
 };
 
 export type SetConditionsProps = {
+  apiPassword: boolean;
+  setApiPassword: (e: boolean) => void;
+  editingState: boolean;
+  setEditingState: (e: boolean) => void;
+  handleUpdateCondition: () => void;
   conditionFlowIndex: {
     index: number;
     contractCount: number;
     webhookCount: number;
   };
-  dispatch: Dispatch<AnyAction>;
-  circuitInformation: CircuitInformation;
-  conditionType: string;
-  setConditionType: (e: string) => void;
-  newWebhookConditionInformation: WebhookCondition | undefined;
-  newContractConditionInformation: ContractCondition | undefined;
-  handleAddConditionAndReset: () => void;
   inputs: {
     indexed: boolean;
-    internalType: string;
-    name: string;
-    type: string;
-  }[];
-  outputs: {
     internalType: string;
     name: string;
     type: string;
@@ -241,13 +206,6 @@ export type SetConditionsProps = {
   setInputs: (
     e: {
       indexed: boolean;
-      internalType: string;
-      name: string;
-      type: string;
-    }[]
-  ) => void;
-  setOutputs: (
-    e: {
       internalType: string;
       name: string;
       type: string;
@@ -267,33 +225,19 @@ export type SetConditionsProps = {
     internalTypesOutput: boolean[];
     typesOutput: boolean[];
   }) => void;
+  dispatch: Dispatch<AnyAction>;
+  circuitInformation: CircuitInformation;
+  conditionType: string;
+  setConditionType: (e: string) => void;
+  newWebhookConditionInformation: WebhookCondition | undefined;
+  newContractConditionInformation: ContractCondition | undefined;
+  handleAddConditionAndReset: () => void;
   eventArgs: string[];
   setEventArgs: (e: string[]) => void;
   expectedValues: string[];
   setExpectedValues: (e: string[]) => void;
-  matchFunctionsContract: {
-    onMatched: () => Promise<void>;
-    onUnMatched: () => Promise<void>;
-    onError: () => void;
-  };
-  setMatchFunctionsContract: (e: {
-    onMatched: () => Promise<void>;
-    onUnMatched: () => Promise<void>;
-    onError: () => void;
-  }) => void;
-  editingState: boolean;
-  setEditingState: (e: boolean) => void;
-  handleUpdateCondition: () => void;
-  matchFunctionsWebhook: {
-    onMatched: () => Promise<void>;
-    onUnMatched: () => Promise<void>;
-    onError: () => void;
-  };
-  setMatchFunctionsWebhook: (e: {
-    onMatched: () => Promise<void>;
-    onUnMatched: () => Promise<void>;
-    onError: () => void;
-  }) => void;
+  setDropDownChainContract: (e: boolean) => void;
+  dropDownChainContract: boolean;
 };
 
 export interface CircuitInformation {
@@ -305,87 +249,6 @@ export interface CircuitInformation {
   IPFSHash: String;
   providerURL?: string;
 }
-
-export type ConditionTypeSwitcherProps = {
-  dispatch: Dispatch<AnyAction>;
-  conditionType: string;
-  newWebhookConditionInformation: WebhookCondition | undefined;
-  newContractConditionInformation: ContractCondition | undefined;
-  inputs: {
-    indexed: boolean;
-    internalType: string;
-    name: string;
-    type: string;
-  }[];
-  outputs: {
-    internalType: string;
-    name: string;
-    type: string;
-  }[];
-  setInputs: (
-    e: {
-      indexed: boolean;
-      internalType: string;
-      name: string;
-      type: string;
-    }[]
-  ) => void;
-  setOutputs: (
-    e: {
-      internalType: string;
-      name: string;
-      type: string;
-    }[]
-  ) => void;
-  dropDownsOpenContract: {
-    internalTypesInput: boolean[];
-    typesInput: boolean[];
-    indexed: boolean[];
-    internalTypesOutput: boolean[];
-    typesOutput: boolean[];
-  };
-  setDropDownsOpenContract: (e: {
-    internalTypesInput: boolean[];
-    typesInput: boolean[];
-    indexed: boolean[];
-    internalTypesOutput: boolean[];
-    typesOutput: boolean[];
-  }) => void;
-  eventArgs: string[];
-  setEventArgs: (e: string[]) => void;
-  expectedValues: string[];
-  setExpectedValues: (e: string[]) => void;
-  matchFunctionsContract: {
-    onMatched: () => Promise<void>;
-    onUnMatched: () => Promise<void>;
-    onError: () => void;
-  };
-  setMatchFunctionsContract: (e: {
-    onMatched: () => Promise<void>;
-    onUnMatched: () => Promise<void>;
-    onError: () => void;
-  }) => void;
-  matchFunctionsWebhook: {
-    onMatched: () => Promise<void>;
-    onUnMatched: () => Promise<void>;
-    onError: () => void;
-  };
-  setMatchFunctionsWebhook: (e: {
-    onMatched: () => Promise<void>;
-    onUnMatched: () => Promise<void>;
-    onError: () => void;
-  }) => void;
-};
-
-export type NextButtonProps = {
-  circuitFlowIndex: number;
-  dispatch: Dispatch<AnyAction>;
-  text: string;
-  circuitInformation: CircuitInformation;
-  handleSetConditionalLogic: () => boolean;
-  handleAddExecutionConstraints: () => void;
-  ipfsHash: string;
-};
 
 export type AllConditionsProps = {
   circuitInformation: CircuitInformation;
@@ -407,12 +270,24 @@ export type MoreConditionButtonProps = {
     webhookCount: number;
     contractCount: number;
   };
+  circuitFlowIndex: number;
   conditionType: string;
   dispatch: Dispatch<AnyAction>;
+  circuitInformation: CircuitInformation;
+  handleAddExecutionConstraints: () => void;
+  handleSetConditionalLogic: () => boolean;
+  ipfsHash: string | undefined;
+  stepCount: number;
 };
 
 export type InputProps = {
-  text: string;
+  text: string[];
+  onChangeFunction: ((e: string) => void)[];
+  changedValue: (string | undefined)[];
+  count: number;
+  placeholderText: string[];
+  password?: boolean;
+  setAPIPassword?: (e: boolean) => void;
 };
 
 export type ConditionChoiceProps = {
@@ -421,77 +296,8 @@ export type ConditionChoiceProps = {
   editingState: boolean;
 };
 
-export type ContractConditionProps = {
-  newContractConditionInformation: ContractCondition | undefined;
-  inputs: {
-    indexed: boolean;
-    internalType: string;
-    name: string;
-    type: string;
-  }[];
-  outputs: {
-    internalType: string;
-    name: string;
-    type: string;
-  }[];
-  setInputs: (
-    e: {
-      indexed: boolean;
-      internalType: string;
-      name: string;
-      type: string;
-    }[]
-  ) => void;
-  setOutputs: (
-    e: {
-      internalType: string;
-      name: string;
-      type: string;
-    }[]
-  ) => void;
-  dropDownsOpenContract: {
-    internalTypesInput: boolean[];
-    typesInput: boolean[];
-    indexed: boolean[];
-    internalTypesOutput: boolean[];
-    typesOutput: boolean[];
-  };
-  setDropDownsOpenContract: (e: {
-    internalTypesInput: boolean[];
-    typesInput: boolean[];
-    indexed: boolean[];
-    internalTypesOutput: boolean[];
-    typesOutput: boolean[];
-  }) => void;
-  eventArgs: string[];
-  setEventArgs: (e: string[]) => void;
-  expectedValues: string[];
-  setExpectedValues: (e: string[]) => void;
-  matchFunctionsContract: {
-    onMatched: () => Promise<void>;
-    onUnMatched: () => Promise<void>;
-    onError: () => void;
-  };
-  setMatchFunctionsContract: (e: {
-    onMatched: () => Promise<void>;
-    onUnMatched: () => Promise<void>;
-    onError: () => void;
-  }) => void;
-  dispatch: Dispatch<AnyAction>;
-};
-
 export type WebhookConditionProps = {
   newWebhookConditionInformation: WebhookCondition | undefined;
-  matchFunctionsWebhook: {
-    onMatched: () => Promise<void>;
-    onUnMatched: () => Promise<void>;
-    onError: () => void;
-  };
-  setMatchFunctionsWebhook: (e: {
-    onMatched: () => Promise<void>;
-    onUnMatched: () => Promise<void>;
-    onError: () => void;
-  }) => void;
   dispatch: Dispatch<AnyAction>;
 };
 
@@ -932,4 +738,59 @@ export type StepsProps = {
   circuitFlowIndex: number;
   dispatch: Dispatch<AnyAction>;
   currentFlowIndex: any;
+};
+
+export type FinalConditionProps = {
+  conditionInformation: Condition | undefined;
+  conditionType: string;
+  editingState: boolean;
+  conditionFlowIndex: {
+    index: number;
+    webhookCount: number;
+    contractCount: number;
+  };
+  handleUpdateCondition: () => void;
+  handleAddConditionAndReset: () => void;
+  dispatch: Dispatch<AnyAction>;
+  apiPassword?: boolean;
+  setApiPassword?: (e: boolean) => void;
+};
+
+export type AbiProps = {
+  inputs: {
+    indexed: boolean;
+    internalType: string;
+    name: string;
+    type: string;
+  }[];
+  setInputs: (
+    e: {
+      indexed: boolean;
+      internalType: string;
+      name: string;
+      type: string;
+    }[]
+  ) => void;
+  dropDownsOpenContract: {
+    internalTypesInput: boolean[];
+    typesInput: boolean[];
+    indexed: boolean[];
+    internalTypesOutput: boolean[];
+    typesOutput: boolean[];
+  };
+  setDropDownsOpenContract: (e: {
+    internalTypesInput: boolean[];
+    typesInput: boolean[];
+    indexed: boolean[];
+    internalTypesOutput: boolean[];
+    typesOutput: boolean[];
+  }) => void;
+};
+
+export type DropDownProps = {
+  setDropDownOpenIndex: (type: string) => void;
+  setDropDownOpen: () => void;
+  inputChosen: string;
+  dropDownOpen: boolean;
+  title: string;
 };

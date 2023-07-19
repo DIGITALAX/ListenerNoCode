@@ -1,6 +1,5 @@
 import { FunctionComponent } from "react";
 import { ThresholdProps } from "../../types/circuitflow.types";
-import Input from "../Common/Input";
 
 const Threshold: FunctionComponent<ThresholdProps> = ({
   thresholdValue,
@@ -11,9 +10,7 @@ const Threshold: FunctionComponent<ThresholdProps> = ({
       className="relative w-60 h-60 flex flex-col p-2 gap-3"
       id="inputBorder"
     >
-      <Input
-        text={"What is the threshold number of conditions that need to pass?"}
-      />
+  
       <div className="relative w-full h-full gap-1 flex flex-col">
         <div
           className="relative w-fit h-fit justify-start items-start flex font-vcr text-sol text-sm"

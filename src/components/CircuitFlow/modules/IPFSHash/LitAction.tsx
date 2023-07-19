@@ -1,5 +1,5 @@
 import { FunctionComponent } from "react";
-import Input from "../Common/Input";
+
 import { setLitActionCodeModal } from "../../../../../redux/reducers/litActionCodeModalSlice";
 import { LitActionProps } from "../../types/circuitflow.types";
 
@@ -12,7 +12,6 @@ const LitAction: FunctionComponent<LitActionProps> = ({
       className="relative w-60 h-60 flex flex-col p-2 gap-3"
       id="inputBorder"
     >
-      <Input text={"Verify your Lit Action Code."} />
       <div className="flex flex-col w-full h-full border-4 border-moda p-1 gap-1.5">
         <div className="relative w-fit h-fit flex text-sol font-vcr" id="blur">
           Lit Action

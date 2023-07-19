@@ -11,7 +11,7 @@ const Overview: FunctionComponent<OverviewProps> = ({
   handleAddExecutionConstraints,
 }): JSX.Element => {
   return (
-    <div className="relative w-96 flex-grow border-l-2 border-sol bg-aBlack px-4 py-6">
+    <div className="relative w-96 grow border-l-2 border-sol bg-aBlack px-4 py-6">
       <div className="flex flex-row items-center justify-center relative w-full h-full">
         <div className="relative w-1 h-full bg-moda"></div>
         <div className="relative w-full h-full flex flex-col gap-5">
@@ -46,7 +46,7 @@ const Overview: FunctionComponent<OverviewProps> = ({
               return (
                 <div
                   key={index}
-                  className={`relative w-full h-fit flex flex-row justify-start items-center gap-3 cursor-pointer active:scale-95 hover:text-sol ${
+                  className={`relative w-full h-fit flex flex-row justify-start items-center gap-3 cursor-pointer active:scale-95 hover:text-sol grow ${
                     circuitFlowIndex === index ? "text-sol" : "text-rio"
                   }`}
                   onClick={
