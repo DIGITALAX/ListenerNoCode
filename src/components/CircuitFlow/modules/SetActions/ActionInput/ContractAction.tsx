@@ -3,7 +3,6 @@ import Input from "../../Common/Input";
 import { ContractActionProps } from "@/components/CircuitFlow/types/circuitflow.types";
 import { setNewContractActionInformation } from "../../../../../../redux/reducers/newContractActionInformationSlice";
 import { IoMdAddCircleOutline } from "react-icons/io";
-import Connector from "../../Common/Connector";
 
 const ContractAction: FunctionComponent<ContractActionProps> = ({
   newContractActionInformation,
@@ -666,7 +665,7 @@ const ContractAction: FunctionComponent<ContractActionProps> = ({
           </div>
         </div>
       </div>
-      <Connector topOnly />
+      
       <div
         className="relative w-60 h-60 flex flex-col p-2 gap-3"
         id="inputBorder"

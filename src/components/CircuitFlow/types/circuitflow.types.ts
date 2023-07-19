@@ -20,6 +20,11 @@ export type OverviewProps = {
 };
 
 export type CircuitSwitchProps = {
+  conditionFlowIndex: {
+    index: number;
+    contractCount: number;
+    webhookCount: number;
+  };
   circuitFlowIndex: number;
   dbLoading: boolean;
   dbAdded: boolean;
@@ -206,14 +211,18 @@ export type CircuitSwitchProps = {
     tokenId: string;
     publicKey: string;
     address: string;
-  }
+  };
 };
 
 export type SetConditionsProps = {
+  conditionFlowIndex: {
+    index: number;
+    contractCount: number;
+    webhookCount: number;
+  };
   dispatch: Dispatch<AnyAction>;
   circuitInformation: CircuitInformation;
   conditionType: string;
-
   setConditionType: (e: string) => void;
   newWebhookConditionInformation: WebhookCondition | undefined;
   newContractConditionInformation: ContractCondition | undefined;
@@ -297,7 +306,7 @@ export interface CircuitInformation {
   providerURL?: string;
 }
 
-export type ConditionSwitchProps = {
+export type ConditionTypeSwitcherProps = {
   dispatch: Dispatch<AnyAction>;
   conditionType: string;
   newWebhookConditionInformation: WebhookCondition | undefined;
@@ -393,13 +402,20 @@ export type MoreConditionButtonProps = {
   handleAddConditionAndReset: () => void;
   editingState: boolean;
   handleUpdateCondition: () => void;
+  conditionFlowIndex: {
+    index: number;
+    webhookCount: number;
+    contractCount: number;
+  };
+  conditionType: string;
+  dispatch: Dispatch<AnyAction>;
 };
 
 export type InputProps = {
   text: string;
 };
 
-export type ConditionTypeProps = {
+export type ConditionChoiceProps = {
   conditionType: string;
   setConditionType: (e: string) => void;
   editingState: boolean;
@@ -602,7 +618,7 @@ export type MintGrantBurnProps = {
     tokenId: string;
     publicKey: string;
     address: string;
-  }
+  };
 };
 
 export type MintPKPProps = {
@@ -615,7 +631,7 @@ export type PKPResultProps = {
     tokenId: string;
     publicKey: string;
     address: string;
-  }
+  };
 };
 
 export type CircuitInputProps = {
@@ -624,7 +640,7 @@ export type CircuitInputProps = {
     tokenId: string;
     publicKey: string;
     address: string;
-  }
+  };
 };
 export type CircuitStartProps = {
   handleRunCircuit: () => Promise<void>;
@@ -647,7 +663,7 @@ export type RunCircuitProps = {
     tokenId: string;
     publicKey: string;
     address: string;
-  }
+  };
 };
 
 export type FetchActionProps = {
@@ -909,4 +925,11 @@ export type ActionTypeProps = {
   setActionType: (e: string) => void;
   actionType: string;
   editingStateAction: boolean;
+};
+
+export type StepsProps = {
+  stepCount: number;
+  circuitFlowIndex: number;
+  dispatch: Dispatch<AnyAction>;
+  currentFlowIndex: any;
 };

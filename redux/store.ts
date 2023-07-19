@@ -13,6 +13,7 @@ import ipfsHashReducer from "./reducers/ipfsHashSlice";
 import newContractActionInformationReducer from "./reducers/newContractActionInformationSlice";
 import newFetchActionInformationReducer from "./reducers/newFetchActionInformationSlice";
 import signedPKPReducer from "./reducers/signedPKPSlice";
+import conditionFlowReducer from "./reducers/conditionFlowSlice";
 
 const reducer = combineReducers({
   walletConnectedReducer,
@@ -28,6 +29,7 @@ const reducer = combineReducers({
   newContractActionInformationReducer,
   newFetchActionInformationReducer,
   signedPKPReducer,
+  conditionFlowReducer
 });
 
 export const store = configureStore({

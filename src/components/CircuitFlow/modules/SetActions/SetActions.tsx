@@ -2,7 +2,7 @@ import { FunctionComponent } from "react";
 import { SetActionsProps } from "../../types/circuitflow.types";
 import AllActions from "./AllActions";
 import ActionType from "./ActionInput/ActionType";
-import Connector from "../Common/Connector";
+
 import ActionSwitch from "./ActionInput/ActionSwitch";
 import MoreActionButton from "./MoreActionButton";
 
@@ -46,7 +46,7 @@ const SetActions: FunctionComponent<SetActionsProps> = ({
           setActionType={setActionType}
           actionType={actionType}
         />
-        <Connector topOnly />
+        
         <ActionSwitch
           dispatch={dispatch}
           actionType={actionType}
@@ -71,7 +71,6 @@ const SetActions: FunctionComponent<SetActionsProps> = ({
       <div className="relative flex flex-row w-full h-fit items-center">
         <div className="relative w-full h-fit flex flex-col gap-5 items-center justify-center">
           <div className="relative w-fit h-fit flex ml-auto right-16 top-2">
-            <Connector />
           </div>
           <MoreActionButton
             handleAddActionAndReset={handleAddActionAndReset}

@@ -1,9 +1,9 @@
 import { FunctionComponent } from "react";
-import Connector from "../Common/Connector";
+
 import { MintGrantBurnProps } from "../../types/circuitflow.types";
 import MintPKP from "./MintPKP";
 import PKPResult from "./PKPResult";
-import ConnectorRect from "../Common/ConnectorRect";
+
 
 const MintGrantBurn: FunctionComponent<MintGrantBurnProps> = ({
   handleMintGrantBurnPKP,
@@ -17,10 +17,9 @@ const MintGrantBurn: FunctionComponent<MintGrantBurnProps> = ({
           handleMintGrantBurnPKP={handleMintGrantBurnPKP}
           pkpLoading={pkpLoading}
         />
-        <Connector topOnly />
+        
         <PKPResult signedPKPTx={signedPKPTx} />
-        <Connector topOnly />
-        <ConnectorRect />
+        
       </div>
     </div>
   );

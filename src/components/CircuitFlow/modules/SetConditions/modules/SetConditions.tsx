@@ -2,9 +2,8 @@ import { FunctionComponent } from "react";
 import MoreConditionButton from "./MoreConditionButton";
 import AllConditions from "./AllConditions";
 import { SetConditionsProps } from "@/components/CircuitFlow/types/circuitflow.types";
-import ConditionSwitch from "./ConditionInput/ConditionSwitcher";
-import Connector from "../../Common/Connector";
-import ConditionType from "./ConditionInput/ConditionType";
+import ConditionTypeSwitcher from "./ConditionInput/ConditionTypeSwitcher";
+import Choice from "./ConditionInput/Choice";
 
 const SetConditions: FunctionComponent<SetConditionsProps> = ({
   dispatch,
@@ -31,9 +30,22 @@ const SetConditions: FunctionComponent<SetConditionsProps> = ({
   handleUpdateCondition,
   matchFunctionsWebhook,
   setMatchFunctionsWebhook,
+  conditionFlowIndex,
 }): JSX.Element => {
-  return (
-    <div className="relative w-full h-full flex flex-col">
+  switch (conditionFlowIndex) {
+    default:
+      return (
+        <Choice
+          editingState={editingState}
+          setConditionType={setConditionType}
+          conditionType={conditionType}
+        />
+      );
+  }
+
+  // <div className="relative w-full h-full flex flex-col p-1.5">
+  {
+    /*       
       <AllConditions
         dispatch={dispatch}
         circuitInformation={circuitInformation}
@@ -41,13 +53,8 @@ const SetConditions: FunctionComponent<SetConditionsProps> = ({
         setEditingState={setEditingState}
       />
       <div className="relative w-full h-full flex flex-row items-center justify-center">
-        <ConditionType
-          editingState={editingState}
-          setConditionType={setConditionType}
-          conditionType={conditionType}
-        />
-        <Connector topOnly />
-        <ConditionSwitch
+    
+        <ConditionTypeSwitcher
           dispatch={dispatch}
           conditionType={conditionType}
           newContractConditionInformation={newContractConditionInformation}
@@ -68,20 +75,11 @@ const SetConditions: FunctionComponent<SetConditionsProps> = ({
           setMatchFunctionsWebhook={setMatchFunctionsWebhook}
         />
       </div>
-      <div className="relative flex flex-row w-full h-fit items-center">
-        <div className="relative w-full h-fit flex flex-col gap-5 items-center justify-center">
-          <div className="relative w-fit h-fit flex ml-auto right-16 top-2">
-            <Connector />
-          </div>
-          <MoreConditionButton
-            handleAddConditionAndReset={handleAddConditionAndReset}
-            editingState={editingState}
-            handleUpdateCondition={handleUpdateCondition}
-          />
-        </div>
-      </div>
-    </div>
-  );
+      
+  }
+  {
+    /* </div> */
+  }
 };
 
 export default SetConditions;

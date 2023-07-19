@@ -46,6 +46,13 @@ export default function Document() {
         crossOrigin="anonymous"
         type="font/ttf"
       />
+        <link
+        rel="preload"
+        href="/fonts/Minecrafter.ttf"
+        as="font"
+        crossOrigin="anonymous"
+        type="font/ttf"
+      />
       <style
         dangerouslySetInnerHTML={{
           __html: `
@@ -57,7 +64,12 @@ export default function Document() {
 
               @font-face {
                 font-family: "VCR";
-                src: url("./fonts/Vcr.otf");
+                src: url("./fonts/Vcr.ttf");
+              }
+
+              @font-face {
+                font-family: "Minecrafter";
+                src: url("./fonts/Minecrafter.ttf");
               }
             `,
         }}

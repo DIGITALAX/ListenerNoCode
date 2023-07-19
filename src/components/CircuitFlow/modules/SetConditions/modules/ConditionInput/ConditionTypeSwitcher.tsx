@@ -1,9 +1,9 @@
 import { FunctionComponent } from "react";
 import ContractCondition from "./ContractCondition";
 import WebhookCondition from "./WebhookCondition";
-import { ConditionSwitchProps } from "@/components/CircuitFlow/types/circuitflow.types";
+import { ConditionTypeSwitcherProps } from "@/components/CircuitFlow/types/circuitflow.types";
 
-const ConditionSwitch: FunctionComponent<ConditionSwitchProps> = ({
+const ConditionTypeSwitcher: FunctionComponent<ConditionTypeSwitcherProps> = ({
   conditionType,
   newContractConditionInformation,
   outputs,
@@ -56,4 +56,4 @@ const ConditionSwitch: FunctionComponent<ConditionSwitchProps> = ({
   }
 };
 
-export default ConditionSwitch;
+export default ConditionTypeSwitcher;
