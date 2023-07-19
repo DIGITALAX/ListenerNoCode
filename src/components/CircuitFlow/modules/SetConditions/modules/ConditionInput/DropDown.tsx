@@ -8,7 +8,6 @@ const DropDown: FunctionComponent<DropDownProps> = ({
   dropDownOpen,
   title,
 }): JSX.Element => {
-  console.log(inputChosen);
   return (
     <div
       className="relative w-72 h-40 flex flex-col p-2 gap-3 justify-center items-center px-4 font-vcr text-ballena"
