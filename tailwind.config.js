@@ -17,13 +17,19 @@ module.exports = {
         aBlack: "#010101",
         rio: "#8EADB5",
         verde: "#2CC5AF",
+        ballena: "#FFD85F",
+        fria: "#C1D17A"
       },
       fontFamily: {
         vcr: "VCR",
         ignite: "Ignite",
+        mine: "Minecrafter"
       },
       width: {
         100: "33rem",
+      },
+      height: {
+        100: "24.5rem",
       },
       zIndex: {
         1: 1,

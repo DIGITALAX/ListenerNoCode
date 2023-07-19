@@ -86,6 +86,7 @@ const CircuitSwitch: FunctionComponent<CircuitSwitchProps> = ({
   dbLoading,
   dbAdded,
   signedPKPTx,
+  conditionFlowIndex
 }): JSX.Element => {
   switch (circuitFlowIndex) {
     case 6:
@@ -186,6 +187,7 @@ const CircuitSwitch: FunctionComponent<CircuitSwitchProps> = ({
     default:
       return (
         <SetConditions
+          conditionFlowIndex={conditionFlowIndex}
           circuitInformation={circuitInformation}
           dispatch={dispatch}
           conditionType={conditionType}

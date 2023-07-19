@@ -1,22 +1,30 @@
-import { FunctionComponent, useEffect } from "react";
+import { FunctionComponent, useEffect, useState } from "react";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
-import { useAccountModal, useConnectModal } from "@rainbow-me/rainbowkit";
-import { useAccount } from "wagmi";
+import {
+  useAccountModal,
+  useChainModal,
+  useConnectModal,
+} from "@rainbow-me/rainbowkit";
+import { useAccount, useNetwork } from "wagmi";
 import { setWalletConnected } from "../../../../redux/reducers/walletConnectedSlice";
 
 const Header: FunctionComponent = (): JSX.Element => {
   const walletConnected = useSelector(
     (state: RootState) => state.app.walletConnectedReducer.value
   );
+  const [switchState, setSwitchState] = useState<boolean>(false);
   const { openConnectModal } = useConnectModal();
   const { openAccountModal } = useAccountModal();
+  const { openChainModal } = useChainModal();
   const dispatch = useDispatch();
   const { isConnected } = useAccount();
+  const { chain } = useNetwork();
 
   useEffect(() => {
     dispatch(setWalletConnected(isConnected));
+    setSwitchState(chain?.id !== 175177 ? false : true);
   }, [isConnected]);
   return (
     <div className="relative w-full flex flex-col gap-3 pt-2 pb-[4.5rem]">
@@ -51,13 +59,19 @@ const Header: FunctionComponent = (): JSX.Element => {
         <div
           className="relative flex justify-end w-fit h-fit items-center ml-auto whitespace-nowrap break-words cursor-pointer active:scale-95 px-3 py-1.5"
           id="borderYellow"
-          onClick={!walletConnected ? openConnectModal : openAccountModal}
+          onClick={
+            switchState
+              ? openChainModal
+              : !walletConnected
+              ? openConnectModal
+              : openAccountModal
+          }
         >
           <div
             className="relative flex items-center justify-start font-vcr"
             id="blurText"
           >
-            {walletConnected ? "connected" : "connect"}
+            {switchState ? "switch" : walletConnected ? "connected" : "connect"}
           </div>
         </div>
       </div>

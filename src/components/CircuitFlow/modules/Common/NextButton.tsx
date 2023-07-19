@@ -64,7 +64,7 @@ const NextButton: FunctionComponent<NextButtonProps> = ({
         }
       >
         <div
-          className="relative w-fit h-fit flex items-center justify-center font-vcr uppercase text-moda text-lg"
+          className="relative w-fit h-fit flex items-center justify-center font-vcr uppercase text-moda text-sm"
           id="blur"
         >
           {text}

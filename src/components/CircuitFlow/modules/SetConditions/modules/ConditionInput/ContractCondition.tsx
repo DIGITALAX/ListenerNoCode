@@ -1,6 +1,5 @@
 import { FunctionComponent } from "react";
 import Input from "../../../Common/Input";
-import Connector from "../../../Common/Connector";
 import { ContractConditionProps } from "@/components/CircuitFlow/types/circuitflow.types";
 import { IoMdAddCircleOutline } from "react-icons/io";
 import { setNewContractConditionInformation } from "../../../../../../../redux/reducers/newContractConditionInformationSlice";
@@ -702,7 +701,7 @@ const ContractCondition: FunctionComponent<ContractConditionProps> = ({
           </div>
         </div>
       </div>
-      <Connector topOnly />
+      
       <div
         className="relative w-60 h-60 flex flex-col p-2 gap-3"
         id="inputBorder"

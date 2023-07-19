@@ -21,6 +21,9 @@ const useSetConditions = () => {
   const circuitInformation = useSelector(
     (state: RootState) => state.app.circuitInformationReducer.value
   );
+  const conditionFlowIndex = useSelector(
+    (state: RootState) => state.app.conditionFlowReducer.value
+  );
   const newContractConditionInformation = useSelector(
     (state: RootState) => state.app.newContractConditionInformationReducer.value
   );
@@ -490,7 +493,7 @@ const useSetConditions = () => {
   };
 
   const handleAddConditionAndReset = () => {
-    if (conditionType === "contract") {
+    if (conditionType === "contract" && conditionFlowIndex.index !== 0) {
       const {
         checker,
         newInputs,
@@ -559,7 +562,7 @@ const useSetConditions = () => {
         internalTypesOutput: [false],
         typesOutput: [false],
       });
-    } else {
+    } else if (conditionFlowIndex.index !== 0) {
       const { checker, newBaseURL, newEndpoint } = checkWebhookCondition();
       if (!checker) {
         return;
@@ -678,7 +681,7 @@ const useSetConditions = () => {
                   ...{
                     ...newWebhookConditionInformation,
                     baseUrl: newBaseURL,
-                    endpoint: newEndpoint
+                    endpoint: newEndpoint,
                   },
                 } as WebhookCondition)
               : obj
