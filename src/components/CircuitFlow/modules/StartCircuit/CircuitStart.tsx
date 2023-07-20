@@ -1,6 +1,5 @@
 import { FunctionComponent } from "react";
 import { CircuitStartProps } from "../../types/circuitflow.types";
-
 import { AiOutlineLoading } from "react-icons/ai";
 
 const CircuitStart: FunctionComponent<CircuitStartProps> = ({

@@ -67,7 +67,6 @@ export const SET_ACTIONS_TEXT_FETCH: string[] = [
   "Check over your Fetch Action.<br/><br/>Looking good? When you're ready, add the action to the circuit.<br/><br/>You can add more actions or move to the next stage.",
 ];
 
-
 export const EXECUTION_CONSTRAINTS_TEXT: string[] = [
   "Select the date and time that your circuit should start running.",
   "Select the date and time that your circuit should complete running.",
@@ -75,8 +74,15 @@ export const EXECUTION_CONSTRAINTS_TEXT: string[] = [
   "This sets the maximum number of times that the main Lit Action code will be executed before the circuit stops running.<br/><br/>This includes the entire run of the circuit, regardless of whether the conditions were met or not.<br/><br/>It's a way to limit the overall PKP signing activity of your circuit.",
 ];
 
-export const IPFS_TEXT: string[] = 
- [ "Hash your Lit Action Code to IPFS.<br/><br/>This IPFS CID is used when minting your PKP to assign the correct Lit Action Code.", "Would you like to contribute your Lit Action Code to the public Lit Action Code database?<br/><br/>This allows for other users to assign the same actions to their minted PKP."]
+export const IPFS_TEXT: string[] = [
+  "Hash your Lit Action Code to IPFS.<br/><br/>This IPFS CID is used when minting your PKP to assign the correct Lit Action Code.",
+  "Would you like to contribute your Lit Action Code to the public Lit Action Code database?<br/><br/>This allows for other users to assign the same actions to their minted PKP.",
+];
 
- export const MINT_BURN_TEXT: string[] = 
- [ "Mint your PKP on the Chronicle Network.<br/><br/>This PKP can only be used with the Lit Action Code you generated in the previous step, ensuring that you always know what you are signing."]
+export const MINT_BURN_TEXT: string[] = [
+  "Mint your PKP on the Chronicle Network.<br/><br/>This PKP can only be used with the Lit Action Code you generated in the previous step, ensuring that you always know what you are signing.",
+];
+
+export const RUN_CIRCUIT_TEXT: string[] = [
+  "Your circuit is ready to start running!<br/><br/>Click to start.",
+];
