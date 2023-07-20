@@ -4,6 +4,7 @@ import {
   INFURA_GATEWAY,
   IPFS_TEXT,
   MINT_BURN_TEXT,
+  RUN_CIRCUIT_TEXT,
   SET_ACTIONS_TEXT_CONTRACT,
   SET_ACTIONS_TEXT_FETCH,
   SET_CONDITIONAL_LOGIC_TEXT_EVERY,
@@ -35,9 +36,12 @@ import { setActionFlow } from "../../redux/reducers/actionFlowSlice";
 import { setExecutionConstraintFlow } from "../../redux/reducers/executionConstraintFlowSlice";
 import { setIpfsFlow } from "../../redux/reducers/ipfsFlowSlice";
 import { setMintPKPFlow } from "../../redux/reducers/mintPKPFlowSlice";
+import { setRunCircuit } from "../../redux/reducers/runCircuitFlowSlice";
+import { useRouter } from "next/router";
 
 export default function Home() {
   const dispatch = useDispatch();
+  const router = useRouter();
   const circuitFlowIndex = useSelector(
     (state: RootState) => state.app.circuitFlowReducer.value
   );
@@ -46,6 +50,9 @@ export default function Home() {
   );
   const actionFlowIndex = useSelector(
     (state: RootState) => state.app.actionFlowReducer.value
+  );
+  const runCircuitFlowIndex = useSelector(
+    (state: RootState) => state.app.runCircuitFlowReducer.value
   );
   const conditionLogicFlowIndex = useSelector(
     (state: RootState) => state.app.conditionLogicFlowReducer.value
@@ -235,6 +242,14 @@ export default function Home() {
           mintPKPCount: mintPKPFlowIndex.mintPKPCount,
         })
       );
+    } else if (circuitFlowIndex === 6) {
+      setStepCount(runCircuitFlowIndex.circuitCount);
+      dispatch(
+        setRunCircuit({
+          index: 0,
+          circuitCount: runCircuitFlowIndex.circuitCount,
+        })
+      );
     }
   }, [circuitFlowIndex, conditionType, logicType, actionType]);
 
@@ -413,7 +428,9 @@ export default function Home() {
                       ? executionConstraintFlowIndex
                       : circuitFlowIndex === 4
                       ? ipfsFlowIndex
-                      : mintPKPFlowIndex
+                      : circuitFlowIndex === 5
+                      ? mintPKPFlowIndex
+                      : runCircuitFlowIndex
                   }
                   increaseStepFunction={
                     circuitFlowIndex === 0
@@ -473,12 +490,22 @@ export default function Home() {
                               })
                             );
                         }
-                      : (index: number) => {
+                      : circuitFlowIndex === 5
+                      ? (index: number) => {
                           index < stepCount &&
                             dispatch(
                               setMintPKPFlow({
                                 index: index,
                                 mintPKPCount: mintPKPFlowIndex.mintPKPCount,
+                              })
+                            );
+                        }
+                      : (index: number) => {
+                          index < stepCount &&
+                            dispatch(
+                              setRunCircuit({
+                                index: index,
+                                circuitCount: runCircuitFlowIndex.circuitCount,
                               })
                             );
                         }
@@ -567,7 +594,7 @@ export default function Home() {
                               ? IPFS_TEXT[ipfsFlowIndex.index]
                               : circuitFlowIndex === 4
                               ? MINT_BURN_TEXT[0]
-                              : "",
+                              : RUN_CIRCUIT_TEXT[0],
                         }}
                       ></div>
                     </div>
@@ -588,6 +615,8 @@ export default function Home() {
                   ipfsFlowIndex={ipfsFlowIndex}
                   signedPKPTx={signedPKPTx}
                   mintPKPFlowIndex={mintPKPFlowIndex}
+                  circuitRunning={circuitRunning}
+                  router={router}
                 />
               </div>
             </div>

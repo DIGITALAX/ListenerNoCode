@@ -23,6 +23,8 @@ const NextButton: FunctionComponent<NextButtonProps> = ({
   ipfsFlowIndex,
   signedPKPTx,
   mintPKPFlowIndex,
+  circuitRunning,
+  router
 }): JSX.Element => {
   return (
     <div
@@ -157,6 +159,13 @@ const NextButton: FunctionComponent<NextButtonProps> = ({
           ) {
             () => dispatch(setCircuitFlow(circuitFlowIndex + 1));
           }
+          return;
+        } else if (circuitFlowIndex === 6) {
+          if (circuitRunning) {
+            router.push("/account");
+            dispatch(setCircuitFlow(0));
+          }
+
           return;
         }
       }}

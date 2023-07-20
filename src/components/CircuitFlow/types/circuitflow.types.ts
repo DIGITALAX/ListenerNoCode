@@ -9,6 +9,7 @@ import {
   IExecutionConstraints,
   WebhookCondition,
 } from "./litlistener.types";
+import { NextRouter } from "next/router";
 
 export type OverviewProps = {
   circuitFlowIndex: number;
@@ -295,6 +296,8 @@ export type NextButtonProps = {
     index: number;
     mintPKPCount: number;
   };
+  circuitRunning: boolean;
+  router: NextRouter;
   signedPKPTx: {
     tokenId: string;
     publicKey: string;
