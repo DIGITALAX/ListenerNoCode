@@ -195,6 +195,9 @@ div::-webkit-scrollbar-thumb {
 #xScroll::-webkit-scrollbar-thumb {
   background-color: #9ecad0 !important;
 }
+.react-datepicker {
+  display: inline-flex !important;
+}
 
 .react-datepicker__year-read-view--down-arrow,
 .react-datepicker__month-read-view--down-arrow,
@@ -284,7 +287,7 @@ div::-webkit-scrollbar-thumb {
 }
 
 .react-datepicker-wrapper {
-  display: inline-block;
+  display: inline-flex;
   padding: 0;
   border: 0;
 }
@@ -400,7 +403,7 @@ div::-webkit-scrollbar-thumb {
 }
 
 .react-datepicker__navigation--next {
-  right: 10px;
+  left: 40px;
 }
 
 .react-datepicker__navigation--previous::before,
@@ -493,19 +496,27 @@ div::-webkit-scrollbar-thumb {
   float: left;
   margin: 5px 0 10px 15px;
   text-align: left;
+  font-family: "VCR";
 }
 .react-datepicker__input-time-container .react-datepicker-time__caption {
   display: inline-block;
+  font-family: "VCR";
 }
 .react-datepicker__input-time-container
   .react-datepicker-time__input-container {
   display: inline-block;
+  cursor: pointer;
 }
 .react-datepicker__input-time-container
   .react-datepicker-time__input-container
   .react-datepicker-time__input {
   display: inline-block;
   margin-left: 10px;
+  background-color: white;
+  color: black;
+  cursor: pointer;
+  border-radius: 0.375rem;
+  font-family: "VCR";
 }
 .react-datepicker__input-time-container
   .react-datepicker-time__input-container
@@ -539,16 +550,18 @@ div::-webkit-scrollbar-thumb {
 
 .react-datepicker__time-container {
   float: right;
-  border-left: 1px solid #aeaeae;
+  border-left: 1px solid black;
   width: 100%;
+  font-family: "VCR";
 }
 .react-datepicker__time-container--with-today-button {
   display: inline;
-  border: 1px solid #aeaeae;
+  border: 1px solid black;
   border-radius: 0.3rem;
   position: absolute;
   right: -87px;
   top: 0;
+  font-family: "VCR";
 }
 .react-datepicker__time-container .react-datepicker__time {
   position: relative;
@@ -600,7 +613,7 @@ div::-webkit-scrollbar-thumb {
   ul.react-datepicker__time-list
   li.react-datepicker__time-list-item--selected {
   background-color: #23fefc;
-  color: white;
+  color: black;
   font-weight: bold;
 }
 .react-datepicker__time-container

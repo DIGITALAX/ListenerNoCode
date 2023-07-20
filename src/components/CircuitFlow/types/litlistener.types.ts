@@ -107,7 +107,6 @@ export type UnsignedTransactionData = {
   nonce?: number;
 
   gasLimit?: BigNumberish;
-  gasPrice?: BigNumberish;
 
   value?: BigNumberish;
   chainId?: CHAIN_NAME;
@@ -131,7 +130,6 @@ export type UnsignedTransaction = {
   nonce?: number;
 
   gasLimit?: BigNumberish;
-  gasPrice?: BigNumberish;
 
   data?: BytesLike;
   value?: BigNumberish;
@@ -180,9 +178,9 @@ export interface CustomAction {
  * @property abi - The ABI (Application Binary Interface) of the smart contract, which describes its functions and events.
  * @property functionName - The name of the smart contract function to call.
  * @property chainId - The compatible blockchain network chainId.
+ * @property providerURL - The provider URL compatible with the network specified.
  * @property nonce - The transaction nonce.
  * @property gasLimit - The transaction gas limit.
- * @property gasPrice - The transaction gas price.
  * @property value - Any value to be passed with the transaction.
  * @property from - The address from which the transaction as called. This will usually be the PKP address.
  * @property maxPriorityFeePerGas - The max priority fee per gas for the transaction.
@@ -196,9 +194,9 @@ export interface ContractAction {
   abi: ethers.ContractInterface;
   functionName: string;
   chainId: CHAIN_NAME;
+  providerURL: string;
   nonce?: number;
   gasLimit?: BigNumberish;
-  gasPrice?: BigNumberish;
   value?: BigNumberish;
   from?: `0x${string}`;
   maxPriorityFeePerGas?: BigNumberish;
@@ -265,7 +263,7 @@ export type Action = CustomAction | ContractAction | FetchAction;
  * @property type - The type of the conditional logic. It can be "THRESHOLD", "TARGET", or "EVERY".
  * @property value - Used when the type is "THRESHOLD". It's the threshold number of conditions that must have passed in order for the Lit Action to run.
  * @property targetCondition - Used when the type is "TARGET". It's the specific Condition Id (In order of Conditions Added to Array) that must be met in order for the Lit Action to run.
- * @property interval - Optional. It's the frequency of condition checks. If omitted, the condition is checked continuously. Resolves in milliseconds.
+ * @property interval - Optional. It's the frequency of condition checks. If omitted, the condition is checked every 30 minutes (1,800,000 ms). Resolves in milliseconds.
  */
 export interface IThresholdConditionalLogic {
   type: "THRESHOLD";
@@ -295,6 +293,7 @@ export type IConditionalLogic =
  * @property contractAddress - The address of the contract to monitor.
  * @property abi - The ABI (Application Binary Interface) of the contract.
  * @property chainId - The Lit supported blockchain network chainId.
+ * @property providerURL - The Provider URL compatible with the chosen network.
  * @property eventName - The name of the contract event to monitor.
  * @property eventArgName - The name of the event arg/s that the expectedValue will be matched against.
  * @property expectedValue - The value that will be matched against the emitted value.
@@ -307,6 +306,7 @@ export interface IContractCondition {
   contractAddress: `0x${string}`;
   abi: ethers.ContractInterface;
   chainId: CHAIN_NAME;
+  providerURL: string;
   eventName: string;
   eventArgName: string[];
   expectedValue:
@@ -322,7 +322,7 @@ export interface IContractCondition {
       | string[]
       | bigint[]
       | object[]
-      | (string | number | bigint | object)[]
+      | (string | number | bigint | object)[],
   ) => Promise<void>;
   onUnMatched: (
     emittedValue:
@@ -330,7 +330,7 @@ export interface IContractCondition {
       | string[]
       | bigint[]
       | object[]
-      | (string | number | bigint | object)[]
+      | (string | number | bigint | object)[],
   ) => Promise<void>;
   onError: (error: Error) => void;
 }
@@ -347,7 +347,6 @@ export class ContractCondition implements IContractCondition {
    * @param sdkOnUnMatched - A callback function to execute when the emitted value does not match the expected value in the SDK.
    * */
   id?: string;
-  providerURL?: string;
   sdkOnMatched?: () => Promise<void>;
   sdkOnUnMatched?: () => Promise<void>;
 
@@ -356,6 +355,8 @@ export class ContractCondition implements IContractCondition {
    * @description Constructs an instance of ContractCondition.
    * @param contractAddress - The address of the contract to monitor.
    * @param abi - The ABI of the contract.
+   * @param chainId - The chainId.
+   * @param providerURL - The provider URL compatible to the chainId.
    * @param eventName - The name of the event to monitor.
    * @param eventArgName -
    * @param expectedValue - The value that will be matched against the emitted value.
@@ -368,6 +369,7 @@ export class ContractCondition implements IContractCondition {
     public contractAddress: `0x${string}`,
     public abi: ethers.ContractInterface,
     public chainId: CHAIN_NAME,
+    public providerURL: string,
     public eventName: string,
     public eventArgName: string[],
     public expectedValue:
@@ -383,7 +385,7 @@ export class ContractCondition implements IContractCondition {
         | string[]
         | bigint[]
         | object[]
-        | (string | number | bigint | object)[]
+        | (string | number | bigint | object)[],
     ) => Promise<void> = async () => {},
     public onUnMatched: (
       emittedValue:
@@ -391,9 +393,9 @@ export class ContractCondition implements IContractCondition {
         | string[]
         | bigint[]
         | object[]
-        | (string | number | bigint | object)[]
+        | (string | number | bigint | object)[],
     ) => Promise<void> = async () => {},
-    public onError: (error: Error) => void = () => {}
+    public onError: (error: Error) => void = () => {},
   ) {}
 }
 
@@ -436,7 +438,7 @@ export interface IWebhookCondition {
       | bigint[]
       | object
       | object[]
-      | (string | number | bigint | object)[]
+      | (string | number | bigint | object)[],
   ) => Promise<void>;
   onUnMatched: (
     emittedValue:
@@ -448,7 +450,7 @@ export interface IWebhookCondition {
       | bigint[]
       | object
       | object[]
-      | (string | number | bigint | object)[]
+      | (string | number | bigint | object)[],
   ) => Promise<void>;
   onError: (error: Error) => void;
 }
@@ -506,7 +508,7 @@ export class WebhookCondition implements IWebhookCondition {
         | bigint[]
         | object
         | object[]
-        | (string | number | bigint | object)[]
+        | (string | number | bigint | object)[],
     ) => Promise<void> = async () => {},
     public onUnMatched: (
       emittedValue:
@@ -518,9 +520,9 @@ export class WebhookCondition implements IWebhookCondition {
         | bigint[]
         | object
         | object[]
-        | (string | number | bigint | object)[]
+        | (string | number | bigint | object)[],
     ) => Promise<void> = async () => {},
-    public onError: (error: Error) => void = () => {}
+    public onError: (error: Error) => void = () => {},
   ) {}
 }
 
@@ -547,6 +549,7 @@ export enum LogCategory {
   ERROR = 0,
   RESPONSE = 1,
   CONDITION = 2,
+  BROADCAST = 3,
 }
 
 export interface ILogEntry {

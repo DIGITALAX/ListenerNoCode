@@ -13,28 +13,22 @@ const CircuitStart: FunctionComponent<CircuitStartProps> = ({
       className="relative w-60 h-60 flex flex-col p-2 gap-3"
       id="inputBorder"
     >
-  
-      <div className="flex flex-col w-full h-full border-4 border-moda p-1 gap-1.5 items-center justify-center">
+      <div
+        className={`relative w-36 px-1.5 h-10 bg-aBlack text-white font-vcr text-sm flex justify-center items-center text-center cursor-pointer uppercase border border-white`}
+        onClick={() => handleRunCircuit()}
+      >
         <div
-          className={`relative w-36 px-1.5 h-10 bg-aBlack text-white font-vcr text-sm flex justify-center items-center text-center cursor-pointer uppercase`}
-          id="borderLight"
-          onClick={() =>
-           handleRunCircuit()
-          }
+          className={`relative w-fit h-fit items-center justify-center flex  ${
+            circuitRunLoading && "animate-spin"
+          }`}
         >
-          <div
-            className={`relative w-fit h-fit items-center justify-center flex  ${
-              circuitRunLoading && "animate-spin"
-            }`}
-          >
-            {circuitRunLoading ? (
-              <AiOutlineLoading size={15} color="white" opacity={80} />
-            ) : circuitRunLoading ? (
-              "circuit running"
-            ) : (
-              "run circuit"
-            )}
-          </div>
+          {circuitRunLoading ? (
+            <AiOutlineLoading size={15} color="white" opacity={80} />
+          ) : circuitRunning ? (
+            "circuit running"
+          ) : (
+            "run circuit"
+          )}
         </div>
       </div>
     </div>

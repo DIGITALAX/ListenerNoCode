@@ -4,7 +4,7 @@ import {
   WebhookCondition,
 } from "@/components/CircuitFlow/types/litlistener.types";
 import { FunctionComponent } from "react";
-import { setConditionFlow } from "../../../../../../../redux/reducers/conditionFlowSlice";
+import { setConditionFlow } from "../../../../../../redux/reducers/conditionFlowSlice";
 
 const FinalCondition: FunctionComponent<FinalConditionProps> = ({
   conditionInformation,
@@ -19,22 +19,31 @@ const FinalCondition: FunctionComponent<FinalConditionProps> = ({
   expectedValues,
   eventArgs,
   inputs,
+  circuitInformation,
 }) => {
   switch (conditionType) {
     case "web":
       const webHookInfo = conditionInformation as WebhookCondition;
       return (
-        <div className="relative w-full overflow-y-scroll flex flex-col gap-10 items-start justify-start h-60 grow p-2.5">
-          <div className="relative w-full h-fit font-vcr text-white items-center justify-center flex text-center">
-            {`Your webhook condition will query ${
-              webHookInfo?.baseUrl + webHookInfo?.endpoint
-            } and check if the returned value at ${
-              webHookInfo?.responsePath
-            } is ${webHookInfo?.matchOperator} to ${
-              webHookInfo?.expectedValue
-            }.`}
+        <div
+          className={`relative w-full overflow-y-scroll flex flex-col gap-10 items-start justify-star h-60 grow p-2.5 ${
+            circuitInformation.conditions.length > 0 && "pb-20"
+          } `}
+        >
+          <div className="relative w-full h-full flex items-center justify-center text-center">
+            <div className="relative w-3/4 h-fit font-vcr text-white items-center justify-center flex text-center break-words whitespace-pre-wrap">
+              {`Your webhook condition will query ${
+                webHookInfo?.baseUrl + webHookInfo?.endpoint
+              } and check if the returned value at ${
+                webHookInfo?.responsePath
+              } is ${webHookInfo?.matchOperator} to ${
+                webHookInfo?.expectedValue
+              }.`}
+            </div>
           </div>
-          <div className="relative w-fit h-fit inline-flex flex-wrap items-start justify-center gap-3 px-3">
+          <div
+            className={`relative w-fit inline-flex flex-wrap items-start justify-center gap-3 px-3 h-fit`}
+          >
             {Array.from([
               String(webHookInfo?.baseUrl || ""),
               String(webHookInfo?.endpoint || ""),
@@ -78,7 +87,10 @@ const FinalCondition: FunctionComponent<FinalConditionProps> = ({
                       }`}
                       disabled
                       type={
-                        apiPassword && value !== "" && value !== "null"
+                        index === 3 &&
+                        apiPassword &&
+                        value !== "" &&
+                        value !== "null"
                           ? "password"
                           : "text"
                       }
@@ -116,18 +128,24 @@ const FinalCondition: FunctionComponent<FinalConditionProps> = ({
     default:
       const contractInfo = conditionInformation as ContractCondition;
       return (
-        <div className="relative w-full overflow-y-scroll flex flex-col gap-10 items-start justify-start h-60 grow p-2.5">
-          <div className="relative w-full h-fit font-vcr text-white items-center justify-center flex text-center">
-            {`Your contract condition will monitor the ${
-              contractInfo?.eventName
-            } event emitted by ${contractInfo?.contractAddress} on ${
-              contractInfo?.chainId
-            } and check if the returned values from ${JSON.stringify(
-              eventArgs
-            )} at are ${contractInfo?.matchOperator} to ${JSON.stringify(
-              expectedValues
-            )}
+        <div
+          className={`relative w-full overflow-y-scroll flex flex-col gap-10 items-start justify-start h-60 ${
+            circuitInformation.conditions.length > 0 && "pb-20"
+          } grow p-2.5`}
+        >
+          <div className="relative w-full h-full flex items-center justify-center text-center">
+            <div className="relative w-3/4 h-fit font-vcr text-white items-center justify-center flex text-center break-words whitespace-pre-wrap">
+              {`Your contract condition will monitor the ${
+                contractInfo?.eventName
+              } event emitted by ${contractInfo?.contractAddress} on ${
+                contractInfo?.chainId
+              } and check if the returned values from ${JSON.stringify(
+                eventArgs
+              )} at are ${contractInfo?.matchOperator} to ${JSON.stringify(
+                expectedValues
+              )}
             .`}
+            </div>
           </div>
           <div className="relative w-full h-fit flex flex-col flex-wrap items-center justify-center gap-3 px-3">
             {Array.from([
@@ -257,20 +275,22 @@ const FinalCondition: FunctionComponent<FinalConditionProps> = ({
                       )}
                     </div>
                   ) : index === 4 || index === 5 ? (
-                    <div className="relative w-fit h-fit flex flex-col gap-1 justify-start items-start overflow-y-scroll">
-                      {(value as string[])?.map(
-                        (item: string, indexTwo: number) => {
-                          return (
-                            <textarea
-                              value={item || ""}
-                              key={indexTwo}
-                              className="bg-aBlack w-44 h-8 p-1 text-white font-vcr text-sm justify-end items-start flex bg-black/40 lowercase border border-ballena border-l-8"
-                              disabled
-                              style={{ resize: "none" }}
-                            ></textarea>
-                          );
-                        }
-                      )}
+                    <div className="relative w-fit h-full flex overflow-y-scroll">
+                      <div className="relative w-fit h-fit flex flex-col gap-1 justify-start items-start">
+                        {(value as string[])?.map(
+                          (item: string, indexTwo: number) => {
+                            return (
+                              <textarea
+                                value={item || ""}
+                                key={indexTwo}
+                                className="bg-aBlack w-44 h-8 p-1 text-white font-vcr text-sm justify-end items-start flex bg-black/40 lowercase border border-ballena border-l-8"
+                                disabled
+                                style={{ resize: "none" }}
+                              ></textarea>
+                            );
+                          }
+                        )}
+                      </div>
                     </div>
                   ) : (
                     <input

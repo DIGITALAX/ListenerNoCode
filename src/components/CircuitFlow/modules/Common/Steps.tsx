@@ -4,9 +4,8 @@ import { setConditionFlow } from "../../../../../redux/reducers/conditionFlowSli
 
 const Steps: FunctionComponent<StepsProps> = ({
   stepCount,
-  dispatch,
-  circuitFlowIndex,
   currentFlowIndex,
+  increaseStepFunction,
 }): JSX.Element => {
   return (
     <div className="relative w-full h-16 flex flex-row">
@@ -22,17 +21,7 @@ const Steps: FunctionComponent<StepsProps> = ({
                   ? "text-black bg-white"
                   : "text-ballena"
               }`}
-              onClick={() => {
-                circuitFlowIndex === 0 &&
-                  index < stepCount &&
-                  dispatch(
-                    setConditionFlow({
-                      index: index,
-                      webhookCount: currentFlowIndex.webhookCount,
-                      contractCount: currentFlowIndex.contractCount,
-                    })
-                  );
-              }}
+              onClick={() => increaseStepFunction(index)}
             >
               {index > stepCount - 1 ? "x" : index + 1}
             </div>

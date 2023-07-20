@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { setCircuitInformation } from "../../../../../../redux/reducers/circuitInformationSlice";
 import { RootState } from "../../../../../../redux/store";
 import { setIpfsHash } from "../../../../../../redux/reducers/ipfsHashSlice";
-import { setLitActionCode } from "../../../../../../redux/reducers/litActionCodeSlice";
 import { setNewContractActionInformation } from "../../../../../../redux/reducers/newContractActionInformationSlice";
 import { setNewFetchActionInformation } from "../../../../../../redux/reducers/newFetchActionInformationSlice";
 import { setNewContractConditionInformation } from "../../../../../../redux/reducers/newContractConditionInformationSlice";
@@ -94,7 +93,7 @@ const useStartCircuit = () => {
           }),
         });
 
-        console.log(await res.json())
+        console.log(await res.json());
 
         if (res.status === 200) {
           setCircuitRunning(true);
@@ -121,8 +120,12 @@ const useStartCircuit = () => {
         IPFSHash: "",
       })
     );
-    dispatch(setIpfsHash(""));
-    dispatch(setLitActionCode(""));
+    dispatch(
+      setIpfsHash({
+        ipfs: "",
+        litCode: "",
+      })
+    );
     dispatch(setNewContractActionInformation(undefined));
     dispatch(setNewFetchActionInformation(undefined));
     dispatch(setNewContractConditionInformation(undefined));

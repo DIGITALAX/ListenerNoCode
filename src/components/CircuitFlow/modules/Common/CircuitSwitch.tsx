@@ -2,11 +2,11 @@ import { FunctionComponent } from "react";
 import { CircuitSwitchProps } from "../../types/circuitflow.types";
 import SetConditions from "../SetConditions/modules/SetConditions";
 import ConditionalLogic from "../ConditionalLogic/ConditionalLogic";
-import ExecutionConstraints from "../ExecutionConstraints/ExecutionConstraints";
 import IPFS from "../IPFSHash/IPFS";
 import MintGrantBurn from "../MintGrantBurnPKP/MintGrantBurn";
 import RunCircuit from "../StartCircuit/RunCircuit";
-import SetActions from "../SetActions/SetActions";
+import SetActions from "../SetActions/modules/SetActions";
+import ExecutionConstraints from "../ExecutionConstraints/modules/ExecutionConstraints";
 
 const CircuitSwitch: FunctionComponent<CircuitSwitchProps> = ({
   circuitFlowIndex,
@@ -26,7 +26,6 @@ const CircuitSwitch: FunctionComponent<CircuitSwitchProps> = ({
   setExpectedValues,
   newWebhookConditionInformation,
   editingState,
-  setEditingState,
   handleUpdateCondition,
   logicType,
   setLogicType,
@@ -47,7 +46,6 @@ const CircuitSwitch: FunctionComponent<CircuitSwitchProps> = ({
   ipfsHash,
   ipfsLoading,
   handleInstantiateCircuit,
-  litActionCode,
   handleMintGrantBurnPKP,
   pkpLoading,
   handleRunCircuit,
@@ -66,7 +64,6 @@ const CircuitSwitch: FunctionComponent<CircuitSwitchProps> = ({
   setFunctionArgs,
   newFetchActionInformation,
   editingStateAction,
-  setEditingStateAction,
   handleUpdateAction,
   payable,
   setPayable,
@@ -85,6 +82,17 @@ const CircuitSwitch: FunctionComponent<CircuitSwitchProps> = ({
   dropDownChainContract,
   apiPassword,
   setApiPassword,
+  conditionLogicFlowIndex,
+  actionFlowIndex,
+  apiPasswordAction,
+  setApiPasswordAction,
+  dropDownChainContractAction,
+  setDropDownChainContractAction,
+  dropDownsSignOpen,
+  setDropDownsSignOpen,
+  executionConstraintFlowIndex,
+  litActionCode,
+  ipfsFlowIndex,
 }): JSX.Element => {
   switch (circuitFlowIndex) {
     case 6:
@@ -111,15 +119,14 @@ const CircuitSwitch: FunctionComponent<CircuitSwitchProps> = ({
     case 4:
       return (
         <IPFS
-          litActionCode={litActionCode}
-          dispatch={dispatch}
           handleInstantiateCircuit={handleInstantiateCircuit}
           ipfsHash={ipfsHash}
           ipfsLoading={ipfsLoading}
-          circuitInformation={circuitInformation}
           handleSaveToIPFSDB={handleSaveToIPFSDB}
           dbLoading={dbLoading}
           dbAdded={dbAdded}
+          litActionCode={litActionCode}
+          ipfsFlowIndex={ipfsFlowIndex}
         />
       );
 
@@ -132,12 +139,17 @@ const CircuitSwitch: FunctionComponent<CircuitSwitchProps> = ({
           setMaxLitActionCompletions={setMaxLitActionCompletions}
           conditionMonitorExecutions={conditionMonitorExecutions}
           setConditionMonitorExecutions={setConditionMonitorExecutions}
+          executionConstraintFlowIndex={executionConstraintFlowIndex}
         />
       );
 
     case 2:
       return (
         <SetActions
+          dropDownsSignOpen={dropDownsSignOpen}
+          setDropDownsSignOpen={setDropDownsSignOpen}
+          apiPasswordAction={apiPasswordAction}
+          setApiPasswordAction={setApiPasswordAction}
           dispatch={dispatch}
           actionType={actionType}
           newContractActionInformation={newContractActionInformation}
@@ -157,11 +169,13 @@ const CircuitSwitch: FunctionComponent<CircuitSwitchProps> = ({
           handleAddActionAndReset={handleAddActionAndReset}
           handleUpdateAction={handleUpdateAction}
           setActionType={setActionType}
-          setEditingStateAction={setEditingStateAction}
           editingStateAction={editingStateAction}
           circuitInformation={circuitInformation}
           signConditions={signConditions}
           setSignConditions={setSignConditions}
+          actionFlowIndex={actionFlowIndex}
+          setDropDownChainContractAction={setDropDownChainContractAction}
+          dropDownChainContractAction={dropDownChainContractAction}
         />
       );
 
@@ -179,6 +193,7 @@ const CircuitSwitch: FunctionComponent<CircuitSwitchProps> = ({
           targetConditionOpen={targetConditionOpen}
           setTargetConditionOpen={setTargetConditionOpen}
           circuitInformation={circuitInformation}
+          conditionLogicFlowIndex={conditionLogicFlowIndex}
         />
       );
 
@@ -186,7 +201,6 @@ const CircuitSwitch: FunctionComponent<CircuitSwitchProps> = ({
       return (
         <SetConditions
           conditionFlowIndex={conditionFlowIndex}
-          circuitInformation={circuitInformation}
           dispatch={dispatch}
           conditionType={conditionType}
           setConditionType={setConditionType}
@@ -202,12 +216,12 @@ const CircuitSwitch: FunctionComponent<CircuitSwitchProps> = ({
           setExpectedValues={setExpectedValues}
           newWebhookConditionInformation={newWebhookConditionInformation}
           editingState={editingState}
-          setEditingState={setEditingState}
           handleUpdateCondition={handleUpdateCondition}
           setDropDownChainContract={setDropDownChainContract}
           dropDownChainContract={dropDownChainContract}
           apiPassword={apiPassword}
           setApiPassword={setApiPassword}
+          circuitInformation={circuitInformation}
         />
       );
   }

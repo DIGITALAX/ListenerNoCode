@@ -9,14 +9,17 @@ const Input: FunctionComponent<InputProps> = ({
   placeholderText,
   password,
   setAPIPassword,
+  border,
 }): JSX.Element => {
   return (
     <div className="relative w-fit h-fit flex flex-row gap-3 items-center justify-center">
       {Array.from({ length: count }).map((_, index: number) => {
         return (
           <div
-            className="relative w-72 h-40 flex flex-col p-2 gap-3 justify-center items-center px-4"
-            id="inputBorder"
+            className={`relative w-72 flex flex-col p-2 gap-3 justify-center items-center px-4 ${
+              border ? "h-fit" : "h-40"
+            }`}
+            id={border ? "" : "inputBorder"}
             key={index}
           >
             <div

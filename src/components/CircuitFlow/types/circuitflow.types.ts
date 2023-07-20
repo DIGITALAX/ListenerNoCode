@@ -20,10 +20,32 @@ export type OverviewProps = {
 };
 
 export type CircuitSwitchProps = {
+  apiPasswordAction: boolean;
+  litActionCode: string;
+  ipfsFlowIndex: {
+    index: number;
+    ipfsCount: number;
+  };
+  setApiPasswordAction: (e: boolean) => void;
+  executionConstraintFlowIndex: {
+    index: number;
+    executionCount: number;
+  };
   conditionFlowIndex: {
     index: number;
     contractCount: number;
     webhookCount: number;
+  };
+  actionFlowIndex: {
+    index: number;
+    contractCount: number;
+    fetchCount: number;
+  };
+  conditionLogicFlowIndex: {
+    index: number;
+    everyCount: number;
+    thresholdCount: number;
+    targetCount: number;
   };
   apiPassword: boolean;
   setApiPassword: (e: boolean) => void;
@@ -82,8 +104,6 @@ export type CircuitSwitchProps = {
     typesOutput: boolean[];
     payable: boolean;
     stateMutability: boolean;
-    signType: boolean[];
-    valueType: boolean[];
   };
   setDropDownsOpenAction: (e: {
     internalTypesInput: boolean[];
@@ -92,6 +112,12 @@ export type CircuitSwitchProps = {
     typesOutput: boolean[];
     payable: boolean;
     stateMutability: boolean;
+  }) => void;
+  dropDownsSignOpen: {
+    signType: boolean[];
+    valueType: boolean[];
+  };
+  setDropDownsSignOpen: (e: {
     signType: boolean[];
     valueType: boolean[];
   }) => void;
@@ -105,13 +131,13 @@ export type CircuitSwitchProps = {
   setStateMutability: (e: string) => void;
   actionType: string;
   setActionType: (e: string) => void;
-  setEditingStateAction: (e: boolean) => void;
+  setDropDownChainContractAction: (e: boolean) => void;
+  dropDownChainContractAction: boolean;
   handleRunCircuit: () => Promise<void>;
   circuitRunning: boolean;
   handleMintGrantBurnPKP: () => Promise<void>;
   pkpLoading: boolean;
   handleInstantiateCircuit: () => Promise<void>;
-  litActionCode: string;
   ipfsLoading: boolean;
   ipfsHash: string;
   time: {
@@ -167,7 +193,6 @@ export type CircuitSwitchProps = {
   expectedValues: string[];
   setExpectedValues: (e: string[]) => void;
   editingState: boolean;
-  setEditingState: (e: boolean) => void;
   handleUpdateCondition: () => void;
   setLogicType: (e: string) => void;
   logicType: string;
@@ -190,7 +215,7 @@ export type SetConditionsProps = {
   apiPassword: boolean;
   setApiPassword: (e: boolean) => void;
   editingState: boolean;
-  setEditingState: (e: boolean) => void;
+  circuitInformation: CircuitInformation;
   handleUpdateCondition: () => void;
   conditionFlowIndex: {
     index: number;
@@ -226,7 +251,6 @@ export type SetConditionsProps = {
     typesOutput: boolean[];
   }) => void;
   dispatch: Dispatch<AnyAction>;
-  circuitInformation: CircuitInformation;
   conditionType: string;
   setConditionType: (e: string) => void;
   newWebhookConditionInformation: WebhookCondition | undefined;
@@ -255,29 +279,58 @@ export type AllConditionsProps = {
   dispatch: Dispatch<AnyAction>;
   setConditionType: (e: string) => void;
   setEditingState: (e: boolean) => void;
+  conditionFlowIndex: {
+    index: number;
+    webhookCount: number;
+    contractCount: number;
+  };
 };
 
 export type ConnectorProps = {
   topOnly?: boolean;
 };
 
-export type MoreConditionButtonProps = {
-  handleAddConditionAndReset: () => void;
-  editingState: boolean;
-  handleUpdateCondition: () => void;
+export type NextButtonProps = {
+  mintPKPFlowIndex: {
+    index: number;
+    mintPKPCount: number;
+  };
+  signedPKPTx: {
+    tokenId: string;
+    publicKey: string;
+    address: string;
+  };
   conditionFlowIndex: {
     index: number;
     webhookCount: number;
     contractCount: number;
   };
+  ipfsFlowIndex: {
+    index: number;
+    ipfsCount: number;
+  };
   circuitFlowIndex: number;
-  conditionType: string;
   dispatch: Dispatch<AnyAction>;
   circuitInformation: CircuitInformation;
   handleAddExecutionConstraints: () => void;
   handleSetConditionalLogic: () => boolean;
   ipfsHash: string | undefined;
   stepCount: number;
+  conditionLogicFlowIndex: {
+    index: number;
+    everyCount: number;
+    thresholdCount: number;
+    targetCount: number;
+  };
+  actionFlowIndex: {
+    index: number;
+    fetchCount: number;
+    contractCount: number;
+  };
+  executionConstraintFlowIndex: {
+    index: number;
+    executionCount: number;
+  };
 };
 
 export type InputProps = {
@@ -288,17 +341,15 @@ export type InputProps = {
   placeholderText: string[];
   password?: boolean;
   setAPIPassword?: (e: boolean) => void;
+  border?: boolean;
 };
 
-export type ConditionChoiceProps = {
-  conditionType: string;
-  setConditionType: (e: string) => void;
+export type ChoiceProps = {
+  choiceType: string;
+  setChoiceType: (e: string) => void;
   editingState: boolean;
-};
-
-export type WebhookConditionProps = {
-  newWebhookConditionInformation: WebhookCondition | undefined;
-  dispatch: Dispatch<AnyAction>;
+  arrayValues: string[];
+  titleValues: string[];
 };
 
 export type LogicOptionsProps = {
@@ -306,22 +357,11 @@ export type LogicOptionsProps = {
   logicType: string;
 };
 
-export type IntervalProps = {
-  interval: number;
-  setInterval: (e: number) => void;
-};
-
-export type ThresholdProps = {
-  thresholdValue: number;
-  setThresholdValue: (e: number) => void;
-};
-
-export type TargetProps = {
-  targetCondition: number;
-  setTargetCondition: (e: number) => void;
-  targetConditionOpen: boolean;
-  setTargetConditionOpen: (e: boolean) => void;
-  circuitInformation: CircuitInformation;
+export type InputLogicProps = {
+  valueCondition: number;
+  setCondition: (e: number) => void;
+  placeholderText: string;
+  mainText: string;
 };
 
 export type ConditionalLogicProps = {
@@ -336,6 +376,12 @@ export type ConditionalLogicProps = {
   targetConditionOpen: boolean;
   setTargetConditionOpen: (e: boolean) => void;
   circuitInformation: CircuitInformation;
+  conditionLogicFlowIndex: {
+    index: number;
+    everyCount: number;
+    thresholdCount: number;
+    targetCount: number;
+  };
 };
 
 export type LogicSwitchProps = {
@@ -362,6 +408,10 @@ export type ExecutionConstraintsProps = {
   setMaxLitActionCompletions: (e: number | undefined) => void;
   conditionMonitorExecutions: number | undefined;
   setConditionMonitorExecutions: (e: number | undefined) => void;
+  executionConstraintFlowIndex: {
+    index: number;
+    executionCount: number;
+  };
 };
 
 export type EndStartProps = {
@@ -375,43 +425,28 @@ export type EndStartProps = {
   }) => void;
 };
 
-export type MaxConditionsProps = {
-  conditionMonitorExecutions: number | undefined;
-  setConditionMonitorExecutions: (e: number | undefined) => void;
-};
-
-export type MaxExecutionProps = {
-  maxLitActionCompletions: number | undefined;
-  setMaxLitActionCompletions: (e: number | undefined) => void;
-};
-
-export type LitActionProps = {
-  dispatch: Dispatch<AnyAction>;
-  litActionCode: string;
-};
-
 export type IPFSProps = {
+  ipfsFlowIndex: {
+    index: number;
+    ipfsCount: number;
+  };
   ipfsHash: string;
-  dispatch: Dispatch<AnyAction>;
-  litActionCode: string;
   handleInstantiateCircuit: () => Promise<void>;
   ipfsLoading: boolean;
-  circuitInformation: CircuitInformation;
   handleSaveToIPFSDB: () => Promise<void>;
   dbLoading: boolean;
   dbAdded: boolean;
+  litActionCode: string;
 };
 
 export type HashIPFSProps = {
   handleInstantiateCircuit: () => Promise<void>;
   ipfsLoading: boolean;
-  circuitInformation: CircuitInformation;
-  dispatch: Dispatch<AnyAction>;
+  ipfsHash: string;
+  litActionCode: string;
 };
 
 export type ResultIPFSProps = {
-  ipfsLoading: boolean;
-  ipfsHash: string;
   handleSaveToIPFSDB: () => Promise<void>;
   dbLoading: boolean;
   dbAdded: boolean;
@@ -430,9 +465,6 @@ export type MintGrantBurnProps = {
 export type MintPKPProps = {
   handleMintGrantBurnPKP: () => Promise<void>;
   pkpLoading: boolean;
-};
-
-export type PKPResultProps = {
   signedPKPTx: {
     tokenId: string;
     publicKey: string;
@@ -464,51 +496,6 @@ export type RunCircuitProps = {
   circuitRunning: boolean;
   handleClearCircuit: () => void;
   circuitRunLoading: boolean;
-  ipfsHash: string;
-  signedPKPTx: {
-    tokenId: string;
-    publicKey: string;
-    address: string;
-  };
-};
-
-export type FetchActionProps = {
-  dropDownsOpenAction: {
-    internalTypesInput: boolean[];
-    typesInput: boolean[];
-    internalTypesOutput: boolean[];
-    typesOutput: boolean[];
-    payable: boolean;
-    stateMutability: boolean;
-    signType: boolean[];
-    valueType: boolean[];
-  };
-  setDropDownsOpenAction: (e: {
-    internalTypesInput: boolean[];
-    typesInput: boolean[];
-    internalTypesOutput: boolean[];
-    typesOutput: boolean[];
-    payable: boolean;
-    stateMutability: boolean;
-    signType: boolean[];
-    valueType: boolean[];
-  }) => void;
-  newFetchActionInformation: FetchAction | undefined;
-  dispatch: Dispatch<AnyAction>;
-  signConditions: {
-    type: string;
-    operator: string;
-    value: boolean | number | string;
-    valueType: boolean | number | string;
-  }[];
-  setSignConditions: (
-    e: {
-      type: string;
-      operator: string;
-      value: boolean | number | string;
-      valueType: boolean | number | string;
-    }[]
-  ) => void;
 };
 
 export type ActionSwitchProps = {
@@ -544,8 +531,6 @@ export type ActionSwitchProps = {
     typesOutput: boolean[];
     payable: boolean;
     stateMutability: boolean;
-    signType: boolean[];
-    valueType: boolean[];
   };
   setDropDownsOpenAction: (e: {
     internalTypesInput: boolean[];
@@ -554,8 +539,6 @@ export type ActionSwitchProps = {
     typesOutput: boolean[];
     payable: boolean;
     stateMutability: boolean;
-    signType: boolean[];
-    valueType: boolean[];
   }) => void;
   functionArgs: string[];
   setFunctionArgs: (e: string[]) => void;
@@ -582,66 +565,16 @@ export type ActionSwitchProps = {
   ) => void;
 };
 
-export type ContractActionProps = {
-  actionInputs: {
-    internalType: string;
-    name: string;
-    type: string;
-  }[];
-  actionOutputs: {
-    internalType: string;
-    name: string;
-    type: string;
-  }[];
-  setActionInputs: (
-    e: {
-      internalType: string;
-      name: string;
-      type: string;
-    }[]
-  ) => void;
-  setActionOutputs: (
-    e: {
-      internalType: string;
-      name: string;
-      type: string;
-    }[]
-  ) => void;
-  dropDownsOpenAction: {
-    internalTypesInput: boolean[];
-    typesInput: boolean[];
-    internalTypesOutput: boolean[];
-    typesOutput: boolean[];
-    payable: boolean;
-    stateMutability: boolean;
-    signType: boolean[];
-    valueType: boolean[];
-  };
-  setDropDownsOpenAction: (e: {
-    internalTypesInput: boolean[];
-    typesInput: boolean[];
-    internalTypesOutput: boolean[];
-    typesOutput: boolean[];
-    payable: boolean;
-    stateMutability: boolean;
-    signType: boolean[];
-    valueType: boolean[];
-  }) => void;
-  functionArgs: string[];
-  setFunctionArgs: (e: string[]) => void;
-  newContractActionInformation: ContractAction | undefined;
-  dispatch: Dispatch<AnyAction>;
-  payable: boolean;
-  setPayable: (e: boolean) => void;
-  stateMutability: string;
-  setStateMutability: (e: string) => void;
-};
-
 export type AllActionsProps = {
   circuitInformation: CircuitInformation;
   dispatch: Dispatch<AnyAction>;
   setActionType: (e: string) => void;
   setEditingStateAction: (e: boolean) => void;
+  actionFlowIndex: {
+    index: number;
+    contractCount: number;
+    fetchCount: number;
+  };
 };
 
 export type MoreActionButtonProps = {
@@ -651,6 +584,15 @@ export type MoreActionButtonProps = {
 };
 
 export type SetActionsProps = {
+  apiPasswordAction: boolean;
+  setApiPasswordAction: (e: boolean) => void;
+  actionFlowIndex: {
+    index: number;
+    contractCount: number;
+    fetchCount: number;
+  };
+  setDropDownChainContractAction: (e: boolean) => void;
+  dropDownChainContractAction: boolean;
   handleAddActionAndReset: () => void;
   handleUpdateAction: () => void;
   signConditions: {
@@ -699,8 +641,6 @@ export type SetActionsProps = {
     typesOutput: boolean[];
     payable: boolean;
     stateMutability: boolean;
-    signType: boolean[];
-    valueType: boolean[];
   };
   setDropDownsOpenAction: (e: {
     internalTypesInput: boolean[];
@@ -709,8 +649,6 @@ export type SetActionsProps = {
     typesOutput: boolean[];
     payable: boolean;
     stateMutability: boolean;
-    signType: boolean[];
-    valueType: boolean[];
   }) => void;
   functionArgs: string[];
   setFunctionArgs: (e: string[]) => void;
@@ -724,7 +662,14 @@ export type SetActionsProps = {
   actionType: string;
   circuitInformation: CircuitInformation;
   setActionType: (e: string) => void;
-  setEditingStateAction: (e: boolean) => void;
+  dropDownsSignOpen: {
+    signType: boolean[];
+    valueType: boolean[];
+  };
+  setDropDownsSignOpen: (e: {
+    signType: boolean[];
+    valueType: boolean[];
+  }) => void;
 };
 
 export type ActionTypeProps = {
@@ -735,9 +680,42 @@ export type ActionTypeProps = {
 
 export type StepsProps = {
   stepCount: number;
-  circuitFlowIndex: number;
-  dispatch: Dispatch<AnyAction>;
   currentFlowIndex: any;
+  increaseStepFunction: (index: number) => void;
+};
+
+export type FinalActionProps = {
+  actionInformation: Action | undefined;
+  signConditions?: {
+    type: string;
+    operator: string;
+    value: string | number | boolean;
+    valueType: string | number | boolean;
+  }[];
+  actionType: string;
+  editingState: boolean;
+  actionFlowIndex: {
+    index: number;
+    fetchCount: number;
+    contractCount: number;
+  };
+  circuitInformation: CircuitInformation;
+  handleUpdateAction: () => void;
+  handleAddActionAndReset: () => void;
+  dispatch: Dispatch<AnyAction>;
+  apiPassword?: boolean;
+  setApiPassword?: (e: boolean) => void;
+  inputs?: {
+    internalType: string;
+    name: string;
+    type: string;
+  }[];
+  outputs?: {
+    internalType: string;
+    name: string;
+    type: string;
+  }[];
+  functionArgs?: string[];
 };
 
 export type FinalConditionProps = {
@@ -749,6 +727,7 @@ export type FinalConditionProps = {
     webhookCount: number;
     contractCount: number;
   };
+  circuitInformation: CircuitInformation;
   handleUpdateCondition: () => void;
   handleAddConditionAndReset: () => void;
   dispatch: Dispatch<AnyAction>;
@@ -765,42 +744,104 @@ export type FinalConditionProps = {
 };
 
 export type AbiProps = {
-  inputs: {
-    indexed: boolean;
-    internalType: string;
-    name: string;
-    type: string;
-  }[];
-  setInputs: (
+  indexed?: boolean;
+  type: string;
+  payable?: boolean;
+  setPayable?: (e: boolean) => void;
+  stateMutability?: string;
+  setStateMutability?: (e: string) => void;
+  setOutputs?: (
     e: {
-      indexed: boolean;
       internalType: string;
       name: string;
       type: string;
     }[]
   ) => void;
-  dropDownsOpenContract: {
-    internalTypesInput: boolean[];
-    typesInput: boolean[];
-    indexed: boolean[];
-    internalTypesOutput: boolean[];
-    typesOutput: boolean[];
-  };
-  setDropDownsOpenContract: (e: {
-    internalTypesInput: boolean[];
-    typesInput: boolean[];
-    indexed: boolean[];
-    internalTypesOutput: boolean[];
-    typesOutput: boolean[];
-  }) => void;
+  outputs?: {
+    internalType: string;
+    name: string;
+    type: string;
+  }[];
+  inputs?:
+    | {
+        indexed: boolean;
+        internalType: string;
+        name: string;
+        type: string;
+      }[]
+    | {
+        internalType: string;
+        name: string;
+        type: string;
+      }[];
+  setInputs?:
+    | ((
+        e: {
+          indexed: boolean;
+          internalType: string;
+          name: string;
+          type: string;
+        }[]
+      ) => void)
+    | ((
+        e: {
+          internalType: string;
+          name: string;
+          type: string;
+        }[]
+      ) => void);
+  dropDownsOpen:
+    | {
+        internalTypesInput: boolean[];
+        typesInput: boolean[];
+        indexed: boolean[];
+        internalTypesOutput: boolean[];
+        typesOutput: boolean[];
+      }
+    | {
+        internalTypesInput: boolean[];
+        typesInput: boolean[];
+        internalTypesOutput: boolean[];
+        typesOutput: boolean[];
+        payable: boolean;
+        stateMutability: boolean;
+      };
+  setDropDownsOpen:
+    | ((e: {
+        internalTypesInput: boolean[];
+        typesInput: boolean[];
+        indexed: boolean[];
+        internalTypesOutput: boolean[];
+        typesOutput: boolean[];
+      }) => void)
+    | ((e: {
+        internalTypesInput: boolean[];
+        typesInput: boolean[];
+        internalTypesOutput: boolean[];
+        typesOutput: boolean[];
+        payable: boolean;
+        stateMutability: boolean;
+      }) => void);
 };
 
 export type DropDownProps = {
-  setDropDownOpenIndex: (type: string) => void;
+  setDropDownOpenIndex: (type: string, index?: number) => void;
   setDropDownOpen: () => void;
   inputChosen: string;
   dropDownOpen: boolean;
   title: string;
+  inputArray: any[];
+  top?: string;
+  border?: boolean;
+};
+
+export type DropDownLogicProps = {
+  setDropDownOpenIndex: (type: number) => void;
+  setDropDownOpen: () => void;
+  inputChosen: number;
+  dropDownOpen: boolean;
+  title: string;
+  circuitInformation: CircuitInformation;
 };
 
 export type ArgsProps = {
@@ -809,4 +850,23 @@ export type ArgsProps = {
   setOnChangeArgs: (e: string, index: number) => void;
   placeholderText: string;
   nameTitle: string;
+};
+
+export type SignConditionProps = {
+  signConditions: {
+    type: string;
+    operator: string;
+    value: boolean | number | string;
+    valueType: boolean | number | string;
+  }[];
+  setToSign: (value: string) => void;
+  toSignValue: string;
+  setAddSignConditions: () => void;
+  dropDownsOpen: { signType: boolean[]; valueType: boolean[] };
+  setSignType: (value: number) => void;
+  setSignOperator: (index: number, type: string) => void;
+  setSignValue: (index: number, type: string) => void;
+  setSignTypeDropDown: (index: number, type: string) => void;
+  setSignValueType: (index: number, type: string) => void;
+  setSignValueTypeDropDown: (index: number) => void;
 };

@@ -5,16 +5,18 @@ import {
 } from "@/components/CircuitFlow/types/litlistener.types";
 import { FunctionComponent } from "react";
 import { RiCloseCircleFill } from "react-icons/ri";
-import { setNewContractActionInformation } from "../../../../../redux/reducers/newContractActionInformationSlice";
-import { setNewFetchActionInformation } from "../../../../../redux/reducers/newFetchActionInformationSlice";
-import { setCircuitInformation } from "../../../../../redux/reducers/circuitInformationSlice";
-import { AllActionsProps } from "../../types/circuitflow.types";
+import { setNewContractActionInformation } from "../../../../../../redux/reducers/newContractActionInformationSlice";
+import { setNewFetchActionInformation } from "../../../../../../redux/reducers/newFetchActionInformationSlice";
+import { setCircuitInformation } from "../../../../../../redux/reducers/circuitInformationSlice";
+import { AllActionsProps } from "../../../types/circuitflow.types";
+import { setActionFlow } from "../../../../../../redux/reducers/actionFlowSlice";
 
 const AllActions: FunctionComponent<AllActionsProps> = ({
   circuitInformation,
   dispatch,
   setActionType,
   setEditingStateAction,
+  actionFlowIndex
 }): JSX.Element => {
   return (
     <div
@@ -26,8 +28,7 @@ const AllActions: FunctionComponent<AllActionsProps> = ({
           return (
             <div key={index} className="relative w-fit h-fit flex">
               <div
-                className="relative w-24 flex justify-center items-center text-center font-vcr py-1.5 h-full text-sm text-white cursor-pointer active:scale-95 hover:opacity-80 bg-aBlack"
-                id="footerBG"
+                className="relative w-24 flex justify-center items-center text-center font-vcr h-full text-sm text-white cursor-pointer active:scale-95 hover:opacity-80 bg-aBlack border border-white"
                 onClick={() => {
                   (action as ContractAction)?.chainId
                     ? dispatch(
@@ -37,6 +38,13 @@ const AllActions: FunctionComponent<AllActionsProps> = ({
                       )
                     : dispatch(
                         setNewFetchActionInformation(action as FetchAction)
+                      );
+                      dispatch(
+                        setActionFlow({
+                          index: 1,
+                          fetchCount: actionFlowIndex.fetchCount,
+                          contractCount: actionFlowIndex.contractCount,
+                        })
                       );
                   (action as ContractAction)?.chainId
                     ? setActionType("contract")

@@ -7,7 +7,7 @@ export default async function handler(
 ) {
   try {
     const response = await axios.post(
-      "http://localhost:3001/start",
+      "http://localhost:3000/start",
       req.body,
       {
         headers: {

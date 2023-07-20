@@ -3,6 +3,7 @@ import { RootState } from "../../../../../../redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import { setIpfsHash } from "../../../../../../redux/reducers/ipfsHashSlice";
 import {
+  INFURA_GATEWAY,
   LIT_DB_CONTRACT,
 } from "../../../../../../lib/constants";
 import { setCircuitInformation } from "../../../../../../redux/reducers/circuitInformationSlice";
@@ -33,7 +34,7 @@ const useIPFS = () => {
     abi: LitDbAbi,
     args: [circuitInformation?.id, ipfsHash],
     functionName: "addEntryToDB",
-    enabled: Boolean(ipfsHash !== ""),
+    enabled: Boolean(ipfsHash.ipfs !== ""),
   });
 
   const { writeAsync } = useContractWrite(config as any);
@@ -97,13 +98,13 @@ const useIPFS = () => {
 
   useEffect(() => {
     if (ipfsLoading && callSocket) {
-      const websocket = new WebSocket("ws://localhost:3001");
+      const websocket = new WebSocket("ws://localhost:3000");
 
       websocket.addEventListener("open", () => {
         console.log("WebSocket connection is open");
       });
 
-      websocket.addEventListener("message", (event) => {
+      websocket.addEventListener("message", async (event) => {
         const message = event.data;
         console.log("Received message from server:", message);
 
@@ -114,7 +115,15 @@ const useIPFS = () => {
             id: data?.id,
           })
         );
-        dispatch(setIpfsHash(String(data?.ipfs)));
+        const res = await fetch(`${INFURA_GATEWAY}/ipfs/${data?.ipfs}`);
+        console.log(res)
+        const litActionCode = await res.text();
+        dispatch(
+          setIpfsHash({
+            ipfs: String(data?.ipfs),
+            litCode: litActionCode,
+          })
+        );
         setCallSocket(false);
       });
 

@@ -11,7 +11,7 @@ export default async function handler(
       rejectUnauthorized: false,
     });
     const response = await axios.post(
-      "http://localhost:3001/instantiate",
+      "http://localhost:3000/instantiate",
       req.body,
       {
         headers: {

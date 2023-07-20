@@ -1,11 +1,17 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface IpfsHashState {
-  value: string;
+  value: {
+    ipfs: string;
+    litCode: string;
+  };
 }
 
 const initialIpfsHashState: IpfsHashState = {
-  value: "",
+  value: {
+    ipfs: "",
+    litCode: "",
+  },
 };
 
 export const ipfsHashSlice = createSlice({
@@ -14,7 +20,10 @@ export const ipfsHashSlice = createSlice({
   reducers: {
     setIpfsHash: (
       state: IpfsHashState,
-      action: PayloadAction<string>
+      action: PayloadAction<{
+        ipfs: string;
+        litCode: string;
+      }>
     ) => {
       state.value = action.payload;
     },
