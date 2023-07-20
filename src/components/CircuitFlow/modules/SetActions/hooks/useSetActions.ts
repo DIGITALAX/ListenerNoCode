@@ -30,6 +30,9 @@ const useSetActions = () => {
   const [functionArgs, setFunctionArgs] = useState<string[]>([""]);
   const [actionType, setActionType] = useState<string>("contract");
   const [editingStateAction, setEditingStateAction] = useState<boolean>(false);
+  const [apiPasswordAction, setApiPasswordAction] = useState<boolean>(false);
+  const [dropDownChainContractAction, setDropDownChainContractAction] =
+    useState<boolean>(false);
   const [stateMutability, setStateMutability] = useState<string>("external");
   const [signConditions, setSignConditions] = useState<
     {
@@ -47,6 +50,13 @@ const useSetActions = () => {
     },
   ]);
   const [payable, setPayable] = useState<boolean>(false);
+  const [dropDownsSignOpen, setDropDownsSignOpen] = useState<{
+    signType: boolean[];
+    valueType: boolean[];
+  }>({
+    signType: [false],
+    valueType: [false],
+  });
   const [dropDownsOpenAction, setDropDownsOpenAction] = useState<{
     internalTypesInput: boolean[];
     typesInput: boolean[];
@@ -54,8 +64,6 @@ const useSetActions = () => {
     typesOutput: boolean[];
     payable: boolean;
     stateMutability: boolean;
-    signType: boolean[];
-    valueType: boolean[];
   }>({
     internalTypesInput: [false],
     typesInput: [false],
@@ -63,8 +71,6 @@ const useSetActions = () => {
     typesOutput: [false],
     payable: false,
     stateMutability: false,
-    signType: [false],
-    valueType: [false],
   });
   const [actionInputs, setActionInputs] = useState<
     {
@@ -426,6 +432,8 @@ const useSetActions = () => {
         typesOutput: [false],
         payable: false,
         stateMutability: false,
+      });
+      setDropDownsSignOpen({
         signType: [false],
         valueType: [false],
       });
@@ -519,6 +527,8 @@ const useSetActions = () => {
         typesOutput: [false],
         payable: false,
         stateMutability: false,
+      });
+      setDropDownsSignOpen({
         signType: [false],
         valueType: [false],
       });
@@ -596,6 +606,12 @@ const useSetActions = () => {
     handleUpdateAction,
     signConditions,
     setSignConditions,
+    apiPasswordAction,
+    setApiPasswordAction,
+    dropDownChainContractAction,
+    setDropDownChainContractAction,
+    dropDownsSignOpen,
+    setDropDownsSignOpen,
   };
 };
 

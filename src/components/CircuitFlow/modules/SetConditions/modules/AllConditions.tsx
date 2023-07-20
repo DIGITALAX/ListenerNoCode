@@ -9,12 +9,14 @@ import { RiCloseCircleFill } from "react-icons/ri";
 import { setCircuitInformation } from "../../../../../../redux/reducers/circuitInformationSlice";
 import { setNewWebhookConditionInformation } from "../../../../../../redux/reducers/newWebhookConditionInformationSlice";
 import { setNewContractConditionInformation } from "../../../../../../redux/reducers/newContractConditionInformationSlice";
+import { setConditionFlow } from "../../../../../../redux/reducers/conditionFlowSlice";
 
 const AllConditions: FunctionComponent<AllConditionsProps> = ({
   circuitInformation,
   dispatch,
   setConditionType,
   setEditingState,
+  conditionFlowIndex,
 }): JSX.Element => {
   return (
     <div
@@ -27,8 +29,7 @@ const AllConditions: FunctionComponent<AllConditionsProps> = ({
             return (
               <div key={index} className="relative w-fit h-fit flex">
                 <div
-                  className="relative w-24 flex justify-center items-center text-center font-vcr py-1.5 h-full text-sm text-white cursor-pointer active:scale-95 hover:opacity-80 bg-aBlack"
-                  id="footerBG"
+                  className="relative w-24 flex justify-center items-center text-center font-vcr h-full text-sm text-white cursor-pointer active:scale-95 hover:opacity-80 bg-aBlack border border-white"
                   onClick={() => {
                     (condition as ContractCondition)?.chainId
                       ? dispatch(
@@ -41,6 +42,13 @@ const AllConditions: FunctionComponent<AllConditionsProps> = ({
                             condition as WebhookCondition
                           )
                         );
+                    dispatch(
+                      setConditionFlow({
+                        index: 1,
+                        webhookCount: conditionFlowIndex.webhookCount,
+                        contractCount: conditionFlowIndex.contractCount,
+                      })
+                    );
                     (condition as ContractCondition)?.chainId
                       ? setConditionType("contract")
                       : setConditionType("web");
@@ -70,7 +78,7 @@ const AllConditions: FunctionComponent<AllConditionsProps> = ({
                     );
                   }}
                 >
-                  <RiCloseCircleFill color="#8EADB5" size={20} />
+                  <RiCloseCircleFill color="white" size={20} />
                 </div>
               </div>
             );

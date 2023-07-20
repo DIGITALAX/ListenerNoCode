@@ -1,10 +1,8 @@
 import { FunctionComponent } from "react";
-
 import LogicOptions from "./LogicOptions";
 import { ConditionalLogicProps } from "../../types/circuitflow.types";
-import Interval from "./Interval";
-import LogicSwitch from "./LogicSwitch";
-
+import Input from "./Input";
+import DropDown from "./DropDown";
 
 const ConditionalLogic: FunctionComponent<ConditionalLogicProps> = ({
   logicType,
@@ -18,27 +16,90 @@ const ConditionalLogic: FunctionComponent<ConditionalLogicProps> = ({
   targetConditionOpen,
   setTargetConditionOpen,
   circuitInformation,
+  conditionLogicFlowIndex,
 }): JSX.Element => {
-  return (
-    <div className="relative w-full h-full flex flex-col">
-      <div className="relative w-full h-full flex flex-row items-center justify-center">
-        <LogicOptions logicType={logicType} setLogicType={setLogicType} />
-        
-        <Interval interval={interval} setInterval={setInterval} />
-        
-        <LogicSwitch
-          thresholdValue={thresholdValue}
-          setThresholdValue={setThresholdValue}
-          targetCondition={targetCondition}
-          setTargetCondition={setTargetCondition}
-          logicType={logicType}
-          targetConditionOpen={targetConditionOpen}
-          setTargetConditionOpen={setTargetConditionOpen}
-          circuitInformation={circuitInformation}
-        />
-      </div>
-    </div>
-  );
+  switch (logicType) {
+    case "TARGET":
+      switch (conditionLogicFlowIndex.index) {
+        case 2:
+          return (
+            <DropDown
+              setDropDownOpen={() =>
+                setTargetConditionOpen(!targetConditionOpen)
+              }
+              inputChosen={targetCondition}
+              dropDownOpen={targetConditionOpen}
+              title={"Target"}
+              circuitInformation={circuitInformation}
+              setDropDownOpenIndex={(index: number) => {
+                setTargetConditionOpen(!targetConditionOpen);
+                setTargetCondition(index + 1);
+              }}
+            />
+          );
+
+        case 1:
+          return (
+            <Input
+              valueCondition={interval || 120000}
+              setCondition={(e: number) => setInterval(e)}
+              placeholderText={"enter interval"}
+              mainText={"Interval"}
+            />
+          );
+
+        default:
+          return (
+            <LogicOptions logicType={logicType} setLogicType={setLogicType} />
+          );
+      }
+
+    case "THRESHOLD":
+      switch (conditionLogicFlowIndex.index) {
+        case 2:
+          return (
+            <Input
+              setCondition={(e: number) => setThresholdValue(e)}
+              valueCondition={thresholdValue || 1}
+              placeholderText={"enter threshold amount"}
+              mainText={"Threshold"}
+            />
+          );
+
+        case 1:
+          return (
+            <Input
+              setCondition={(e: number) => setInterval(e)}
+              valueCondition={interval || 120000}
+              placeholderText={"enter interval"}
+              mainText={"Interval"}
+            />
+          );
+
+        default:
+          return (
+            <LogicOptions logicType={logicType} setLogicType={setLogicType} />
+          );
+      }
+
+    default:
+      switch (conditionLogicFlowIndex.index) {
+        case 1:
+          return (
+            <Input
+              setCondition={(e: number) => setInterval(e)}
+              valueCondition={interval || 120000}
+              placeholderText={"enter interval"}
+              mainText={"Interval"}
+            />
+          );
+
+        default:
+          return (
+            <LogicOptions logicType={logicType} setLogicType={setLogicType} />
+          );
+      }
+  }
 };
 
 export default ConditionalLogic;

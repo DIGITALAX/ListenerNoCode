@@ -7,13 +7,16 @@ import modalOpenReducer from "./reducers/modalOpenSlice";
 import previewConditionModalReducer from "./reducers/previewConditionModalSlice";
 import newContractConditionInformationReducer from "./reducers/newContractConditionInformationSlice";
 import newWebhookConditionInformationReducer from "./reducers/newWebhookConditionInformationSlice";
-import litActionCodeModalReducer from "./reducers/litActionCodeModalSlice";
-import litActionCodeReducer from "./reducers/litActionCodeSlice";
 import ipfsHashReducer from "./reducers/ipfsHashSlice";
 import newContractActionInformationReducer from "./reducers/newContractActionInformationSlice";
 import newFetchActionInformationReducer from "./reducers/newFetchActionInformationSlice";
 import signedPKPReducer from "./reducers/signedPKPSlice";
 import conditionFlowReducer from "./reducers/conditionFlowSlice";
+import conditionLogicFlowReducer from "./reducers/conditionLogicFlowSlice";
+import actionFlowReducer from "./reducers/actionFlowSlice";
+import executionConstraintFlowReducer from "./reducers/executionConstraintFlowSlice";
+import ipfsFlowReducer from "./reducers/ipfsFlowSlice";
+import mintPKPFlowReducer from "./reducers/mintPKPFlowSlice";
 
 const reducer = combineReducers({
   walletConnectedReducer,
@@ -23,13 +26,16 @@ const reducer = combineReducers({
   previewConditionModalReducer,
   newContractConditionInformationReducer,
   newWebhookConditionInformationReducer,
-  litActionCodeModalReducer,
-  litActionCodeReducer,
   ipfsHashReducer,
   newContractActionInformationReducer,
   newFetchActionInformationReducer,
   signedPKPReducer,
-  conditionFlowReducer
+  conditionFlowReducer,
+  conditionLogicFlowReducer,
+  actionFlowReducer,
+  executionConstraintFlowReducer,
+  ipfsFlowReducer,
+  mintPKPFlowReducer
 });
 
 export const store = configureStore({

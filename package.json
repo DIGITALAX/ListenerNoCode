@@ -18,6 +18,7 @@
     "autoprefixer": "10.4.14",
     "axios": "^1.4.0",
     "bs58": "^5.0.0",
+    "copy-to-clipboard": "^3.3.3",
     "dotenv": "^16.3.1",
     "eslint": "8.43.0",
     "eslint-config-next": "13.4.7",

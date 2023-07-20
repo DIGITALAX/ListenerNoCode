@@ -1,6 +1,14 @@
 import Image from "next/legacy/image";
 import {
+  EXECUTION_CONSTRAINTS_TEXT,
   INFURA_GATEWAY,
+  IPFS_TEXT,
+  MINT_BURN_TEXT,
+  SET_ACTIONS_TEXT_CONTRACT,
+  SET_ACTIONS_TEXT_FETCH,
+  SET_CONDITIONAL_LOGIC_TEXT_EVERY,
+  SET_CONDITIONAL_LOGIC_TEXT_TARGET,
+  SET_CONDITIONAL_LOGIC_TEXT_THRESHOLD,
   SET_CONDITIONS_TEXT_CONTRACT,
   SET_CONDITIONS_TEXT_WEBHOOK,
 } from "../../lib/constants";
@@ -18,8 +26,15 @@ import useSetActions from "@/components/CircuitFlow/modules/SetActions/hooks/use
 import Head from "next/head";
 import Steps from "@/components/CircuitFlow/modules/Common/Steps";
 import { useEffect, useState } from "react";
-import NextButton from "@/components/CircuitFlow/modules/SetConditions/modules/NextButton";
+import NextButton from "@/components/CircuitFlow/modules/Common/NextButton";
 import { setConditionFlow } from "../../redux/reducers/conditionFlowSlice";
+import AllConditions from "@/components/CircuitFlow/modules/SetConditions/modules/AllConditions";
+import { setConditionLogicFlow } from "../../redux/reducers/conditionLogicFlowSlice";
+import AllActions from "@/components/CircuitFlow/modules/SetActions/modules/AllActions";
+import { setActionFlow } from "../../redux/reducers/actionFlowSlice";
+import { setExecutionConstraintFlow } from "../../redux/reducers/executionConstraintFlowSlice";
+import { setIpfsFlow } from "../../redux/reducers/ipfsFlowSlice";
+import { setMintPKPFlow } from "../../redux/reducers/mintPKPFlowSlice";
 
 export default function Home() {
   const dispatch = useDispatch();
@@ -29,8 +44,20 @@ export default function Home() {
   const conditionFlowIndex = useSelector(
     (state: RootState) => state.app.conditionFlowReducer.value
   );
-  const litActionCode = useSelector(
-    (state: RootState) => state.app.litActionCodeReducer.value
+  const actionFlowIndex = useSelector(
+    (state: RootState) => state.app.actionFlowReducer.value
+  );
+  const conditionLogicFlowIndex = useSelector(
+    (state: RootState) => state.app.conditionLogicFlowReducer.value
+  );
+  const mintPKPFlowIndex = useSelector(
+    (state: RootState) => state.app.mintPKPFlowReducer.value
+  );
+  const ipfsFlowIndex = useSelector(
+    (state: RootState) => state.app.ipfsFlowReducer.value
+  );
+  const executionConstraintFlowIndex = useSelector(
+    (state: RootState) => state.app.executionConstraintFlowReducer.value
   );
   const ipfsHash = useSelector(
     (state: RootState) => state.app.ipfsHashReducer.value
@@ -96,6 +123,12 @@ export default function Home() {
     setStateMutability,
     signConditions,
     setSignConditions,
+    setDropDownChainContractAction,
+    dropDownChainContractAction,
+    apiPasswordAction,
+    setApiPasswordAction,
+    dropDownsSignOpen,
+    setDropDownsSignOpen,
   } = useSetActions();
   const {
     ipfsLoading,
@@ -138,25 +171,72 @@ export default function Home() {
     if (circuitFlowIndex === 0) {
       if (conditionType === "web") {
         setStepCount(conditionFlowIndex.webhookCount);
-        dispatch(
-          setConditionFlow({
-            index: 0,
-            contractCount: conditionFlowIndex.contractCount,
-            webhookCount: conditionFlowIndex.webhookCount,
-          })
-        );
       } else {
         setStepCount(conditionFlowIndex.contractCount);
-        dispatch(
-          setConditionFlow({
-            index: 0,
-            contractCount: conditionFlowIndex.contractCount,
-            webhookCount: conditionFlowIndex.webhookCount,
-          })
-        );
       }
+      dispatch(
+        setConditionFlow({
+          index: 0,
+          contractCount: conditionFlowIndex.contractCount,
+          webhookCount: conditionFlowIndex.webhookCount,
+        })
+      );
+    } else if (circuitFlowIndex === 1) {
+      if (logicType === "EVERY") {
+        setStepCount(conditionLogicFlowIndex.everyCount);
+      } else if (logicType === "THRESHOLD") {
+        setStepCount(conditionLogicFlowIndex.thresholdCount);
+      } else {
+        setStepCount(conditionLogicFlowIndex.targetCount);
+      }
+      dispatch(
+        setConditionLogicFlow({
+          index: 0,
+          everyCount: conditionLogicFlowIndex.everyCount,
+          targetCount: conditionLogicFlowIndex.targetCount,
+          thresholdCount: conditionLogicFlowIndex.thresholdCount,
+        })
+      );
+    } else if (circuitFlowIndex === 2) {
+      if (actionType === "fetch") {
+        setStepCount(actionFlowIndex.fetchCount);
+      } else {
+        setStepCount(actionFlowIndex.contractCount);
+      }
+
+      dispatch(
+        setActionFlow({
+          index: 0,
+          contractCount: actionFlowIndex.contractCount,
+          fetchCount: actionFlowIndex.fetchCount,
+        })
+      );
+    } else if (circuitFlowIndex === 3) {
+      setStepCount(executionConstraintFlowIndex.executionCount);
+      dispatch(
+        setExecutionConstraintFlow({
+          index: 0,
+          executionCount: executionConstraintFlowIndex.executionCount,
+        })
+      );
+    } else if (circuitFlowIndex === 4) {
+      setStepCount(ipfsFlowIndex.ipfsCount);
+      dispatch(
+        setIpfsFlow({
+          index: 0,
+          ipfsCount: ipfsFlowIndex.ipfsCount,
+        })
+      );
+    } else if (circuitFlowIndex === 5) {
+      setStepCount(mintPKPFlowIndex.mintPKPCount);
+      dispatch(
+        setMintPKPFlow({
+          index: 0,
+          mintPKPCount: mintPKPFlowIndex.mintPKPCount,
+        })
+      );
     }
-  }, [circuitFlowIndex, conditionType]);
+  }, [circuitFlowIndex, conditionType, logicType, actionType]);
 
   return (
     <div className="relative w-full h-full flex flex-row border-t-2 border-sol grow">
@@ -187,21 +267,7 @@ export default function Home() {
           <div className="relative w-fit h-full flex gap-3 items-center justify-start pl-10">
             <div className="relative w-60 h-full grow rounded-lg border-2 border-sol items-center justify-center flex bg-aBlack">
               <Image
-                src={`${INFURA_GATEWAY}/ipfs/${
-                  circuitFlowIndex === 0
-                    ? "Qmb8nqNPpXRrJTLgKJtRF6n9AW7cvKojtRSBLsbGoD1Ug2"
-                    : circuitFlowIndex === 1
-                    ? "QmYbHNMXNxYsEBnrGmg2WKVH8H6NNJWq1eaMYG4myBcEwk"
-                    : circuitFlowIndex === 2
-                    ? "Qmds4rHdz5c1vafYoaoU77WW38JAwpJaYQ6wPV2EEVYZdt"
-                    : circuitFlowIndex === 3
-                    ? "Qmf1SAwfTX6nP54QAaahLNspBeyBginWMeApCG4U6skGRm"
-                    : circuitFlowIndex === 4
-                    ? "QmRmqEJTp2faMA3eqfUitLYGPLJYpLfZ6sC2VUKL6Cbsm9"
-                    : circuitFlowIndex === 5
-                    ? "QmSuaus6LZkx1mpuqEJFNtG65gAXHt2yXCx2dZKLn1bPx1"
-                    : "QmaYQxBhpB8DqkX6Z1swzDD6iUaWgPowz8428YNSK2XWK2"
-                }`}
+                src={`${INFURA_GATEWAY}/ipfs/${"Qmb8nqNPpXRrJTLgKJtRF6n9AW7cvKojtRSBLsbGoD1Ug2"}`}
                 layout="fill"
                 objectFit="cover"
                 className="rounded-lg"
@@ -215,6 +281,13 @@ export default function Home() {
               <div className="relative flex flex-col w-full h-full items-center justify-center">
                 <div className="relative w-full h-full flex flex-col items-center justify-center">
                   <CircuitSwitch
+                    apiPasswordAction={apiPasswordAction}
+                    setApiPasswordAction={setApiPasswordAction}
+                    setDropDownChainContractAction={
+                      setDropDownChainContractAction
+                    }
+                    dropDownChainContractAction={dropDownChainContractAction}
+                    actionFlowIndex={actionFlowIndex}
                     conditionFlowIndex={conditionFlowIndex}
                     dispatch={dispatch}
                     circuitFlowIndex={circuitFlowIndex}
@@ -224,6 +297,9 @@ export default function Home() {
                     newContractConditionInformation={
                       newContractConditionInformation
                     }
+                    litActionCode={ipfsHash.litCode}
+                    dropDownsSignOpen={dropDownsSignOpen}
+                    setDropDownsSignOpen={setDropDownsSignOpen}
                     handleAddConditionAndReset={handleAddConditionAndReset}
                     apiPassword={apiPassword}
                     setApiPassword={setApiPassword}
@@ -238,8 +314,8 @@ export default function Home() {
                     newWebhookConditionInformation={
                       newWebhookConditionInformation
                     }
+                    executionConstraintFlowIndex={executionConstraintFlowIndex}
                     editingState={editingState}
-                    setEditingState={setEditingState}
                     handleUpdateCondition={handleUpdateCondition}
                     logicType={logicType}
                     setLogicType={setLogicType}
@@ -260,9 +336,8 @@ export default function Home() {
                       setConditionMonitorExecutions
                     }
                     handleInstantiateCircuit={handleInstantiateCircuit}
-                    ipfsHash={ipfsHash}
+                    ipfsHash={ipfsHash.ipfs}
                     ipfsLoading={ipfsLoading}
-                    litActionCode={litActionCode}
                     pkpLoading={pkpLoading}
                     handleMintGrantBurnPKP={handleMintGrantBurnPKP}
                     circuitRunning={circuitRunning}
@@ -285,7 +360,6 @@ export default function Home() {
                     handleAddActionAndReset={handleAddActionAndReset}
                     handleUpdateAction={handleUpdateAction}
                     setActionType={setActionType}
-                    setEditingStateAction={setEditingStateAction}
                     editingStateAction={editingStateAction}
                     signConditions={signConditions}
                     setSignConditions={setSignConditions}
@@ -297,13 +371,118 @@ export default function Home() {
                     signedPKPTx={signedPKPTx}
                     setDropDownChainContract={setDropDownChainContract}
                     dropDownChainContract={dropDownChainContract}
+                    conditionLogicFlowIndex={conditionLogicFlowIndex}
+                    ipfsFlowIndex={ipfsFlowIndex}
                   />
+                  {circuitInformation?.conditions?.length > 0 &&
+                  circuitFlowIndex === 0 ? (
+                    <div className="absolute bottom-0 left-0 bg-black w-full h-12 border border-ballena px-2">
+                      <AllConditions
+                        dispatch={dispatch}
+                        circuitInformation={circuitInformation}
+                        setConditionType={setConditionType}
+                        setEditingState={setEditingState}
+                        conditionFlowIndex={conditionFlowIndex}
+                      />
+                    </div>
+                  ) : (
+                    circuitInformation?.actions?.length > 0 &&
+                    circuitFlowIndex === 2 && (
+                      <div className="absolute bottom-0 left-0 bg-black w-full h-12 border border-ballena px-2">
+                        <AllActions
+                          dispatch={dispatch}
+                          circuitInformation={circuitInformation}
+                          setActionType={setActionType}
+                          setEditingStateAction={setEditingStateAction}
+                          actionFlowIndex={actionFlowIndex}
+                        />
+                      </div>
+                    )
+                  )}
                 </div>
                 <Steps
-                  circuitFlowIndex={circuitFlowIndex}
                   stepCount={stepCount}
-                  dispatch={dispatch}
-                  currentFlowIndex={conditionFlowIndex}
+                  currentFlowIndex={
+                    circuitFlowIndex === 0
+                      ? conditionFlowIndex
+                      : circuitFlowIndex === 1
+                      ? conditionLogicFlowIndex
+                      : circuitFlowIndex === 2
+                      ? actionFlowIndex
+                      : circuitFlowIndex === 3
+                      ? executionConstraintFlowIndex
+                      : circuitFlowIndex === 4
+                      ? ipfsFlowIndex
+                      : mintPKPFlowIndex
+                  }
+                  increaseStepFunction={
+                    circuitFlowIndex === 0
+                      ? (index: number) => {
+                          index < stepCount &&
+                            dispatch(
+                              setConditionFlow({
+                                index: index,
+                                webhookCount: conditionFlowIndex.webhookCount,
+                                contractCount: conditionFlowIndex.contractCount,
+                              })
+                            );
+                        }
+                      : circuitFlowIndex === 1
+                      ? (index: number) => {
+                          index < stepCount &&
+                            dispatch(
+                              setConditionLogicFlow({
+                                index: index,
+                                thresholdCount:
+                                  conditionLogicFlowIndex.thresholdCount,
+                                everyCount: conditionLogicFlowIndex.everyCount,
+                                targetCount:
+                                  conditionLogicFlowIndex.targetCount,
+                              })
+                            );
+                        }
+                      : circuitFlowIndex === 2
+                      ? (index: number) => {
+                          index < stepCount &&
+                            dispatch(
+                              setActionFlow({
+                                index: index,
+                                fetchCount: actionFlowIndex.fetchCount,
+                                contractCount: actionFlowIndex.contractCount,
+                              })
+                            );
+                        }
+                      : circuitFlowIndex === 3
+                      ? (index: number) => {
+                          index < stepCount &&
+                            dispatch(
+                              setExecutionConstraintFlow({
+                                index: index,
+                                executionCount:
+                                  executionConstraintFlowIndex.executionCount,
+                              })
+                            );
+                        }
+                      : circuitFlowIndex === 4
+                      ? (index: number) => {
+                          index < stepCount &&
+                            dispatch(
+                              setIpfsFlow({
+                                index: index,
+                                ipfsCount: ipfsFlowIndex.ipfsCount,
+                              })
+                            );
+                        }
+                      : (index: number) => {
+                          index < stepCount &&
+                            dispatch(
+                              setMintPKPFlow({
+                                index: index,
+                                mintPKPCount: mintPKPFlowIndex.mintPKPCount,
+                              })
+                            );
+                        }
+                  }
                 />
               </div>
               <div className="relative flex flex-col grow h-full items-center justify-center">
@@ -362,6 +541,32 @@ export default function Home() {
                                 : SET_CONDITIONS_TEXT_CONTRACT[
                                     conditionFlowIndex.index
                                   ]
+                              : circuitFlowIndex === 1
+                              ? conditionType === "EVERY"
+                                ? SET_CONDITIONAL_LOGIC_TEXT_EVERY[
+                                    conditionLogicFlowIndex.index
+                                  ]
+                                : conditionType === "THRESHOLD"
+                                ? SET_CONDITIONAL_LOGIC_TEXT_THRESHOLD[
+                                    conditionLogicFlowIndex.index
+                                  ]
+                                : SET_CONDITIONAL_LOGIC_TEXT_TARGET[
+                                    conditionLogicFlowIndex.index
+                                  ]
+                              : circuitFlowIndex === 2
+                              ? actionType === "fetch"
+                                ? SET_ACTIONS_TEXT_FETCH[actionFlowIndex.index]
+                                : SET_ACTIONS_TEXT_CONTRACT[
+                                    actionFlowIndex.index
+                                  ]
+                              : circuitFlowIndex === 3
+                              ? EXECUTION_CONSTRAINTS_TEXT[
+                                  executionConstraintFlowIndex.index
+                                ]
+                              : circuitFlowIndex === 4
+                              ? IPFS_TEXT[ipfsFlowIndex.index]
+                              : circuitFlowIndex === 4
+                              ? MINT_BURN_TEXT[0]
                               : "",
                         }}
                       ></div>
@@ -369,18 +574,20 @@ export default function Home() {
                   </div>
                 </div>
                 <NextButton
-                  handleAddConditionAndReset={handleAddConditionAndReset}
-                  editingState={editingState}
-                  handleUpdateCondition={handleUpdateCondition}
                   conditionFlowIndex={conditionFlowIndex}
-                  conditionType={conditionType}
+                  conditionLogicFlowIndex={conditionLogicFlowIndex}
                   dispatch={dispatch}
                   circuitFlowIndex={circuitFlowIndex}
                   circuitInformation={circuitInformation}
                   handleSetConditionalLogic={handleSetConditionalLogic}
                   handleAddExecutionConstraints={handleAddExecutionConstraints}
-                  ipfsHash={ipfsHash}
+                  ipfsHash={ipfsHash.ipfs}
                   stepCount={stepCount}
+                  actionFlowIndex={actionFlowIndex}
+                  executionConstraintFlowIndex={executionConstraintFlowIndex}
+                  ipfsFlowIndex={ipfsFlowIndex}
+                  signedPKPTx={signedPKPTx}
+                  mintPKPFlowIndex={mintPKPFlowIndex}
                 />
               </div>
             </div>
@@ -393,7 +600,7 @@ export default function Home() {
         circuitInformation={circuitInformation}
         handleSetConditionalLogic={handleSetConditionalLogic}
         handleAddExecutionConstraints={handleAddExecutionConstraints}
-        ipfsHash={ipfsHash}
+        ipfsHash={ipfsHash.ipfs}
       />
     </div>
   );

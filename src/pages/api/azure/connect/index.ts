@@ -12,7 +12,7 @@ export default async function handler(
     });
 
     const response = await axios.post(
-      "http://localhost:3001/connect",
+      "http://localhost:3000/connect",
       req.body,
       {
         headers: {

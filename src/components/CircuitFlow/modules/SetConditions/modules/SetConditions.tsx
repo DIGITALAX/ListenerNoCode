@@ -1,17 +1,16 @@
 import { FunctionComponent } from "react";
 import { SetConditionsProps } from "@/components/CircuitFlow/types/circuitflow.types";
-import Choice from "./ConditionInput/Choice";
-import Input from "./ConditionInput/Input";
+import Choice from "../../Common/Choice";
+import Input from "../../Common/Input";
 import { setNewWebhookConditionInformation } from "../../../../../../redux/reducers/newWebhookConditionInformationSlice";
-import FinalCondition from "./ConditionInput/FinalCondition";
+import FinalCondition from "./FinalCondition";
 import { setNewContractConditionInformation } from "../../../../../../redux/reducers/newContractConditionInformationSlice";
-import DropDown from "./ConditionInput/DropDown";
-import Abi from "./ConditionInput/Abi";
-import Args from "./ConditionInput/Args";
+import Abi from "../../Common/Abi";
+import Args from "../../Common/Args";
+import DropDown from "../../Common/DropDown";
 
 const SetConditions: FunctionComponent<SetConditionsProps> = ({
   dispatch,
-  circuitInformation,
   conditionType,
   setConditionType,
   newContractConditionInformation,
@@ -22,7 +21,6 @@ const SetConditions: FunctionComponent<SetConditionsProps> = ({
   setExpectedValues,
   newWebhookConditionInformation,
   editingState,
-  setEditingState,
   handleUpdateCondition,
   conditionFlowIndex,
   setDropDownChainContract,
@@ -33,6 +31,7 @@ const SetConditions: FunctionComponent<SetConditionsProps> = ({
   setDropDownsOpenContract,
   apiPassword,
   setApiPassword,
+  circuitInformation,
 }): JSX.Element => {
   switch (conditionType) {
     case "contract":
@@ -50,6 +49,7 @@ const SetConditions: FunctionComponent<SetConditionsProps> = ({
               inputs={inputs}
               eventArgs={eventArgs}
               expectedValues={expectedValues}
+              circuitInformation={circuitInformation}
             />
           );
 
@@ -107,8 +107,10 @@ const SetConditions: FunctionComponent<SetConditionsProps> = ({
             <Abi
               inputs={inputs}
               setInputs={setInputs}
-              dropDownsOpenContract={dropDownsOpenContract}
-              setDropDownsOpenContract={setDropDownsOpenContract}
+              dropDownsOpen={dropDownsOpenContract}
+              setDropDownsOpen={setDropDownsOpenContract}
+              type={"input"}
+              indexed
             />
           );
 
@@ -151,6 +153,29 @@ const SetConditions: FunctionComponent<SetConditionsProps> = ({
                   : "ethereum"
               }
               title={"Chain Name"}
+              inputArray={
+                Array.from([
+                  "ethereum",
+                  "polygon",
+                  "fantom",
+                  "bsc",
+                  "arbitrum",
+                  "avalanche",
+                  "fuji",
+                  "harmony",
+                  "mumbai",
+                  "goerli",
+                  "cronos",
+                  "optimism",
+                  "celo",
+                  "aurora",
+                  "alfajores",
+                  "xdc",
+                  "evmos",
+                  "evmosTestnet",
+                  "hardhat",
+                ])
+              }
             />
           );
 
@@ -177,8 +202,10 @@ const SetConditions: FunctionComponent<SetConditionsProps> = ({
           return (
             <Choice
               editingState={editingState}
-              setConditionType={setConditionType}
-              conditionType={conditionType}
+              setChoiceType={setConditionType}
+              choiceType={conditionType}
+              titleValues={["WEBHOOK CONDITION", "CONTRACT CONDITION"]}
+              arrayValues={["web", "contract"]}
             />
           );
       }
@@ -187,6 +214,7 @@ const SetConditions: FunctionComponent<SetConditionsProps> = ({
         case 6:
           return (
             <FinalCondition
+              circuitInformation={circuitInformation}
               conditionInformation={newWebhookConditionInformation}
               conditionType={conditionType}
               editingState={editingState}
@@ -310,44 +338,13 @@ const SetConditions: FunctionComponent<SetConditionsProps> = ({
           return (
             <Choice
               editingState={editingState}
-              setConditionType={setConditionType}
-              conditionType={conditionType}
+              setChoiceType={setConditionType}
+              choiceType={conditionType}
+              titleValues={["WEBHOOK CONDITION", "CONTRACT CONDITION"]}
+              arrayValues={["web", "contract"]}
             />
           );
       }
-  }
-
-  // <div className="relative w-full h-full flex flex-col p-1.5">
-  {
-    /*       
-      <AllConditions
-        dispatch={dispatch}
-        circuitInformation={circuitInformation}
-        setConditionType={setConditionType}
-        setEditingState={setEditingState}
-      />
-      <div className="relative w-full h-full flex flex-row items-center justify-center">
-    
-        <ConditionTypeSwitcher
-          dispatch={dispatch}
-          conditionType={conditionType}
-          newContractConditionInformation={newContractConditionInformation}
-          newWebhookConditionInformation={newWebhookConditionInformation}
-          outputs={outputs}
-          setOutputs={setOutputs}
-          inputs={inputs}
-          setInputs={setInputs}
-          dropDownsOpenContract={dropDownsOpenContract}
-          setDropDownsOpenContract={setDropDownsOpenContract}
-          
-          expectedValues={expectedValues}
-          setExpectedValues={setExpectedValues}
-        />
-      </div>
-      
-  }
-  {
-    /* </div> */
   }
 };
 

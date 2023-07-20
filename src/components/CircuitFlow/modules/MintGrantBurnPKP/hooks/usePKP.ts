@@ -24,9 +24,9 @@ const usePKP = () => {
   const { config } = usePrepareContractWrite({
     address: PKP_CONTRACT,
     abi: pkpNftAbi,
-    args: [2, `0x${Buffer.from(bs58.decode(ipfsData)).toString("hex")}`],
+    args: [2, `0x${Buffer.from(bs58.decode(ipfsData.ipfs)).toString("hex")}`],
     functionName: "mintGrantAndBurnNext",
-    enabled: Boolean(ipfsData !== ""),
+    enabled: Boolean(ipfsData.ipfs !== ""),
     value: BigInt(1),
   });
 
