@@ -55,8 +55,8 @@ const SetConditions: FunctionComponent<SetConditionsProps> = ({
 
         case 5:
           return (
-            <div className="relative w-fit h-fit flex flex-col items-center justify-center gap-3">
-              <div className="relative w-full h-fit flex flex-row gap-3">
+            <div className="relative w-fit h-fit flex flex-col items-center justify-start renewed:justify-center gap-3 relative w-full overflow-y-scroll h-60 grow">
+              <div className="relative w-full h-fit flex flex-col renewed:flex-row gap-3 items-center justify-center">
                 <Args
                   args={
                     newContractConditionInformation?.eventArgName &&

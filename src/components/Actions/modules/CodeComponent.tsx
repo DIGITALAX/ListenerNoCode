@@ -6,10 +6,17 @@ const CodeComponent: FunctionComponent<CodeComponentProps> = ({
   code,
 }): JSX.Element => {
   return (
-    <div className="relative w-full h-fit ">
+    <div className="relative w-full h-fit break-words">
       <Highlight theme={themes.oceanicNext} code={code} language="js">
         {({ style, tokens, getLineProps, getTokenProps }) => (
-          <pre style={style}>
+          <pre
+            style={{
+              ...style,
+              whiteSpace: "pre-wrap",
+              wordWrap: "break-word",
+              overflowWrap: "break-word",
+            }}
+          >
             {tokens.map((line, i) => (
               <div key={i} {...getLineProps({ line })}>
                 {line.map((token, key) => (

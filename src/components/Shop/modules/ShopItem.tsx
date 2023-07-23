@@ -39,7 +39,6 @@ const ShopItem: FunctionComponent<ShopItemProps> = ({
             newItems[keyIndex] =
               (currentIndexItem[keyIndex] - 1 + item?.uri?.images?.length) %
               item?.uri?.images?.length;
-            console.log({ newItems });
             setCurrentIndexItem(newItems);
           }}
         >

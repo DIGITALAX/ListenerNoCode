@@ -40,6 +40,9 @@ module.exports = {
       },
       screens: {
         tablet: "800px",
+        max: "1460px",
+        renewed: "940px",
+        galaxy: "480px"
       },
     },
   },
