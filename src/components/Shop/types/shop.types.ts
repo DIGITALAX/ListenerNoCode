@@ -5,7 +5,6 @@ export interface AllShop {
   prices: string[];
   acceptedTokens: string[];
   uri: {
-    template: string;
     images: string[];
     description: string;
   };
@@ -14,14 +13,17 @@ export interface AllShop {
   noLimit: boolean;
   collectionId: string;
   tokenIds: string[];
+  chosenSize: string;
+  sizes: string[];
 }
 
 export interface CartItem {
-  collectionId: number;
-  uri: string;
+  collectionId: string;
+  uri: {
+    images: string[];
+    description: string;
+  };
   price: number;
-  printType: string;
-  chosenColor: string;
   chosenSize: string;
   amount: number;
   name: string;
@@ -29,6 +31,22 @@ export interface CartItem {
 
 export type AllShopProps = {
   allShopItems: AllShop[];
+  dispatch: Dispatch<AnyAction>;
+  currentIndex: number;
+  setCurrentIndex: (index: number) => void;
+  allCartItems: CartItem[];
+  currentIndexItem: number[];
+  setCurrentIndexItem: (index: number[]) => void;
+};
+
+export type ShopItemProps = {
+  keyIndex: number;
+  item: AllShop;
+  allShopItems: AllShop[];
+  allCartItems: CartItem[];
+  dispatch: Dispatch<AnyAction>;
+  currentIndexItem: number[];
+  setCurrentIndexItem: (index: number[]) => void;
 };
 
 export type CheckoutProps = {
@@ -59,6 +77,8 @@ export type CheckoutProps = {
   oracleValue: number;
   openConnectModal: (() => void) | undefined;
   address: boolean;
+  openChainModal: (() => void) | undefined;
+  switchNeeded: boolean;
 };
 
 export type ShippingInfoProps = {

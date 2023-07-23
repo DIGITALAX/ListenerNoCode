@@ -6,11 +6,12 @@ import { RootState } from "../../redux/store";
 import useShop from "@/components/Shop/hooks/useShop";
 import AllShop from "@/components/Shop/modules/AllShop";
 import Checkout from "@/components/Shop/modules/Checkout";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { useChainModal, useConnectModal } from "@rainbow-me/rainbowkit";
 
 export default function Shop() {
   const dispatch = useDispatch();
   const { openConnectModal } = useConnectModal();
+  const { openChainModal } = useChainModal();
   const {
     shopLoading,
     purchaseLoading,
@@ -22,7 +23,12 @@ export default function Shop() {
     setFulfillmentDetails,
     fulfillmentDetails,
     checkoutCurrency,
-    setCheckoutCurrency
+    setCheckoutCurrency,
+    switchNeeded,
+    setCurrentIndex,
+    currentIndex,
+    currentIndexItem,
+    setCurrentIndexItem
   } = useShop();
   const allShopItems = useSelector(
     (state: RootState) => state.app.allShopReducer.value
@@ -66,9 +72,15 @@ export default function Shop() {
             </div>
           </div>
         ) : (
-          <div className="relative flex flex-row w-full h-full justify-center items-center">
-            <AllShop allShopItems={allShopItems} />
-          </div>
+          <AllShop
+            currentIndex={currentIndex}
+            setCurrentIndex={setCurrentIndex}
+            allShopItems={allShopItems}
+            dispatch={dispatch}
+            allCartItems={cartItems}
+            currentIndexItem={currentIndexItem}
+            setCurrentIndexItem={setCurrentIndexItem}
+          />
         )}
       </div>
       <Checkout
@@ -85,6 +97,8 @@ export default function Shop() {
         checkoutCurrency={checkoutCurrency}
         oracleValue={oracleValue}
         handleApproveSpend={handleApproveSpend}
+        switchNeeded={switchNeeded}
+        openChainModal={openChainModal}
       />
     </div>
   );

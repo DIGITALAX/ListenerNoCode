@@ -1,9 +1,13 @@
 import { FunctionComponent } from "react";
-import { AllShop, CheckoutProps } from "../types/shop.types";
+import { AllShop, CartItem, CheckoutProps } from "../types/shop.types";
 import Image from "next/legacy/image";
 import { ACCEPTED_TOKENS, INFURA_GATEWAY } from "../../../../lib/constants";
 import { AiOutlineLoading } from "react-icons/ai";
 import ShippingInfo from "./ShippingInfo";
+import { ImCross } from "react-icons/im";
+import { setCartItems } from "../../../../redux/reducers/cartItemsSlice";
+import lodash from "lodash";
+import { setModalOpen } from "../../../../redux/reducers/modalOpenSlice";
 
 const Checkout: FunctionComponent<CheckoutProps> = ({
   cartItems,
@@ -19,6 +23,8 @@ const Checkout: FunctionComponent<CheckoutProps> = ({
   oracleValue,
   openConnectModal,
   address,
+  openChainModal,
+  switchNeeded,
 }): JSX.Element => {
   return (
     <div
@@ -46,85 +52,210 @@ const Checkout: FunctionComponent<CheckoutProps> = ({
             ></div>
             <div className="relative h-1 w-full bg-moda flex items-center justify-center"></div>
           </div>
-          <div className="relative w-full h-full flex flex-col gap-3 font-vcr px-2 items-center overflow-y-scroll">
-            <div className="flex flex-col justify-start h-fit items-center gap-3">
-              {cartItems?.map((value: AllShop, index: number) => {
-                return (
-                  <div
-                    key={index}
-                    className={`relative w-full h-fit flex flex-row justify-center items-center gap-3 cursor-pointer active:scale-95 hover:text-sol active:text-sol grow text-center 
-                     `}
-                  >
-                    <div className="relative flex flex-col relative w-full h-fit justify-start items-center">
-                      <div
-                        className="flex relative w-full h-fit uppercase items-center justify-center text-sm flex-row gap-1"
-                        id="blur"
-                      >
-                        <div className="relative w-fit h-fit flex items-center justify-start"></div>
-                        <div
-                          className={`relative w-fit h-fit flex items-center justify-start `}
-                        ></div>
-                      </div>
-                      <div
-                        className="flex relative w-full h-fit uppercase items-center justify-center text-xs"
-                        id="blur"
-                      ></div>
-                    </div>
+          <div className="relative w-full h-full flex overflow-y-scroll">
+            <div className="relative w-full h-fit flex flex-col gap-10 font-vcr items-center justify-center px-2">
+              <div className="flex flex-col justify-start h-fit items-center gap-3 w-full">
+                {cartItems?.length < 1 ? (
+                  <div className="relative w-full h-full flex text-center items-center justify-center font-vcr text-ballena text-sm">
+                    Add Items to Your Cart.
                   </div>
-                );
-              })}
-            </div>
-            <ShippingInfo
-              fulfillmentDetails={fulfillmentDetails}
-              setFulfillmentDetails={setFulfillmentDetails}
-            />
-            <div className="relative w-3/4 justify-start items-center flex flex-row gap-1">
-              {ACCEPTED_TOKENS?.map((item: string[], index: number) => {
-                return (
-                  <div
-                    className={`relative w-fit h-fit rounded-full flex items-center cursor-pointer active:scale-95 ${
-                      checkoutCurrency === item[1]
-                        ? "opacity-50"
-                        : "opacity-100"
-                    }`}
-                    key={index}
-                    onClick={() => setCheckoutCurrency(item[1])}
-                  >
-                    <Image
-                      src={`${INFURA_GATEWAY}/ipfs/${item[0]}`}
-                      className="flex"
-                      draggable={false}
-                      width={30}
-                      height={35}
-                    />
-                  </div>
-                );
-              })}
-            </div>
-            <div
-              className="relative w-3/4 h-12 rounded-md border border-white bg-azul text-white font-mana items-center justify-center flex cursor-pointer active:scale-95"
-              onClick={
-                !address && !purchaseLoading
-                  ? openConnectModal
-                  : approved
-                  ? () => !purchaseLoading && purchaseItems()
-                  : () => !purchaseLoading && handleApproveSpend()
-              }
-            >
-              <div
-                className={`relative w-fit h-fit flex justify-center items-center ${
-                  purchaseLoading && "animate-spin"
-                }`}
-              >
-                {purchaseLoading ? (
-                  <AiOutlineLoading size={15} color={"white"} />
-                ) : !address ? (
-                  "CONNECT"
-                ) : !approved ? (
-                  "APPROVE SPEND"
                 ) : (
-                  "CHECKOUT"
+                  cartItems?.map((item: CartItem, index: number) => {
+                    return (
+                      <div
+                        key={index}
+                        className={`relative w-full h-12 flex flex-row gap-5 font-mana text-white text-xs justify-between items-center px-1.5 bg-ama/20 rounded-md`}
+                      >
+                        <div className="relative w-10 h-8 rounded-lg bg-cross flex items-center justify-center">
+                          <Image
+                            src={`${INFURA_GATEWAY}/ipfs/${
+                              item.uri.images?.[0]?.split("ipfs://")[1]
+                            }`}
+                            layout="fill"
+                            objectFit="cover"
+                            className="rounded-lg"
+                            draggable={false}
+                          />
+                        </div>
+                        <div className="relative w-fit h-fit text-ama flex">
+                          {
+                            ACCEPTED_TOKENS.find(
+                              (subArray) => subArray[1] === checkoutCurrency
+                            )?.[1]
+                          }{" "}
+                          {item.price / 10 ** 18}
+                        </div>
+                        <div className="relative w-fit h-fit text-ama flex">
+                          {item.amount}
+                        </div>
+                        <div className="relative w-fit h-full flex flex-row items-center justify-center gap-1.5">
+                          <div
+                            className="relative w-5 h-5 cursor-pointer active:scale-95 flex items-center justify-center rotate-90"
+                            onClick={() => {
+                              if (
+                                cartItems?.reduce(
+                                  (total, item) => total + Number(item.amount),
+                                  0
+                                ) >= 5
+                              ) {
+                                dispatch(
+                                  setModalOpen({
+                                    actionOpen: true,
+                                    actionMessage:
+                                      "Only 5 items in the cart at a time.",
+                                    actionImage:
+                                      "QmUzzkGb1HKfixUnyKbVDHVb9TG9nYpdYQhL6uZckRETow",
+                                  })
+                                );
+                                return;
+                              }
+
+                              dispatch(
+                                setCartItems([
+                                  ...cartItems.slice(0, index),
+                                  {
+                                    ...cartItems[index],
+                                    amount: cartItems[index].amount + 1,
+                                  },
+                                  ...cartItems.slice(index + 1),
+                                ])
+                              );
+                            }}
+                          >
+                            <Image
+                              src={`${INFURA_GATEWAY}/ipfs/Qma3jm41B4zYQBxag5sJSmfZ45GNykVb8TX9cE3syLafz2`}
+                              layout="fill"
+                              draggable={false}
+                            />
+                          </div>
+                          <div
+                            className="relative w-5 h-5 cursor-pointer active:scale-95 flex items-center justify-center rotate-90"
+                            onClick={() =>
+                              dispatch(
+                                setCartItems(
+                                  cartItems[index].amount > 1
+                                    ? [
+                                        ...cartItems.slice(0, index),
+                                        {
+                                          ...cartItems[index],
+                                          amount: cartItems[index].amount - 1,
+                                        },
+                                        ...cartItems.slice(index + 1),
+                                      ]
+                                    : [
+                                        ...cartItems.slice(0, index),
+                                        ...cartItems.slice(index + 1),
+                                      ]
+                                )
+                              )
+                            }
+                          >
+                            <Image
+                              src={`${INFURA_GATEWAY}/ipfs/QmcBVNVZWGBDcAxF4i564uSNGZrUvzhu5DKkXESvhY45m6`}
+                              layout="fill"
+                              draggable={false}
+                            />
+                          </div>
+                        </div>
+                        <div
+                          className="ml-auto justify-end items-center w-fit h-fit flex cursor-pointer active:scale-95"
+                          onClick={() => {
+                            const newCart = lodash.concat(
+                              lodash.slice([...cartItems], 0, index),
+                              lodash.slice([...cartItems], index + 1)
+                            );
+                            dispatch(setCartItems(newCart));
+                          }}
+                        >
+                          <ImCross color="white" size={10} />
+                        </div>
+                      </div>
+                    );
+                  })
                 )}
+              </div>
+              <ShippingInfo
+                fulfillmentDetails={fulfillmentDetails}
+                setFulfillmentDetails={setFulfillmentDetails}
+              />
+              <div className="relative justify-center items-center w-3/4  h-fit flex flex-row font-vcr text-sm text-ama text-base gap-3">
+                <div className="relative w-fit h-fit">Total:</div>
+                <div className="relative w-fit h-fit">
+                  {`${
+                    ACCEPTED_TOKENS.find(
+                      (subArray) => subArray[1] === checkoutCurrency
+                    )?.[1]
+                  } `}
+                  {cartItems?.reduce(
+                    (accumulator, currentItem) =>
+                      accumulator +
+                      (currentItem.price * currentItem.amount) / 10 ** 18,
+                    0
+                  ) / oracleValue}
+                </div>
+              </div>
+              <div className="relative flex flex-col gap-1.5 items-center justify-center">
+                <div className="relative w-fit h-fit flex items-center justify-center font-vcr text-white text-xs">
+                  Choose Payment Currency
+                </div>
+                <div className="relative w-3/4 justify-start items-center flex flex-row gap-1">
+                  {ACCEPTED_TOKENS?.map((item: string[], index: number) => {
+                    return (
+                      <div
+                        className={`relative w-fit h-fit rounded-full flex items-center cursor-pointer active:scale-95 ${
+                          checkoutCurrency === item[1]
+                            ? "opacity-50"
+                            : "opacity-100"
+                        }`}
+                        key={index}
+                        onClick={() => setCheckoutCurrency(item[1])}
+                      >
+                        <Image
+                          src={`${INFURA_GATEWAY}/ipfs/${item[0]}`}
+                          className="flex"
+                          draggable={false}
+                          width={30}
+                          height={35}
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+              <div className="relative w-full h-fit flex flex-col gap-1.5 items-center justify-center">
+                {switchNeeded && (
+                  <div className="relative break-words text-xs font-vcr text-ballena flex items-center justify-center  text-center">{`( switch to polygon network )`}</div>
+                )}
+                <div
+                  className="relative w-3/4 h-12 border border-moda bg-azul text-ballena font-vcr items-center justify-center flex cursor-pointer active:scale-95"
+                  onClick={
+                    !address && !purchaseLoading
+                      ? openConnectModal
+                      : address && switchNeeded
+                      ? openChainModal
+                      : approved
+                      ? () => !purchaseLoading && purchaseItems()
+                      : () => !purchaseLoading && handleApproveSpend()
+                  }
+                >
+                  <div
+                    className={`relative w-fit h-fit flex justify-center items-center ${
+                      purchaseLoading && "animate-spin"
+                    }`}
+                  >
+                    {purchaseLoading ? (
+                      <AiOutlineLoading size={15} color={"white"} />
+                    ) : !address ? (
+                      "CONNECT"
+                    ) : address && switchNeeded ? (
+                      "SWITCH NETWORK"
+                    ) : !approved ? (
+                      "APPROVE SPEND"
+                    ) : (
+                      "CHECKOUT"
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
           </div>

@@ -114,4 +114,4 @@ export const ACCEPTED_TOKENS: string[][] = [
 
 export const LISTENER_MARKET: `0x${string}` = "0x";
 export const LISTENER_ORACLE: `0x${string}` = "0x";
-export const FULFILLER_ADDRESS: `0x${string}` = "0x";
+export const FULFILLER_ADDRESS: `0x${string}` = "0x09e0Ba2596677A84CC3b419C648ed42d47a42d6F";

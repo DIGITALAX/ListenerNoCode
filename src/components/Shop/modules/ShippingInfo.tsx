@@ -7,13 +7,15 @@ const ShippingInfo: FunctionComponent<ShippingInfoProps> = ({
 }): JSX.Element => {
   return (
     <div className="relative w-3/4 h-fit flex flex-col gap-3 items-center justify-center text-white">
-      All yiur details are encrypted and sent to the fulfiller
       <div className="relative flex w-full h-full overflow-y-scroll">
         <div className="relative flex flex-col w-full h-fit justify-start items-start gap-3">
-          <div className="relative w-full flex flex-row gap-3 items-center justify-start">
+          <div className="relative w-fit h-fit break-words font-vcr text-white text-xs flex items-center justify-center text-center">
+            {`(There can be only two who hold the keys. All details are encrypted. It’s between you and the fulfiller now.)`}
+          </div>
+          <div className="relative w-full h-fit inline-flex flex-wrap gap-1.5 items-center justify-center">
             <input
               placeholder="name"
-              className="bg-black border h-8 border-white p-1.5 rounded-md font-mana text-white text-xs"
+              className="bg-black border h-8 border-moda p-1.5 font-vcr text-white text-xs"
               value={fulfillmentDetails.name}
               onChange={(e) =>
                 setFulfillmentDetails({
@@ -24,7 +26,7 @@ const ShippingInfo: FunctionComponent<ShippingInfoProps> = ({
             />
             <input
               placeholder="email, lens, tumblr"
-              className="bg-black border border-white p-1.5 rounded-md font-mana text-white h-8 text-xs"
+              className="bg-black border border-moda p-1.5 font-vcr text-white h-8 text-xs"
               value={fulfillmentDetails.contact}
               onChange={(e) =>
                 setFulfillmentDetails({
@@ -33,22 +35,20 @@ const ShippingInfo: FunctionComponent<ShippingInfoProps> = ({
                 })
               }
             />
-          </div>
-          <input
-            placeholder="address"
-            className="bg-black border border-white p-1.5 rounded-md font-mana text-white w-full h-8 text-xs"
-            value={fulfillmentDetails.address}
-            onChange={(e) =>
-              setFulfillmentDetails({
-                ...fulfillmentDetails,
-                address: e.target.value,
-              })
-            }
-          />
-          <div className="relative w-full h-fit flex flex-row gap-3 items-center justify-start">
+            <input
+              placeholder="address"
+              className="bg-black border border-moda p-1.5 font-vcr text-white w-full h-8 text-xs"
+              value={fulfillmentDetails.address}
+              onChange={(e) =>
+                setFulfillmentDetails({
+                  ...fulfillmentDetails,
+                  address: e.target.value,
+                })
+              }
+            />
             <input
               placeholder="zip"
-              className="bg-black border border-white p-1.5 rounded-md font-mana w-16 text-white text-xs  h-full"
+              className="bg-black border border-moda p-1.5 font-vcr w-16 text-white text-xs h-full"
               value={fulfillmentDetails.zip}
               onChange={(e) =>
                 setFulfillmentDetails({
@@ -59,7 +59,7 @@ const ShippingInfo: FunctionComponent<ShippingInfoProps> = ({
             />
             <input
               placeholder="city"
-              className="bg-black border border-white p-1.5 rounded-md font-mana w-20 text-white text-xs  h-full"
+              className="bg-black border border-moda p-1.5 font-vcr w-20 text-white text-xs  h-full"
               value={fulfillmentDetails.city}
               onChange={(e) =>
                 setFulfillmentDetails({
@@ -70,7 +70,7 @@ const ShippingInfo: FunctionComponent<ShippingInfoProps> = ({
             />
             <input
               placeholder="state"
-              className="bg-black border border-white p-1.5 rounded-md font-mana w-20 text-white text-xs  h-full"
+              className="bg-black border border-moda p-1.5 font-vcr w-full text-white text-xs  h-full"
               value={fulfillmentDetails.state}
               onChange={(e) =>
                 setFulfillmentDetails({
