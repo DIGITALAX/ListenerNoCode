@@ -704,6 +704,7 @@ export type StepsProps = {
   stepCount: number;
   currentFlowIndex: any;
   increaseStepFunction: (index: number) => void;
+  largeScreen: number;
 };
 
 export type FinalActionProps = {

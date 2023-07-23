@@ -13,9 +13,9 @@ const Overview: FunctionComponent<OverviewProps> = ({
   circuitRunning,
 }): JSX.Element => {
   return (
-    <div className="relative w-96 grow border-l-2 border-sol bg-aBlack px-4 py-6">
-      <div className="flex flex-row items-center justify-center relative w-full h-full">
-        <div className="relative w-1 h-full bg-moda"></div>
+    <div className="relative w-full xl:w-96 grow max:border-l-2 xl:border-sol xl:bg-aBlack px-3 xl:px-4 py-6 items-center justify-center">
+      <div className="flex flex-row items-center justify-center relative w-full h-full xl:bg-none bg-aBlack xl:border-x-0 border-x-4 border-moda">
+        <div className="relative w-1 h-full bg-moda grow xl:flex hidden"></div>
         <div className="relative w-full h-full flex flex-col gap-5">
           <div className="relative w-full h-fit flex flex-row items-start justify-center">
             <div className="relative h-1 w-10 bg-moda flex items-start justify-center"></div>
@@ -33,9 +33,9 @@ const Overview: FunctionComponent<OverviewProps> = ({
               className="relative h-3 w-4 flex items-center justify-center -top-0.5"
               id="boxGrad"
             ></div>
-            <div className="relative h-1 w-full bg-moda flex items-center justify-center"></div>
+            <div className="relative h-1 w-full bg-moda flex justify-center"></div>
           </div>
-          <div className="relative w-full h-full flex flex-col gap-3 text-base font-vcr px-2 justify-center items-start">
+          <div className="relative w-full h-full xl:flex flex-wrap inline-flex break-words xl:flex-col xl:flex-nowrap gap-3 text-base font-vcr px-2 justify-center text-center xl:text-left items-start">
             {Array.from([
               "Set Conditions",
               "Conditional Logic",
@@ -48,13 +48,12 @@ const Overview: FunctionComponent<OverviewProps> = ({
               return (
                 <div
                   key={index}
-                  className={`relative w-full h-fit flex flex-row justify-start items-center gap-3 cursor-pointer active:scale-95 hover:text-sol grow ${
+                  className={`relative w-fit xl:w-full h-fit flex flex-row justify-start items-center gap-3 cursor-pointer active:scale-95 hover:text-sol xl:grow ${
                     circuitFlowIndex === index ? "text-sol" : "text-rio"
                   }`}
                   onClick={
                     circuitFlowIndex === 6 && circuitRunning
                       ? () => handleClearCircuit()
-                      
                       : circuitFlowIndex === 0 &&
                         circuitInformation?.conditions?.length < 1 &&
                         index > 0
@@ -135,7 +134,7 @@ const Overview: FunctionComponent<OverviewProps> = ({
           </div>
           <div className="relative h-1 w-full bg-moda flex items-start justify-center"></div>
         </div>
-        <div className="relative w-1 h-full bg-moda"></div>
+        <div className="relative w-1 h-full bg-moda xl:flex hidden"></div>
       </div>
     </div>
   );

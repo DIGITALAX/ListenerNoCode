@@ -12,7 +12,7 @@ const Input: FunctionComponent<InputProps> = ({
   border,
 }): JSX.Element => {
   return (
-    <div className="relative w-fit h-fit flex flex-row gap-3 items-center justify-center">
+    <div className="relative w-fit h-fit flex flex-col renewed:flex-row gap-3 items-center justify-center">
       {Array.from({ length: count }).map((_, index: number) => {
         return (
           <div

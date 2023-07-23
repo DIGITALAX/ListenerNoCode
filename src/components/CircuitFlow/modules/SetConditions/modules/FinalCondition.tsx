@@ -26,7 +26,7 @@ const FinalCondition: FunctionComponent<FinalConditionProps> = ({
       const webHookInfo = conditionInformation as WebhookCondition;
       return (
         <div
-          className={`relative w-full overflow-y-scroll flex flex-col gap-10 items-start justify-star h-60 grow p-2.5 ${
+          className={`relative w-full overflow-y-scroll flex flex-col gap-10 items-start justify-start h-60 grow p-2.5 ${
             circuitInformation.conditions.length > 0 && "pb-20"
           } `}
         >

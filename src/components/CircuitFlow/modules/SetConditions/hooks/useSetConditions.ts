@@ -15,6 +15,7 @@ import { checkBaseURL } from "../../../../../../lib/helpers/checkBaseURL";
 import { checkEndpoint } from "../../../../../../lib/helpers/checkEndpoint";
 import { setNewContractConditionInformation } from "../../../../../../redux/reducers/newContractConditionInformationSlice";
 import { setNewWebhookConditionInformation } from "../../../../../../redux/reducers/newWebhookConditionInformationSlice";
+import { SET_CONDITIONS_TEXT_WEBHOOK } from "../../../../../../lib/constants";
 
 const useSetConditions = () => {
   const dispatch = useDispatch();
@@ -32,6 +33,7 @@ const useSetConditions = () => {
   );
   const [dropDownChainContract, setDropDownChainContract] =
     useState<boolean>(false);
+  const [text, setText] = useState<string>(SET_CONDITIONS_TEXT_WEBHOOK[0]);
   const [conditionType, setConditionType] = useState<string>("web");
   const [editingState, setEditingState] = useState<boolean>(false);
   const [eventArgs, setEventArgs] = useState<string[]>([""]);
@@ -216,7 +218,7 @@ const useSetConditions = () => {
           actionImage: "QmRWHaMFya1MHuS7ysQesSDYjcqtdygq17aFk4PUdg7dVh",
         })
       );
-    } 
+    }
 
     return { checker, newInputs, newExpectedValues, newEventArgs };
   };
@@ -505,6 +507,8 @@ const useSetConditions = () => {
     setDropDownsOpenContract,
     apiPassword,
     setApiPassword,
+    text,
+    setText,
   };
 };
 

@@ -1,16 +1,19 @@
 import { FunctionComponent } from "react";
 import { StepsProps } from "../../types/circuitflow.types";
-import { setConditionFlow } from "../../../../../redux/reducers/conditionFlowSlice";
 
 const Steps: FunctionComponent<StepsProps> = ({
   stepCount,
   currentFlowIndex,
   increaseStepFunction,
+  largeScreen,
 }): JSX.Element => {
   return (
-    <div className="relative w-full h-16 flex flex-row">
-      <div className="relative inline-flex flex-row">
-        {Array.from({ length: 10 }).map((_, index: number) => {
+    <div
+      className="relative w-full h-full flex flex-row md:overflow-x-auto overflow-x-scroll"
+      id="xScroll"
+    >
+      <div className="relative inline-flex flex-row w-fit md:w-auto">
+        {Array.from({ length: largeScreen }).map((_, index: number) => {
           return (
             <div
               key={index}

@@ -70,6 +70,11 @@ html {
   overflow-y: scroll;
 }
 
+#heightHomeCircuits {
+  height: calc(100vh - 26rem);
+  overflow-y: scroll;
+}
+
 #widthShopItems {
   width: calc(100vw - 26rem);
   overflow-x: hidden;
