@@ -38,7 +38,7 @@ export type AllShopProps = {
   currentIndexItem: number[];
   setCurrentIndexItem: (index: number[]) => void;
   checkOutOpen: boolean;
-  largeScreen: boolean
+  largeScreen: boolean;
 };
 
 export type ShopItemProps = {
@@ -66,6 +66,7 @@ export type CheckoutProps = {
     city: string;
     state: string;
   };
+  largeScreen: boolean;
   setCheckoutOpen: (e: boolean) => void;
   checkOutOpen: boolean;
   setFulfillmentDetails: (e: {

@@ -41,7 +41,7 @@ module.exports = {
       screens: {
         tablet: "800px",
         max: "1460px",
-        renewed: "940px",
+        renewed: "988px",
         galaxy: "480px"
       },
     },

@@ -83,7 +83,7 @@ html {
     height: calc(100vh - 18.5rem);
   }
 
-  @media (min-width: 1025px) {
+  @media (min-width: 1025px)  {
     height: calc(100vh - 1.75rem - 22.25rem);
   }
 }

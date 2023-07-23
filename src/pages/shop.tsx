@@ -99,6 +99,7 @@ export default function Shop() {
         )}
       </div>
       <Checkout
+        largeScreen={largeScreen}
         purchaseLoading={purchaseLoading}
         purchaseItems={purchaseItems}
         cartItems={cartItems}
