@@ -38,12 +38,20 @@ import { setIpfsFlow } from "../../redux/reducers/ipfsFlowSlice";
 import { setMintPKPFlow } from "../../redux/reducers/mintPKPFlowSlice";
 import { setRunCircuit } from "../../redux/reducers/runCircuitFlowSlice";
 import { useRouter } from "next/router";
+import { useChainModal, useConnectModal } from "@rainbow-me/rainbowkit";
+import { useAccount } from "wagmi";
 
 export default function Home() {
   const dispatch = useDispatch();
   const router = useRouter();
+  const { address } = useAccount();
+  const { openChainModal } = useChainModal();
+  const { openConnectModal } = useConnectModal();
   const circuitFlowIndex = useSelector(
     (state: RootState) => state.app.circuitFlowReducer.value
+  );
+  const circuitRunning = useSelector(
+    (state: RootState) => state.app.circuitRunningReducer.value
   );
   const conditionFlowIndex = useSelector(
     (state: RootState) => state.app.conditionFlowReducer.value
@@ -143,8 +151,9 @@ export default function Home() {
     handleSaveToIPFSDB,
     dbLoading,
     dbAdded,
+    switchNeeded,
   } = useIPFS();
-  const { handleMintGrantBurnPKP, pkpLoading } = usePKP();
+  const { handleMintGrantBurnPKP, pkpLoading, switchNeededPKP } = usePKP();
   const {
     handleAddExecutionConstraints,
     time,
@@ -167,12 +176,8 @@ export default function Home() {
     targetConditionOpen,
     setTargetConditionOpen,
   } = useConditionalLogic();
-  const {
-    handleRunCircuit,
-    circuitRunning,
-    handleClearCircuit,
-    circuitRunLoading,
-  } = useStartCircuit();
+  const { handleRunCircuit, handleClearCircuit, circuitRunLoading } =
+    useStartCircuit();
 
   useEffect(() => {
     if (circuitFlowIndex === 0) {
@@ -312,6 +317,8 @@ export default function Home() {
                     newContractConditionInformation={
                       newContractConditionInformation
                     }
+                    address={Boolean(address)}
+                    openConnectModal={openConnectModal}
                     litActionCode={ipfsHash.litCode}
                     dropDownsSignOpen={dropDownsSignOpen}
                     setDropDownsSignOpen={setDropDownsSignOpen}
@@ -350,6 +357,9 @@ export default function Home() {
                     setConditionMonitorExecutions={
                       setConditionMonitorExecutions
                     }
+                    switchNeededPKP={switchNeededPKP}
+                    switchNeeded={switchNeeded}
+                    openChainModal={openChainModal}
                     handleInstantiateCircuit={handleInstantiateCircuit}
                     ipfsHash={ipfsHash.ipfs}
                     ipfsLoading={ipfsLoading}
@@ -592,8 +602,12 @@ export default function Home() {
                                 ]
                               : circuitFlowIndex === 4
                               ? IPFS_TEXT[ipfsFlowIndex.index]
-                              : circuitFlowIndex === 4
+                              : circuitFlowIndex === 5
                               ? MINT_BURN_TEXT[0]
+                              : circuitRunning
+                              ? RUN_CIRCUIT_TEXT[2]
+                              : circuitRunLoading
+                              ? RUN_CIRCUIT_TEXT[1]
                               : RUN_CIRCUIT_TEXT[0],
                         }}
                       ></div>
@@ -601,6 +615,7 @@ export default function Home() {
                   </div>
                 </div>
                 <NextButton
+                  handleClearCircuit={handleClearCircuit}
                   conditionFlowIndex={conditionFlowIndex}
                   conditionLogicFlowIndex={conditionLogicFlowIndex}
                   dispatch={dispatch}
@@ -624,12 +639,14 @@ export default function Home() {
         </div>
       </div>
       <Overview
+        handleClearCircuit={handleClearCircuit}
         dispatch={dispatch}
         circuitFlowIndex={circuitFlowIndex}
         circuitInformation={circuitInformation}
         handleSetConditionalLogic={handleSetConditionalLogic}
         handleAddExecutionConstraints={handleAddExecutionConstraints}
         ipfsHash={ipfsHash.ipfs}
+        circuitRunning={circuitRunning}
       />
     </div>
   );

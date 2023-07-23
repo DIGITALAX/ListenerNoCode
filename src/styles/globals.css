@@ -65,6 +65,11 @@ html {
   background-size: 20px 20px;
 }
 
+#heightAllCircuits {
+  height: calc(100vh - 1.75rem - 22.25rem);
+  overflow-y: scroll;
+}
+
 #blurText {
   background-image: linear-gradient(
     to bottom,

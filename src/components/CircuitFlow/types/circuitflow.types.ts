@@ -18,15 +18,20 @@ export type OverviewProps = {
   handleSetConditionalLogic: () => boolean;
   handleAddExecutionConstraints: () => void;
   ipfsHash: string;
+  handleClearCircuit: () => void;
+  circuitRunning: boolean;
 };
 
 export type CircuitSwitchProps = {
+  address: boolean;
+  openConnectModal: (() => void) | undefined;
   apiPasswordAction: boolean;
   litActionCode: string;
   ipfsFlowIndex: {
     index: number;
     ipfsCount: number;
   };
+  switchNeededPKP: boolean;
   setApiPasswordAction: (e: boolean) => void;
   executionConstraintFlowIndex: {
     index: number;
@@ -53,6 +58,8 @@ export type CircuitSwitchProps = {
   circuitFlowIndex: number;
   dbLoading: boolean;
   dbAdded: boolean;
+  switchNeeded: boolean;
+  openChainModal: (() => void) | undefined;
   handleSaveToIPFSDB: () => Promise<void>;
   handleClearCircuit: () => void;
   circuitRunLoading: boolean;
@@ -296,6 +303,7 @@ export type NextButtonProps = {
     index: number;
     mintPKPCount: number;
   };
+  handleClearCircuit: () => void;
   circuitRunning: boolean;
   router: NextRouter;
   signedPKPTx: {
@@ -433,6 +441,10 @@ export type IPFSProps = {
     index: number;
     ipfsCount: number;
   };
+  address: boolean;
+  openConnectModal: (() => void) | undefined;
+  switchNeeded: boolean;
+  openChainModal: (() => void) | undefined;
   ipfsHash: string;
   handleInstantiateCircuit: () => Promise<void>;
   ipfsLoading: boolean;
@@ -447,15 +459,21 @@ export type HashIPFSProps = {
   ipfsLoading: boolean;
   ipfsHash: string;
   litActionCode: string;
+  address: boolean;
+  openConnectModal: (() => void) | undefined;
 };
 
 export type ResultIPFSProps = {
   handleSaveToIPFSDB: () => Promise<void>;
   dbLoading: boolean;
   dbAdded: boolean;
+  switchNeeded: boolean;
+  openChainModal: (() => void) | undefined;
 };
 
 export type MintGrantBurnProps = {
+  openChainModal: (() => void) | undefined;
+  switchNeededPKP: boolean;
   handleMintGrantBurnPKP: () => Promise<void>;
   pkpLoading: boolean;
   signedPKPTx: {
@@ -466,6 +484,8 @@ export type MintGrantBurnProps = {
 };
 
 export type MintPKPProps = {
+  openChainModal: (() => void) | undefined;
+  switchNeededPKP: boolean;
   handleMintGrantBurnPKP: () => Promise<void>;
   pkpLoading: boolean;
   signedPKPTx: {
@@ -485,7 +505,6 @@ export type CircuitInputProps = {
 };
 export type CircuitStartProps = {
   handleRunCircuit: () => Promise<void>;
-  circuitRunning: boolean;
   circuitRunLoading: boolean;
 };
 

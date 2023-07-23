@@ -22,7 +22,7 @@ export const SET_CONDITIONS_TEXT_WEBHOOK: string[] = [
 export const SET_CONDITIONS_TEXT_CONTRACT: string[] = [
   "Choose Between A Webhook or Contract Condition.<br/><br/>Webhook Conditions Monitor triggers or conditions returned via webhooks or APIs.<br/><br/>Contract Conditions monitor emitted contract events on a Blockchain network.",
   "Enter the contract address that the monitored event will be emitted from.<br/><br/>The contract address should start with 0x.",
-  "Choose the correct Blockchain Network where your contract address is deployed.<br/><br/>For example, if your contract is deployed on Ethereum Mainnet then choose the chain name Ethereum.",
+  "Choose the correct Blockchain Network where your contract address is deployed.<br/><br/>For example, if your contract is deployed on Ethereum Mainnet then choose the chain name Ethereum.<br/><br/>Chain missing? If your contract is deployed on another chain you can use the SDK directly for more extensive network support.",
   "Enter the name of the event that you are monitoring.<br/><br/>For example if you were monitoring when the 'Transfer' event is emitted from your contract, enter 'Transfer'. The event name is case sensitive.",
   `Enter the input values for your event. This will be used to build your contract ABI.<br/><br/>If you are taking a contract from Etherscan or a similar blockchain explorer, you can find your ABI under the Contract > Code tab. It should look something like this:<br/><br/>{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"parentTokenId","type":"uint256"}],"name":"ParentBurned","type":"event"}.<br/><br/>There will be a box labelled at the bottom 'Contract ABI'. Find the correct object for your monitored event and copy and paste over the input fields, adding more if required.`,
   `Enter the name of the event args that you'd like to monitor from the emitted event.<br/><br/>For example, if you are monitoring the Transfer event and it includes the data points to, from, amount, you might want to compare the data emitted by all 3 data points or just one.<br/><br/>Enter the corresponding expected value for each data point and the correct match operator. The match operator defines the type of comparison to be made between the API's returned response and your expected value.`,
@@ -49,7 +49,7 @@ export const SET_CONDITIONAL_LOGIC_TEXT_TARGET: string[] = [
 export const SET_ACTIONS_TEXT_CONTRACT: string[] = [
   "Choose Between A Fetch or Contract Action.<br/><br/>Fetch Actions retrieve data from external APIs and then sign a message of your choice.<br/><br/>Contract Actions sign a transaction for a contract function.<br/><br/>Once signed each action can then be broadcast to the blockchain network.",
   "Enter the contract address that you'd like to interact with and create signed data for.<br/><br/>The contract address should start with 0x.",
-  "Choose the correct Blockchain Network where your contract address is deployed.<br/><br/>For example, if your contract is deployed on Ethereum Mainnet then choose the chain name Ethereum.",
+  "Choose the correct Blockchain Network where your contract address is deployed.<br/><br/>For example, if your contract is deployed on Ethereum Mainnet then choose the chain name Ethereum.<br/><br/>Chain missing? If your contract is deployed on another chain you can use the SDK directly for more extensive network support.",
   "Enter the name of the function that you want to use.<br/><br/>For example if you wanted to Transfer tokens from your ERC20 contract then choose the function name 'transferFrom'.",
   `Enter the input values for your function. This will be used to build your contract ABI.<br/><br/>If you are taking a contract from Etherscan or a similar blockchain explorer, you can find your ABI under the Contract > Code tab. It should look something like this:<br/><br/>{"internalType":"uint256","name":"amount","type":"uint256"}.<br/><br/>There will be a box labelled at the bottom 'Contract ABI'. Find the correct object for your chosen function and copy and paste over the input fields, adding more if required.`,
   `Enter the output values for your function. This will be used to build your contract ABI.<br/><br/>If you are taking a contract from Etherscan or a similar blockchain explorer, you can find your ABI under the Contract > Code tab. It should look something like this:<br/><br/>{"internalType":"address","name":"","type":"address"}.<br/><br/>There will be a box labelled at the bottom 'Contract ABI'. Find the correct object for your chosen function and copy and paste over the output fields, adding more if required. Also specify whether your function is payable and its state mutability. You can also find these values in the same object.`,
@@ -80,9 +80,11 @@ export const IPFS_TEXT: string[] = [
 ];
 
 export const MINT_BURN_TEXT: string[] = [
-  "Mint your PKP on the Chronicle Network.<br/><br/>This PKP can only be used with the Lit Action Code you generated in the previous step, ensuring that you always know what you are signing.",
+  "Mint your PKP on the Chronicle Network.<br/><br/>This PKP can only be used with the Lit Action Code you generated in the previous step, ensuring that you always know what you are signing.<br/><br/>Need LIT test token to mint? Grab some from https://faucet.litprotocol.com/",
 ];
 
 export const RUN_CIRCUIT_TEXT: string[] = [
-  "Your circuit is ready to start running!<br/><br/>Click to start.",
+  "Your circuit is ready to start running!<br/><br/>If you have set Contract Actions make sure that you have correctly funded your PKP on the network/s you specified so that your signed transactions can be successfully broadcast to the blockchain.<br/><br/>Click to start.",
+  "Wait a moment while your circuit is starting up.",
+  "Your circuit is running!<br/><br/>View logs and details on your account page."
 ];

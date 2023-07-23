@@ -12,12 +12,18 @@ const IPFS: FunctionComponent<IPFSProps> = ({
   dbAdded,
   litActionCode,
   ipfsFlowIndex,
+  switchNeeded,
+  openChainModal,
+  address,
+  openConnectModal
 }): JSX.Element => {
   switch (ipfsFlowIndex.index) {
     case 1:
       return (
         <ResultIPFS
           dbAdded={dbAdded}
+          switchNeeded={switchNeeded}
+          openChainModal={openChainModal}
           dbLoading={dbLoading}
           handleSaveToIPFSDB={handleSaveToIPFSDB}
         />
@@ -28,8 +34,10 @@ const IPFS: FunctionComponent<IPFSProps> = ({
         <HashIPFS
           handleInstantiateCircuit={handleInstantiateCircuit}
           ipfsLoading={ipfsLoading}
-          ipfsHash={ipfsHash}
+          ipfsHash={ipfsHash || ""}
           litActionCode={litActionCode}
+          address={address}
+          openConnectModal={openConnectModal}
         />
       );
   }

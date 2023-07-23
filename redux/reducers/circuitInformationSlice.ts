@@ -11,7 +11,7 @@ const initialCircuitInformationState: CircuitInformationState = {
     conditions: [],
     conditionalLogic: {
       type: "EVERY",
-      interval: 120000,
+      interval: 180000000,
     },
     actions: [],
     executionConstraints: {},

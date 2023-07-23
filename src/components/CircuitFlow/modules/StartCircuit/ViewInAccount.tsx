@@ -13,7 +13,7 @@ const ViewInAccount: FunctionComponent<ViewInAccountProps> = ({
     >
       {circuitRunning && (
         <div
-          className={`flex flex-col w-full h-full p-1 gap-4 items-center justify-center font-vcr text-white overflow-y-scroll`}
+          className={`flex flex-col w-full h-full p-1 gap-4 items-center justify-center font-vcr text-white`}
         >
           <Link
             className={`relative w-36 px-1.5 h-10 bg-aBlack text-white font-vcr text-sm flex justify-center items-center text-center cursor-pointer uppercase`}

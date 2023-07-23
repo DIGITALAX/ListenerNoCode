@@ -18,6 +18,10 @@ import executionConstraintFlowReducer from "./reducers/executionConstraintFlowSl
 import ipfsFlowReducer from "./reducers/ipfsFlowSlice";
 import mintPKPFlowReducer from "./reducers/mintPKPFlowSlice";
 import runCircuitFlowReducer from "./reducers/runCircuitFlowSlice";
+import allUserCircuitsReducer from "./reducers/allUserCircuits";
+import circuitRunningReducer from "./reducers/circuitRunningSlice";
+import selectedCircuitReducer from "./reducers/selectedCircuitSlice";
+import selectedCircuitSideBarReudcer from  "./reducers/selectedCircuitSideBarSlice";
 
 const reducer = combineReducers({
   walletConnectedReducer,
@@ -37,7 +41,11 @@ const reducer = combineReducers({
   executionConstraintFlowReducer,
   ipfsFlowReducer,
   mintPKPFlowReducer,
-  runCircuitFlowReducer
+  runCircuitFlowReducer,
+  allUserCircuitsReducer,
+  circuitRunningReducer,
+  selectedCircuitReducer,
+  selectedCircuitSideBarReudcer
 });
 
 export const store = configureStore({

@@ -547,17 +547,25 @@ const useSetActions = () => {
             obj.priority === newFetchActionInformation?.priority
               ? ({
                   ...obj,
-                  ...{
-                    ...newFetchActionInformation,
-                    baseUrl: newBaseURL,
-                    endpoint: newEndpoint,
-                    signCondition: updatedSignConditions,
-                    toSign: new Uint8Array(
-                      buffer.buffer,
-                      buffer.byteOffset,
-                      buffer.byteLength
-                    ),
-                  },
+                  ...(!newFetchActionInformation?.toSign ||
+                  (newFetchActionInformation?.toSign as any)?.trim() !== ""
+                    ? {
+                        ...newFetchActionInformation,
+                        baseUrl: newBaseURL,
+                        endpoint: newEndpoint,
+                        signCondition: updatedSignConditions,
+                      }
+                    : {
+                        ...newFetchActionInformation,
+                        baseUrl: newBaseURL,
+                        endpoint: newEndpoint,
+                        signCondition: updatedSignConditions,
+                        toSign: new Uint8Array(
+                          buffer.buffer,
+                          buffer.byteOffset,
+                          buffer.byteLength
+                        ),
+                      }),
                 } as FetchAction)
               : obj
           ),

@@ -43,12 +43,14 @@ const FinalAction: FunctionComponent<FinalActionProps> = ({
           <div className="relative w-full h-full flex items-center justify-center text-center">
             <div className="relative w-3/4 h-fit font-vcr text-white items-center justify-center flex text-center break-words whitespace-pre-wrap">
               {`Your webhook action will query ${
-                fetchInfo?.baseUrl + fetchInfo?.endpoint
+                fetchInfo?.baseUrl || "" + fetchInfo?.endpoint || ""
               } and check if the returned value at ${
-                fetchInfo?.responsePath
-              } matches ${JSON.stringify(
-                signConditions?.map((item) => item.value)
-              )} before signing ${toSign}.`}
+                fetchInfo?.responsePath || ""
+              } matches ${
+                JSON.stringify(
+                  signConditions?.map((item) => item.value || "")
+                ) || ""
+              } before signing ${toSign || ""}.`}
             </div>
           </div>
           <div
@@ -244,12 +246,12 @@ const FinalAction: FunctionComponent<FinalActionProps> = ({
           <div className="relative w-full h-full flex items-center justify-center text-center">
             <div className="relative w-3/4 h-fit font-vcr text-white items-center justify-center flex text-center break-words whitespace-pre-wrap">
               {`Your contract action will sign a transaction at address ${
-                contractInfo?.contractAddress
+                contractInfo?.contractAddress || ""
               } for the ${
-                contractInfo?.functionName
+                contractInfo?.functionName || ""
               } function and with the ${JSON.stringify(
-                contractInfo?.args
-              )} args on the ${contractInfo?.chainId} network.`}
+                contractInfo?.args || ""
+              )} args on the ${contractInfo?.chainId || ""} network.`}
             </div>
           </div>
           <div className="relative w-full h-fit flex flex-col flex-wrap items-center justify-center gap-3 px-3">

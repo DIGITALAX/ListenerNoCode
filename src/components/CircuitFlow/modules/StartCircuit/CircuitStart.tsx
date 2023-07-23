@@ -3,13 +3,12 @@ import { CircuitStartProps } from "../../types/circuitflow.types";
 import { AiOutlineLoading } from "react-icons/ai";
 
 const CircuitStart: FunctionComponent<CircuitStartProps> = ({
-  circuitRunning,
   handleRunCircuit,
   circuitRunLoading,
 }): JSX.Element => {
   return (
     <div
-      className="relative w-60 h-60 flex flex-col p-2 gap-3"
+      className="relative w-60 h-40 flex flex-col p-2 gap-3 justify-center items-center"
       id="inputBorder"
     >
       <div
@@ -23,9 +22,7 @@ const CircuitStart: FunctionComponent<CircuitStartProps> = ({
         >
           {circuitRunLoading ? (
             <AiOutlineLoading size={15} color="white" opacity={80} />
-          ) : circuitRunning ? (
-            "circuit running"
-          ) : (
+          )  : (
             "run circuit"
           )}
         </div>

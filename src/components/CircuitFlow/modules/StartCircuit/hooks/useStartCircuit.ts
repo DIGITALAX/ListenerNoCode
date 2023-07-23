@@ -15,6 +15,17 @@ import {
   ContractAction,
   LitChainIds,
 } from "@/components/CircuitFlow/types/litlistener.types";
+import { setSignedPKP } from "../../../../../../redux/reducers/signedPKPSlice";
+import { setConditionFlow } from "../../../../../../redux/reducers/conditionFlowSlice";
+import { setRunCircuit } from "../../../../../../redux/reducers/runCircuitFlowSlice";
+import { setMintPKPFlow } from "../../../../../../redux/reducers/mintPKPFlowSlice";
+import { setIpfsFlow } from "../../../../../../redux/reducers/ipfsFlowSlice";
+import { setExecutionConstraintFlow } from "../../../../../../redux/reducers/executionConstraintFlowSlice";
+import { setActionFlow } from "../../../../../../redux/reducers/actionFlowSlice";
+import { setConditionLogicFlow } from "../../../../../../redux/reducers/conditionLogicFlowSlice";
+import { setModalOpen } from "../../../../../../redux/reducers/modalOpenSlice";
+import { setCircuitFlow } from "../../../../../../redux/reducers/circuitFlowSlice";
+import { setCircuitRunning } from "../../../../../../redux/reducers/circuitRunningSlice";
 
 const useStartCircuit = () => {
   const dispatch = useDispatch();
@@ -24,43 +35,63 @@ const useStartCircuit = () => {
   const signedPKPTx = useSelector(
     (state: RootState) => state.app.signedPKPReducer.value
   );
+  const conditionFlowIndex = useSelector(
+    (state: RootState) => state.app.conditionFlowReducer.value
+  );
+  const actionFlowIndex = useSelector(
+    (state: RootState) => state.app.actionFlowReducer.value
+  );
+  const runCircuitFlowIndex = useSelector(
+    (state: RootState) => state.app.runCircuitFlowReducer.value
+  );
+  const conditionLogicFlowIndex = useSelector(
+    (state: RootState) => state.app.conditionLogicFlowReducer.value
+  );
+  const mintPKPFlowIndex = useSelector(
+    (state: RootState) => state.app.mintPKPFlowReducer.value
+  );
+  const ipfsFlowIndex = useSelector(
+    (state: RootState) => state.app.ipfsFlowReducer.value
+  );
+  const executionConstraintFlowIndex = useSelector(
+    (state: RootState) => state.app.executionConstraintFlowReducer.value
+  );
   const { address } = useAccount();
-  const [circuitRunning, setCircuitRunning] = useState<boolean>(false);
-  const [circuitRunLoading, setCircuitRunLoading] = useState<boolean>(false);
+  const [circuitRunLoading, setCircuitRunLoading] = useState<boolean>(false); 
 
-  // const siweMessage = new SiweMessage({
-  //   domain: "localhost",
-  //   address: address,
-  //   statement: "This is an Auth Sig for LitListenerSDK",
-  //   uri: "https://localhost/login",
-  //   version: "1",
-  //   chainId: 137,
-  // });
-  // const signedMessage = siweMessage.prepareMessage();
+  const siweMessage = new SiweMessage({
+    domain: "localhost",
+    address: address,
+    statement: "This is an Auth Sig for LitListenerSDK",
+    uri: "https://localhost/login",
+    version: "1",
+    chainId: 137,
+  });
+   
+  const signedMessage = siweMessage.prepareMessage();
 
-  // const { data, isError, isLoading, isSuccess, signMessageAsync } =
-  //   useSignMessage({
-  //     message: signedMessage,
-  //   });
-
+  const { signMessageAsync } = useSignMessage({
+    message: signedMessage,
+  }); 
+ 
   const handleRunCircuit = async () => {
     if (!circuitInformation?.id) {
       return;
     }
     setCircuitRunLoading(true);
     try {
-      // const sig = await signMessageAsync();
-      // const res = await fetch("/api/azure/connect", {
-      //   method: "POST",
-      //   body: JSON.stringify({
-      //     globalAuthSignature: {
-      //       sig,
-      //       derivedVia: "web3.eth.personal.sign",
-      //       signedMessage,
-      //       address,
-      //     },
-      //   }),
-      // });
+      const sig = await signMessageAsync();
+      const res = await fetch("/api/azure/connect", {
+        method: "POST",
+        body: JSON.stringify({
+          globalAuthSignature: {
+            sig,
+            derivedVia: "web3.eth.personal.sign",
+            signedMessage,
+            address,
+          },
+        }),
+      });
 
       if (typeof window !== "undefined" && "ethereum" in window) {
         const web3Provider = new ethers.providers.Web3Provider(
@@ -93,10 +124,18 @@ const useStartCircuit = () => {
           }),
         });
 
-        console.log(await res.json());
-
         if (res.status === 200) {
-          setCircuitRunning(true);
+          dispatch(setCircuitRunning(true));
+        } else if (res.status === 500) {
+          dispatch(
+            setModalOpen({
+              actionOpen: true,
+              actionMessage:
+                "Something went wrong starting your Circuit. Try again.",
+              actionImage: "Qmam45hAbVeeq4RaJ2Dz4kTw7iea42rmvrgJySJBdSJuFS",
+            })
+          );
+          dispatch(setCircuitRunning(false));
         }
       }
     } catch (err: any) {
@@ -106,14 +145,14 @@ const useStartCircuit = () => {
   };
 
   const handleClearCircuit = () => {
-    setCircuitRunning(false);
+    dispatch(setCircuitRunning(false));
     dispatch(
       setCircuitInformation({
         id: undefined,
         conditions: [],
         conditionalLogic: {
           type: "EVERY",
-          interval: 120000,
+          interval: 180000000,
         },
         actions: [],
         executionConstraints: {},
@@ -126,14 +165,67 @@ const useStartCircuit = () => {
         litCode: "",
       })
     );
+    dispatch(
+      setSignedPKP({
+        tokenId: "",
+        publicKey: "",
+        address: "",
+      })
+    );
     dispatch(setNewContractActionInformation(undefined));
     dispatch(setNewFetchActionInformation(undefined));
     dispatch(setNewContractConditionInformation(undefined));
     dispatch(setNewWebhookConditionInformation(undefined));
+    dispatch(setCircuitFlow(0));
+    dispatch(
+      setConditionFlow({
+        index: 0,
+        contractCount: conditionFlowIndex.contractCount,
+        webhookCount: conditionFlowIndex.webhookCount,
+      })
+    );
+    dispatch(
+      setConditionLogicFlow({
+        index: 0,
+        everyCount: conditionLogicFlowIndex.everyCount,
+        targetCount: conditionLogicFlowIndex.targetCount,
+        thresholdCount: conditionLogicFlowIndex.thresholdCount,
+      })
+    );
+    dispatch(
+      setActionFlow({
+        index: 0,
+        contractCount: actionFlowIndex.contractCount,
+        fetchCount: actionFlowIndex.fetchCount,
+      })
+    );
+    dispatch(
+      setExecutionConstraintFlow({
+        index: 0,
+        executionCount: executionConstraintFlowIndex.executionCount,
+      })
+    );
+    dispatch(
+      setIpfsFlow({
+        index: 0,
+        ipfsCount: ipfsFlowIndex.ipfsCount,
+      })
+    );
+    dispatch(
+      setMintPKPFlow({
+        index: 0,
+        mintPKPCount: mintPKPFlowIndex.mintPKPCount,
+      })
+    );
+    dispatch(
+      setRunCircuit({
+        index: 0,
+        circuitCount: runCircuitFlowIndex.circuitCount,
+      })
+    );
   };
 
   return {
-    circuitRunning,
     handleRunCircuit,
     circuitRunLoading,
     handleClearCircuit,

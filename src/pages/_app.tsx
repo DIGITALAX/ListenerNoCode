@@ -8,10 +8,13 @@ import { store } from "./../../redux/store";
 import { getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { Provider } from "react-redux";
 import { Chain, configureChains, createConfig, WagmiConfig } from "wagmi";
+import { polygon } from "wagmi/chains";
 import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
-import { MutableRefObject, useEffect } from "react";
+import { MutableRefObject, useEffect, useState } from "react";
 import { createContext } from "react";
 import Modals from "@/components/Modals/Modals";
+import { useRouter } from "next/router";
+import RouterChange from "@/components/Layout/modules/RouterChange";
 
 export const chronicle = {
   id: 175177,
@@ -39,7 +42,7 @@ export const chronicle = {
 } as const satisfies Chain;
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
-  [chronicle],
+  [chronicle, polygon],
   [
     jsonRpcProvider({
       rpc: () => ({
@@ -67,6 +70,9 @@ export const ScrollContext = createContext<
 >(null!);
 
 export default function App({ Component, pageProps }: AppProps) {
+  const router = useRouter();
+  const [routerChangeLoading, setRouterChangeLoading] =
+    useState<boolean>(false);
   useEffect(() => {
     console.log(`
 
@@ -78,13 +84,37 @@ export default function App({ Component, pageProps }: AppProps) {
     `);
   }, []);
 
+  useEffect(() => {
+    const handleStart = () => {
+      setRouterChangeLoading(true);
+    };
+
+    const handleStop = () => {
+      setRouterChangeLoading(false);
+    };
+
+    router.events.on("routeChangeStart", handleStart);
+    router.events.on("routeChangeComplete", handleStop);
+    router.events.on("routeChangeError", handleStop);
+
+    return () => {
+      router.events.off("routeChangeStart", handleStart);
+      router.events.off("routeChangeComplete", handleStop);
+      router.events.off("routeChangeError", handleStop);
+    };
+  }, [router]);
+
   return (
     <Provider store={store}>
       <WagmiConfig config={config}>
         <RainbowKitProvider chains={chains}>
           <div className="relative overflow-x-hidden w-full h-full flex flex-col selection:bg-ligeroAzul selection:text-oscuraAzul bg-offBlack min-h-screen">
             <Header />
-            <Component {...pageProps} />
+            {routerChangeLoading ? (
+              <RouterChange />
+            ) : (
+              <Component {...pageProps} />
+            )}
             <Footer />
             <Modals />
           </div>
