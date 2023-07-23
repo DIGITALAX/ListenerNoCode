@@ -156,18 +156,6 @@ const useSetConditions = () => {
           actionImage: "QmRyjnEuR6sKeejA92eRbUXFZg9G6BtXQRprwgLc9zNkNn",
         })
       );
-    } else if (
-      !newContractConditionInformation?.chainId ||
-      newContractConditionInformation?.chainId?.trim() === ""
-    ) {
-      checker = false;
-      dispatch(
-        setModalOpen({
-          actionOpen: true,
-          actionMessage: "Chain Id Missing. Try Again.",
-          actionImage: "QmU7QLvyHbSoGTxkDGBgCXDh5rsr9BBHubSsZBoYPcSeDq",
-        })
-      );
     } else if (newEventArgs?.length < 1) {
       checker = false;
       dispatch(
@@ -228,20 +216,7 @@ const useSetConditions = () => {
           actionImage: "QmRWHaMFya1MHuS7ysQesSDYjcqtdygq17aFk4PUdg7dVh",
         })
       );
-    } else if (
-      !Object.values(CHAIN_NAME)
-        .map((enumValue) => enumValue.toLowerCase())
-        .includes(newContractConditionInformation.chainId.toLowerCase())
-    ) {
-      checker = false;
-      dispatch(
-        setModalOpen({
-          actionOpen: true,
-          actionMessage: "Chain Name Invalid. Try Again.",
-          actionImage: "QmaLbRzzCP1axGEd6vJsDs7Jm7hyyiBGYsnBfv3jW51KiX",
-        })
-      );
-    }
+    } 
 
     return { checker, newInputs, newExpectedValues, newEventArgs };
   };
@@ -388,6 +363,7 @@ const useSetConditions = () => {
                   ? circuitInformation.conditions?.length?.toString()
                   : "1",
               abi,
+              chainId: newContractConditionInformation?.chainId || "ethereum",
               eventArgName: newEventArgs,
               expectedValue: newExpectedValues,
             } as ContractCondition,
@@ -395,8 +371,8 @@ const useSetConditions = () => {
         })
       );
       dispatch(setNewContractConditionInformation(undefined));
-      setEventArgs([""]);
-      setExpectedValues([""]);
+      setEventArgs([]);
+      setExpectedValues([]);
     } else if (conditionFlowIndex.index !== 0) {
       const { checker, newBaseURL, newEndpoint } = checkWebhookCondition();
       if (!checker) {

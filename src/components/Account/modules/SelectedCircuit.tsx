@@ -36,8 +36,8 @@ const SelectedCircuit: FunctionComponent<SelectedCircuitProps> = ({
             </div>
           </div>
           {!selectedCircuit ||
-          !selectedCircuit?.completed ||
-          !selectedCircuit?.interrupted ? (
+          (Object.keys(selectedCircuit?.completed).length === 0 &&
+            Object.keys(selectedCircuit?.interrupted).length === 0) ? (
             <div className="relative flex flex-row h-fit w-fit">
               <div
                 className={`relative flex items-center justify-center border border-white p-2 bg-ballena text-black h-8 w-36 ${
@@ -78,7 +78,7 @@ const SelectedCircuit: FunctionComponent<SelectedCircuitProps> = ({
                 <div
                   className={`relative w-fit h-fit flex items-center justify-center text-xs`}
                 >
-                  {selectedCircuit?.interrupted
+                  {Object.keys(selectedCircuit?.interrupted).length !== 0
                     ? "Circuit Interrupted"
                     : "Circuit Completed"}
                 </div>
@@ -178,10 +178,9 @@ const SelectedCircuit: FunctionComponent<SelectedCircuitProps> = ({
                 Max Monitor Executions
               </div>
               <div className="relative w-fit h-fit text-sol">
-                {
-                  selectedCircuit?.circuitInformation?.information
-                    ?.executionConstraints?.conditionMonitorExecutions
-                }
+                {selectedCircuit?.logs?.monitorExecutions || 0} /{" "}
+                {selectedCircuit?.circuitInformation?.information
+                  ?.executionConstraints?.conditionMonitorExecutions || "∞"}
               </div>
             </div>
             <div className="relative flex flex-col gap-1 w-fit h-fit justify-center items-start text-xs">
@@ -189,10 +188,9 @@ const SelectedCircuit: FunctionComponent<SelectedCircuitProps> = ({
                 Max Circuit Executions
               </div>
               <div className="relative w-fit h-fit text-sol">
-                {
-                  selectedCircuit?.circuitInformation?.information
-                    ?.executionConstraints?.maxLitActionCompletions
-                }
+                {selectedCircuit?.logs?.circuitExecutions || 0} /{" "}
+                {selectedCircuit?.circuitInformation?.information
+                  ?.executionConstraints?.maxLitActionCompletions || "∞"}
               </div>
             </div>
             <div className="relative flex flex-col gap-1 w-fit h-fit justify-center items-start text-xs">
@@ -227,13 +225,23 @@ const SelectedCircuit: FunctionComponent<SelectedCircuitProps> = ({
           <div className="relative w-full h-fit flex flex-col gap-3">
             {selectedCircuit?.logs?.stringifiedLogs?.map(
               (log, index: number) => {
+                let data: string;
+                if (Number(log?.category) === 0) {
+                  try {
+                    data = JSON.parse(log.responseObject).message;
+                  } catch (error) {
+                    data = log.responseObject?.split("[ See:")[0];
+                  }
+                } else {
+                  data = log?.responseObject;
+                }
                 return (
                   <div
                     key={index}
-                    className="relative flex flex-row justify-between items-center gap-2 font-vcr text-xs px-1.5 p-2 border border-white bg-black/60"
+                    className="relative flex flex-row justify-start items-center gap-2 font-vcr text-xs px-1.5 p-2 border border-white bg-black/60"
                   >
                     <div
-                      className={`relative flex w-fit h-fit ${
+                      className={`relative flex w-36 h-fit ${
                         Number(log?.category) === 0
                           ? "text-rojo"
                           : Number(log?.category) === 1
@@ -242,7 +250,7 @@ const SelectedCircuit: FunctionComponent<SelectedCircuitProps> = ({
                           ? "text-costa"
                           : Number(log?.category) === 3
                           ? "text-comp"
-                          : "text-moda"
+                          : "text-rio"
                       }`}
                     >
                       {Number(log?.category) === 0
@@ -255,22 +263,28 @@ const SelectedCircuit: FunctionComponent<SelectedCircuitProps> = ({
                         ? "BROADCAST >>>"
                         : "EXECUTION >>>"}
                     </div>
-                    <div className="relative w-fit h-fit flex flex-col gap-1.5 text-white">
-                      <div className="relative w-full h-fit flex text-ballena">
+                    <div className="relative flex flex-col gap-1.5 text-white w-full pl-10">
+                      <div className="relative w-fit h-fit flex text-ballena justify-center">
                         Message
                       </div>
-                      <div className="relative w-fit h-fit flex break-words">
+                      <div className="relative w-fit h-fit flex break-words justify-center">
                         {log?.message}
                       </div>
                     </div>
-                    <div className="relative w-fit h-fit flex flex-col gap-1.5 text-white">
-                      <div className="relative w-full h-fit text-ballena">
+                    <div className="relative w-full h-fit flex flex-col gap-1.5 text-white items-start justify-center">
+                      <div className="relative w-fit h-fit text-ballena items-end">
                         Data
                       </div>
                       <div className="relative w-fit h-fit flex break-words">
-                        {Number(log?.category) === 0
-                          ? JSON.parse(log?.responseObject).message
-                          : JSON.parse(log?.responseObject)}
+                        {data}
+                      </div>
+                    </div>
+                    <div className="relative w-fit h-fit flex flex-col gap-1.5 text-white ml-auto items-end justify-center">
+                      <div className="relative w-fit h-fit text-ballena items-end">
+                        Timestamp
+                      </div>
+                      <div className="relative w-fit h-fit flex break-words">
+                        {new Date(log?.isoDate).getDate() || 0}
                       </div>
                     </div>
                   </div>

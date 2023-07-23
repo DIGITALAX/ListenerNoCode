@@ -16,7 +16,7 @@ import Modals from "@/components/Modals/Modals";
 import { useRouter } from "next/router";
 import RouterChange from "@/components/Layout/modules/RouterChange";
 
-export const chronicle = {
+export const chronicle: Chain = {
   id: 175177,
   name: "Chronicle - Lit Protocol Testnet",
   network: "chronicle",
@@ -39,7 +39,7 @@ export const chronicle = {
       url: "https://chain.litprotocol.com/",
     },
   },
-} as const satisfies Chain;
+} as const;
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [chronicle, polygon],

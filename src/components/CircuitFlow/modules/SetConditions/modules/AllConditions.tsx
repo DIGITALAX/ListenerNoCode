@@ -72,6 +72,7 @@ const AllConditions: FunctionComponent<AllConditionsProps> = ({
                     newConditions.splice(index, 1);
                     dispatch(setNewContractConditionInformation(undefined));
                     dispatch(setNewWebhookConditionInformation(undefined));
+                    setEditingState(false);
                     dispatch(
                       setCircuitInformation({
                         ...circuitInformation,

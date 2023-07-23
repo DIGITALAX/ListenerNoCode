@@ -53,6 +53,7 @@ export interface SelectedCircuit {
       category: string;
       message: string;
       responseObject: string;
+      isoDate: string
     }[];
     circuitId: string;
     listenerDBContract: string;
@@ -60,6 +61,8 @@ export interface SelectedCircuit {
     blockNumber: string;
     instantiatorAddress: string;
     transactionHash: string;
+    monitorExecutions: number;
+    circuitExecutions: number;
   };
   completed: {
     blockTimestamp: string;

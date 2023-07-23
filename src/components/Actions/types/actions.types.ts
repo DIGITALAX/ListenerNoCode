@@ -9,3 +9,7 @@ export interface AllEntries {
 export type AllActionsProps = {
   allEntries: AllEntries[];
 };
+
+export type CodeComponentProps = {
+  code: string;
+};
