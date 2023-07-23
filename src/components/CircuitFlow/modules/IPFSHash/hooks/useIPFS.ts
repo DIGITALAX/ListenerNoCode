@@ -42,7 +42,10 @@ const useIPFS = () => {
   const { config } = usePrepareContractWrite({
     address: LIT_DB_CONTRACT,
     abi: LitDbAbi,
-    args: [circuitInformation?.id, ipfsHash],
+    args: [
+      circuitInformation?.id?.replace(/-/g, ""),
+      `ipfs://${ipfsHash.ipfs}`,
+    ],
     functionName: "addEntryToDB",
     enabled: Boolean(ipfsHash.ipfs !== ""),
   });

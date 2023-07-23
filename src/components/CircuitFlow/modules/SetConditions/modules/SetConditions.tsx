@@ -58,9 +58,18 @@ const SetConditions: FunctionComponent<SetConditionsProps> = ({
             <div className="relative w-fit h-fit flex flex-col items-center justify-center gap-3">
               <div className="relative w-full h-fit flex flex-row gap-3">
                 <Args
-                  args={eventArgs}
+                  args={
+                    newContractConditionInformation?.eventArgName &&
+                    newContractConditionInformation?.eventArgName?.length > 0
+                      ? newContractConditionInformation?.eventArgName
+                      : eventArgs
+                  }
                   setOnChangeArgs={(value: string, index: number) => {
-                    const updatedEventArgs = [...eventArgs];
+                    const updatedEventArgs =
+                      newContractConditionInformation?.eventArgName &&
+                      newContractConditionInformation?.eventArgName?.length > 0
+                        ? [...newContractConditionInformation?.eventArgName]
+                        : [...eventArgs];
                     updatedEventArgs[index] = value;
                     setEventArgs(updatedEventArgs);
                   }}
@@ -69,9 +78,22 @@ const SetConditions: FunctionComponent<SetConditionsProps> = ({
                   nameTitle={"Event Name Args"}
                 />
                 <Args
-                  args={expectedValues}
+                  args={
+                    newContractConditionInformation?.expectedValue
+                      ? newContractConditionInformation?.expectedValue?.map(
+                          String
+                        )
+                      : expectedValues
+                  }
                   setOnChangeArgs={(value: string, index: number) => {
-                    const updatedExpectedValues = [...expectedValues];
+                    const updatedExpectedValues =
+                      newContractConditionInformation?.expectedValue
+                        ? [
+                            ...newContractConditionInformation?.expectedValue?.map(
+                              String
+                            ),
+                          ]
+                        : [...expectedValues];
                     updatedExpectedValues[index] = value;
                     setExpectedValues(updatedExpectedValues);
                   }}
@@ -105,7 +127,11 @@ const SetConditions: FunctionComponent<SetConditionsProps> = ({
         case 4:
           return (
             <Abi
-              inputs={inputs}
+              inputs={
+                !inputs || inputs?.length < 1
+                  ? (newContractConditionInformation?.abi as any)?.inputs
+                  : inputs
+              }
               setInputs={setInputs}
               dropDownsOpen={dropDownsOpenContract}
               setDropDownsOpen={setDropDownsOpenContract}

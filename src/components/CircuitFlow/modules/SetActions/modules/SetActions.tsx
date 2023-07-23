@@ -67,11 +67,20 @@ const SetActions: FunctionComponent<SetActionsProps> = ({
         case 6:
           return (
             <Args
-              args={functionArgs}
+              args={
+                newContractActionInformation?.args &&
+                newContractActionInformation?.args?.length > 0
+                  ? newContractActionInformation?.args
+                  : functionArgs
+              }
               setOnChangeArgs={(value: string, index: number) => {
-                const updatedEventArgs = [...functionArgs];
-                updatedEventArgs[index] = value;
-                setFunctionArgs(updatedEventArgs);
+                const updatedFunctionArgs =
+                  newContractActionInformation?.args &&
+                  newContractActionInformation?.args?.length > 0
+                    ? [...newContractActionInformation?.args]
+                    : [...functionArgs];
+                updatedFunctionArgs[index] = value;
+                setFunctionArgs(updatedFunctionArgs);
               }}
               setAddMoreArgs={() => setFunctionArgs([...functionArgs, ""])}
               placeholderText={"enter function args"}
@@ -84,11 +93,23 @@ const SetActions: FunctionComponent<SetActionsProps> = ({
             <Abi
               dropDownsOpen={dropDownsOpenAction}
               setDropDownsOpen={setDropDownsOpenAction}
-              outputs={actionOutputs}
+              outputs={
+                !actionOutputs || actionOutputs?.length < 1
+                  ? (newContractActionInformation?.abi as any)?.outputs
+                  : actionOutputs
+              }
               setOutputs={setActionOutputs}
               type={"output"}
-              payable={payable}
-              stateMutability={stateMutability}
+              payable={
+                (newContractActionInformation?.abi as any)?.payable
+                  ? (newContractActionInformation?.abi as any)?.payable
+                  : payable
+              }
+              stateMutability={
+                (newContractActionInformation?.abi as any)?.stateMutability
+                  ? (newContractActionInformation?.abi as any)?.stateMutability
+                  : stateMutability
+              }
               setPayable={setPayable}
               setStateMutability={setStateMutability}
             />
@@ -97,7 +118,11 @@ const SetActions: FunctionComponent<SetActionsProps> = ({
         case 4:
           return (
             <Abi
-              inputs={actionInputs}
+              inputs={
+                actionInputs
+                  ? actionInputs
+                  : (newContractActionInformation?.abi as any)?.inputs
+              }
               setInputs={setActionInputs}
               dropDownsOpen={dropDownsOpenAction}
               setDropDownsOpen={setDropDownsOpenAction}
@@ -201,7 +226,11 @@ const SetActions: FunctionComponent<SetActionsProps> = ({
         case 5:
           return (
             <SignCondition
-              signConditions={signConditions}
+              signConditions={
+                signConditions?.length < 1 || !signConditions
+                  ? (newFetchActionInformation?.signCondition as any)
+                  : signConditions
+              }
               dropDownsOpen={dropDownsSignOpen}
               setToSign={(value: string) =>
                 dispatch(
@@ -222,17 +251,22 @@ const SetActions: FunctionComponent<SetActionsProps> = ({
                       .join("")
                   : ""
               }
-              setAddSignConditions={() =>
+              setAddSignConditions={() => {
+                const prevSign =
+                  signConditions?.length < 1 || !signConditions
+                    ? (newFetchActionInformation?.signCondition as any)
+                    : signConditions;
+
                 setSignConditions([
-                  ...signConditions,
+                  ...prevSign,
                   {
                     type: "&&",
                     operator: "==",
                     value: "",
                     valueType: "string",
                   },
-                ])
-              }
+                ]);
+              }}
               setSignType={(index: number) => {
                 setDropDownsSignOpen(((prevState: any) => {
                   const updatedSignTypes = [...prevState?.signType];
@@ -265,6 +299,7 @@ const SetActions: FunctionComponent<SetActionsProps> = ({
                 }) as any);
                 setSignConditions(((prevInputsArray: any) => {
                   const updatedSignsArray = [...prevInputsArray];
+
                   const updatedObject = {
                     ...updatedSignsArray[index],
                     type: type,

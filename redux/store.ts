@@ -21,7 +21,8 @@ import runCircuitFlowReducer from "./reducers/runCircuitFlowSlice";
 import allUserCircuitsReducer from "./reducers/allUserCircuits";
 import circuitRunningReducer from "./reducers/circuitRunningSlice";
 import selectedCircuitReducer from "./reducers/selectedCircuitSlice";
-import selectedCircuitSideBarReudcer from  "./reducers/selectedCircuitSideBarSlice";
+import selectedCircuitSideBarReudcer from "./reducers/selectedCircuitSideBarSlice";
+import allEntriesReducer from "./reducers/allEntriesSlice";
 
 const reducer = combineReducers({
   walletConnectedReducer,
@@ -45,7 +46,8 @@ const reducer = combineReducers({
   allUserCircuitsReducer,
   circuitRunningReducer,
   selectedCircuitReducer,
-  selectedCircuitSideBarReudcer
+  selectedCircuitSideBarReudcer,
+  allEntriesReducer,
 });
 
 export const store = configureStore({

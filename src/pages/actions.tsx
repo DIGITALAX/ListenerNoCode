@@ -1,6 +1,58 @@
-export default function Actions() {
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
+import Head from "next/head";
+import { INFURA_GATEWAY } from "../../lib/constants";
+import Image from "next/legacy/image";
+import Link from "next/link";
+import useActions from "@/components/Actions/hooks/useActions";
+import AllActions from "@/components/Actions/modules/AllActions";
 
-    return (
-        <div></div>
-    )
- }
+export default function Actions() {
+  const allEntries = useSelector(
+    (state: RootState) => state.app.allEntriesReducer.value
+  );
+  const { entriesLoading } = useActions();
+
+  return (
+    <div className="relative w-full h-full flex flex-row border-t-2 border-sol grow">
+      <Head>
+        <title>No-Code Lit Listener | Actions</title>
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+      <div className="absolute w-full h-full flex mix-blend-overlay">
+        <Image
+          src={`${INFURA_GATEWAY}/ipfs/QmZ3DdVrAmYaJTgXHu56eUGGLzLeQkhLeTc433wpxppu4S`}
+          layout="fill"
+          objectFit="cover"
+          className="w-full h-full"
+          draggable={false}
+        />
+      </div>
+      <div className="absolute w-full h-full flex mix-blend-hard-light">
+        <Image
+          src={`${INFURA_GATEWAY}/ipfs/QmXiPMfdaEVsmArAdBjXyfytNZQt56R98iZxS94yRGxEXm`}
+          layout="fill"
+          objectFit="cover"
+          className="w-full h-full"
+          draggable={false}
+        />
+      </div>
+      <div className="relative w-full min-h-100 flex items-center justify-center grow">
+        {allEntries?.length < 1 && !entriesLoading ? (
+          <div className="relative w-full h-ful flex items-center justify-center">
+            <Link
+              className="relative w-fit h-fit text-center font-vcr text-white flex items-center justify-center cursor-pointer"
+              href={`/`}
+            >
+              No Entries Yet. Start A Circuit & Publish Your Lit Action?
+            </Link>
+          </div>
+        ) : (
+          <div className="relative flex flex-row w-full h-full justify-center items-center">
+            <AllActions allEntries={allEntries} />
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

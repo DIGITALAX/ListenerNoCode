@@ -59,20 +59,20 @@ const useStartCircuit = () => {
   const { address } = useAccount();
   const [circuitRunLoading, setCircuitRunLoading] = useState<boolean>(false); 
 
-  const siweMessage = new SiweMessage({
-    domain: "localhost",
-    address: address,
-    statement: "This is an Auth Sig for LitListenerSDK",
-    uri: "https://localhost/login",
-    version: "1",
-    chainId: 137,
-  });
+  // const siweMessage = new SiweMessage({
+  //   domain: "localhost",
+  //   address: address,
+  //   statement: "This is an Auth Sig for LitListenerSDK",
+  //   uri: "https://localhost/login",
+  //   version: "1",
+  //   chainId: 137,
+  // });
    
-  const signedMessage = siweMessage.prepareMessage();
+  // const signedMessage = siweMessage.prepareMessage();
 
-  const { signMessageAsync } = useSignMessage({
-    message: signedMessage,
-  }); 
+  // const { signMessageAsync } = useSignMessage({
+  //   message: signedMessage,
+  // }); 
  
   const handleRunCircuit = async () => {
     if (!circuitInformation?.id) {

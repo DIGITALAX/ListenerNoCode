@@ -70,6 +70,8 @@ const AllConditions: FunctionComponent<AllConditionsProps> = ({
                   onClick={() => {
                     const newConditions = [...circuitInformation.conditions];
                     newConditions.splice(index, 1);
+                    dispatch(setNewContractConditionInformation(undefined));
+                    dispatch(setNewWebhookConditionInformation(undefined));
                     dispatch(
                       setCircuitInformation({
                         ...circuitInformation,

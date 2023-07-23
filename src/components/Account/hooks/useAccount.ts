@@ -11,7 +11,7 @@ import {
   getUserCircuitsCompleted,
   getUserCircuitsCompletedById,
 } from "../../../../graphql/queries/getUserCircuitsCompleted";
-import { AllCircuits, Completed, Interrupted } from "../types/account.types";
+import { AllCircuits} from "../types/account.types";
 import {
   getUserCircuitsInterrupted,
   getUserCircuitsInterruptedById,
@@ -20,12 +20,6 @@ import { setSelectedUserCircuit } from "../../../../redux/reducers/selectedCircu
 import { getUserLogs } from "../../../../graphql/queries/getUserLogs";
 import { fetchIpfsJson } from "../../../../lib/helpers/fetchIpfsJson";
 import { setModalOpen } from "../../../../redux/reducers/modalOpenSlice";
-import {
-  Action,
-  Condition,
-  IConditionalLogic,
-  IExecutionConstraints,
-} from "@/components/CircuitFlow/types/litlistener.types";
 
 const useAccountPage = () => {
   const { address } = useAccount();
