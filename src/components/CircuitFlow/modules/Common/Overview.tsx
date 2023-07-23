@@ -2,6 +2,11 @@ import { FunctionComponent } from "react";
 import { OverviewProps } from "../../types/circuitflow.types";
 import { setCircuitFlow } from "../../../../../redux/reducers/circuitFlowSlice";
 import { setModalOpen } from "../../../../../redux/reducers/modalOpenSlice";
+import {
+  PiArrowCircleUpLeftFill,
+  PiArrowCircleDownRightFill,
+} from "react-icons/pi";
+
 const Overview: FunctionComponent<OverviewProps> = ({
   circuitFlowIndex,
   dispatch,
@@ -11,9 +16,25 @@ const Overview: FunctionComponent<OverviewProps> = ({
   handleAddExecutionConstraints,
   handleClearCircuit,
   circuitRunning,
+  overviewOpen,
+  setOverviewOpen,
 }): JSX.Element => {
   return (
-    <div className="relative w-full xl:w-96 grow max:border-l-2 xl:border-sol xl:bg-aBlack px-3 xl:px-4 py-6 items-center justify-center">
+    <div
+      className={`absolute z-20 right-0 top-0 grow max:border-l-2 xl:border-sol xl:bg-aBlack px-3 xl:px-4 py-6 items-center justify-center ${
+        overviewOpen ? "w-80" : "w-10"
+      }`}
+    >
+      <div
+        className="absolute top-10 -left-4 flex opacity-80 cursor-pointer w-fit h-fit z-10 border border-ballena rounded-full bg-white"
+        onClick={() => setOverviewOpen(!overviewOpen)}
+      >
+        {overviewOpen ? (
+          <PiArrowCircleDownRightFill size={30} color="#FFD85F" />
+        ) : (
+          <PiArrowCircleUpLeftFill size={30} color="#FFD85F" />
+        )}
+      </div>
       <div className="flex flex-row items-center justify-center relative w-full h-full xl:bg-none bg-aBlack xl:border-x-0 border-x-4 border-moda">
         <div className="relative w-1 h-full bg-moda grow xl:flex hidden"></div>
         <div className="relative w-full h-full flex flex-col gap-5">

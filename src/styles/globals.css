@@ -71,7 +71,15 @@ html {
 }
 
 #heightCheckout {
-  @media (max-width: 1024px) {
+  @media (max-width: 563px) {
+    height: calc(100vh - 29rem);
+  }
+
+  @media (min-width: 564px) and (max-width: 799px) {
+    height: calc(100vh - 20.5rem);
+  }
+
+  @media (min-width: 800px) and (max-width: 1024px) {
     height: calc(100vh - 18.5rem);
   }
 

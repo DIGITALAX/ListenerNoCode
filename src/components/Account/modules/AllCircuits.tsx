@@ -2,18 +2,40 @@ import { FunctionComponent } from "react";
 import { AllCircuits, AllCircuitsProps } from "../types/account.types";
 import { convertDate } from "../../../../lib/helpers/convertDate";
 import { setSelectedUserCircuitSideBar } from "../../../../redux/reducers/selectedCircuitSideBarSlice";
+import {
+  PiArrowCircleUpLeftFill,
+  PiArrowCircleDownRightFill,
+} from "react-icons/pi";
 
 const AllCircuits: FunctionComponent<AllCircuitsProps> = ({
   allUserCircuits,
   selectedCircuitSideBar,
   dispatch,
+  circuitsOpen,
+  setCircuitsOpen,
+  largeScreen,
 }): JSX.Element => {
   return (
     <div
-      className="relative w-full xl:w-96 grow max:border-l-2 xl:border-sol bg-aBlack px-3 xl:px-4 py-6 items-center justify-center"
-      id="heightAllCircuitsResponsive"
+      className={`absolute z-20 right-0 top-0 grow border-l-2 border-sol bg-aBlack px-3 xl:px-4 py-6 items-center justify-center ${
+        circuitsOpen ? (largeScreen ? "w-72" : "w-11/12") : "w-10"
+      }`}
+      id="heightCheckout"
     >
-      <div className="flex flex-row items-center justify-center relative w-full h-full xl:border-x-0 border-x-4 border-moda">
+      <div
+        className="absolute top-10 -left-4 flex opacity-80 cursor-pointer w-fit h-fit z-10 border border-ballena rounded-full bg-white"
+        onClick={() => setCircuitsOpen(!circuitsOpen)}
+      >
+        {circuitsOpen ? (
+          <PiArrowCircleDownRightFill size={30} color="#FFD85F" />
+        ) : (
+          <PiArrowCircleUpLeftFill size={30} color="#FFD85F" />
+        )}
+      </div>
+      <div
+        className={`${circuitsOpen ? "flex" : "hidden"}
+         flex-row items-center justify-center relative w-full h-full xl:border-x-0 border-x-4 border-moda`}
+      >
         <div className="relative w-1 h-full bg-moda xl:flex hidden"></div>
         <div className="relative w-full h-full flex flex-col gap-5">
           <div className="relative w-full h-fit flex flex-row items-start justify-center">
@@ -35,7 +57,7 @@ const AllCircuits: FunctionComponent<AllCircuitsProps> = ({
             <div className="relative h-1 w-full bg-moda flex items-center justify-center"></div>
           </div>
           <div className="relative w-full h-full gap-3 font-vcr px-2 items-center overflow-y-scroll">
-            <div className="flex justify-start h-fit items-center gap-3 w-full xl:flex flex-wrap inline-flex break-words xl:flex-col xl:flex-nowrap">
+            <div className="justify-start h-fit items-center gap-3 w-full flex flex-col break-words">
               {allUserCircuits?.map((value: AllCircuits, index: number) => {
                 return (
                   <div

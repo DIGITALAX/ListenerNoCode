@@ -27,6 +27,7 @@ const useAccountPage = () => {
   const dispatch = useDispatch();
   const [addressExists, setAddressExists] = useState<boolean>(false);
   const [allCircuitsLoading, setAllCircuitsLoading] = useState<boolean>(false);
+  const [circuitsOpen, setCircuitsOpen] = useState<boolean>(true);
   const [circuitLogsLoading, setCircuitLogsLoading] = useState<boolean>(false);
   const [interruptLoading, setInterruptLoading] = useState<boolean>(false);
   const circuitRunning = useSelector(
@@ -296,6 +297,8 @@ const useAccountPage = () => {
     addressExists,
     handleInterruptCircuit,
     interruptLoading,
+    circuitsOpen,
+    setCircuitsOpen,
   };
 };
 

@@ -20,6 +20,8 @@ export type OverviewProps = {
   ipfsHash: string;
   handleClearCircuit: () => void;
   circuitRunning: boolean;
+  overviewOpen: boolean;
+  setOverviewOpen: (e: boolean) => boolean;
 };
 
 export type CircuitSwitchProps = {

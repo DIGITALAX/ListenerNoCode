@@ -34,7 +34,7 @@ const Checkout: FunctionComponent<CheckoutProps> = ({
 }): JSX.Element => {
   return (
     <div
-      className={`absolute z-20 right-0 top-0 z-10 border-l-2 border-sol bg-aBlack px-4 py-6 ${
+      className={`absolute z-20 right-0 top-0 border-l-2 border-sol bg-aBlack px-4 py-6 ${
         checkOutOpen ? "w-80" : "w-10"
       }`}
       id="heightCheckout"
