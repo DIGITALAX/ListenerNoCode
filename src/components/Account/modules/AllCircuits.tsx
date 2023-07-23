@@ -10,11 +10,11 @@ const AllCircuits: FunctionComponent<AllCircuitsProps> = ({
 }): JSX.Element => {
   return (
     <div
-      className="relative w-96 border-l-2 border-sol bg-aBlack px-4 py-6"
-      id="heightAllCircuits"
+      className="relative w-full xl:w-96 grow max:border-l-2 xl:border-sol bg-aBlack px-3 xl:px-4 py-6 items-center justify-center"
+      id="heightAllCircuitsResponsive"
     >
-      <div className="flex flex-row items-center justify-center relative w-full h-full">
-        <div className="relative w-1 h-full bg-moda"></div>
+      <div className="flex flex-row items-center justify-center relative w-full h-full xl:border-x-0 border-x-4 border-moda">
+        <div className="relative w-1 h-full bg-moda xl:flex hidden"></div>
         <div className="relative w-full h-full flex flex-col gap-5">
           <div className="relative w-full h-fit flex flex-row items-start justify-center">
             <div className="relative h-1 w-10 bg-moda flex items-start justify-center"></div>
@@ -34,13 +34,13 @@ const AllCircuits: FunctionComponent<AllCircuitsProps> = ({
             ></div>
             <div className="relative h-1 w-full bg-moda flex items-center justify-center"></div>
           </div>
-          <div className="relative w-full h-full flex flex-col gap-3 font-vcr px-2 items-center overflow-y-scroll">
-            <div className="flex flex-col justify-start h-fit items-center gap-3">
+          <div className="relative w-full h-full gap-3 font-vcr px-2 items-center overflow-y-scroll">
+            <div className="flex justify-start h-fit items-center gap-3 w-full xl:flex flex-wrap inline-flex break-words xl:flex-col xl:flex-nowrap">
               {allUserCircuits?.map((value: AllCircuits, index: number) => {
                 return (
                   <div
                     key={index}
-                    className={`relative w-full h-fit flex flex-row justify-center items-center gap-3 cursor-pointer active:scale-95 hover:text-sol active:text-sol grow text-center 
+                    className={`relative w-fit xl:w-full h-fit flex flex-row justify-center items-center gap-3 cursor-pointer active:scale-95 hover:text-sol active:text-sol grow text-center 
                   ${
                     value?.circuitInformation?.id === selectedCircuitSideBar
                       ? "text-sol"
@@ -92,7 +92,7 @@ const AllCircuits: FunctionComponent<AllCircuitsProps> = ({
           </div>
           <div className="relative h-1 w-full bg-moda flex items-start justify-center"></div>
         </div>
-        <div className="relative w-1 h-full bg-moda"></div>
+        <div className="relative w-1 h-full bg-moda xl:flex hidden"></div>
       </div>
     </div>
   );

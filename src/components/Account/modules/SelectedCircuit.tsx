@@ -18,7 +18,7 @@ const SelectedCircuit: FunctionComponent<SelectedCircuitProps> = ({
         className="relative w-5/6 h-5/6 justify-center items-center bg-black/50 flex flex-col p-3 gap-3"
         id="inputBorder"
       >
-        <div className="relative w-full h-fit justify-between items-center flex flex-row font-vcr text-sm">
+        <div className="relative w-full h-fit justify-between items-center inline-flex flex-wrap gap-4 font-vcr text-sm">
           <div className="relative flex flex-row gap-3">
             <div className="relative flex items-center justify-center text-white">
               Circuit Id:
@@ -88,7 +88,7 @@ const SelectedCircuit: FunctionComponent<SelectedCircuitProps> = ({
         </div>
         <div className="relative bg-white h-px w-full"></div>
         <div className="relative w-full h-44 flex flex-col overflow-y-scroll">
-          <div className="relative w-full h-fit flex flex-row justify-between items-center font-vcr pt-3">
+          <div className="relative w-full h-fit inline-flex flex-wrap  justify-between items-center font-vcr pt-3 gap-3">
             <div className="relative flex flex-col gap-1 w-fit h-fit justify-center items-start text-xs">
               <div className="relative w-fit h-fit text-white">
                 Circuit Instantiated:
@@ -133,12 +133,12 @@ const SelectedCircuit: FunctionComponent<SelectedCircuitProps> = ({
               </div>
             </div>
           </div>
-          <div className="relative w-full h-fit flex flex-row justify-between items-center font-vcr pt-3">
+          <div className="relative w-full h-fit inline-flex flex-wrap gap-3 justify-between items-center font-vcr pt-3">
             <div className="relative flex flex-col gap-1 w-fit h-fit justify-center items-start text-xs">
               <div className="relative w-fit h-fit text-white">
                 Assigned PKP Token Id
               </div>
-              <div className="relative w-fit h-fit text-sol">
+              <div className="relative w-fit h-fit text-sol break-all">
                 {selectedCircuit?.circuitInformation?.tokenId}
               </div>
             </div>
@@ -146,12 +146,12 @@ const SelectedCircuit: FunctionComponent<SelectedCircuitProps> = ({
               <div className="relative w-fit h-fit text-white">
                 Assigned PKP Address
               </div>
-              <div className="relative w-fit h-fit text-sol">
+              <div className="relative w-fit h-fit text-sol break-all">
                 {selectedCircuit?.circuitInformation?.pkpAddress}
               </div>
             </div>
           </div>
-          <div className="relative w-full h-fit flex flex-row justify-between items-center font-vcr pt-3">
+          <div className="relative w-full h-fit inline-flex flex-wrap gap-3 justify-between items-center font-vcr pt-3">
             <div className="relative flex flex-col gap-1 w-fit h-fit justify-center items-start text-xs">
               <div className="relative w-fit h-fit text-white">
                 Conditional Logic Type
@@ -238,7 +238,7 @@ const SelectedCircuit: FunctionComponent<SelectedCircuitProps> = ({
                 return (
                   <div
                     key={index}
-                    className="relative flex flex-row justify-start items-center gap-2 font-vcr text-xs px-1.5 p-2 border border-white bg-black/60"
+                    className="relative flex flex-col sm:flex-row justify-start items-start sm:items-center gap-2 font-vcr text-xs px-1.5 p-2 border border-white bg-black/60"
                   >
                     <div
                       className={`relative flex w-36 h-fit ${
@@ -263,7 +263,7 @@ const SelectedCircuit: FunctionComponent<SelectedCircuitProps> = ({
                         ? "BROADCAST >>>"
                         : "EXECUTION >>>"}
                     </div>
-                    <div className="relative flex flex-col gap-1.5 text-white w-full pl-10">
+                    <div className="relative flex flex-col gap-1.5 text-white w-full sm:pl-10">
                       <div className="relative w-fit h-fit flex text-ballena justify-center">
                         Message
                       </div>
@@ -279,7 +279,7 @@ const SelectedCircuit: FunctionComponent<SelectedCircuitProps> = ({
                         {data}
                       </div>
                     </div>
-                    <div className="relative w-fit h-fit flex flex-col gap-1.5 text-white ml-auto items-end justify-center">
+                    <div className="relative w-fit h-fit flex flex-col gap-1.5 text-white sm:ml-auto sm:items-end justify-center">
                       <div className="relative w-fit h-fit text-ballena items-end">
                         Timestamp
                       </div>
