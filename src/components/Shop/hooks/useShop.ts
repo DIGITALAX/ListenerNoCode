@@ -8,13 +8,14 @@ import {
   useAccount,
   useContractRead,
   useContractWrite,
+  useNetwork,
   usePrepareContractWrite,
 } from "wagmi";
 import {
   ACCEPTED_TOKENS,
   LISTENER_MARKET,
   LISTENER_ORACLE,
-  FULFILLER_ADDRESS
+  FULFILLER_ADDRESS,
 } from "../../../../lib/constants";
 import { BigNumber, ethers } from "ethers";
 import ListenerMarketAbi from "./../../../../abi/ListenerMarket.json";
@@ -22,15 +23,12 @@ import ListenerOracleAbi from "./../../../../abi/ListenerOracle.json";
 import { setCartItems } from "../../../../redux/reducers/cartItemsSlice";
 import { setModalOpen } from "../../../../redux/reducers/modalOpenSlice";
 import { setLitClient } from "../../../../redux/reducers/litClientSlice";
+import { AllShop } from "../types/shop.types";
 
 const useShop = () => {
   const dispatch = useDispatch();
-  const { address: addressConnected } = useAccount();
-  const [shopLoading, setShopLoading] = useState<boolean>(false);
-  const [purchaseLoading, setPurchaseLoading] = useState<boolean>(false);
-  const [approved, setApproved] = useState<boolean>(false);
-  const [address, setAddress] = useState<boolean>(false);
-  const [oracleValue, setOracleValue] = useState<number>(1);
+  const { address: addressConnected, isConnected } = useAccount();
+  const { chain } = useNetwork();
   const allShopItems = useSelector(
     (state: RootState) => state.app.allShopReducer.value
   );
@@ -43,6 +41,21 @@ const useShop = () => {
   const walletConnected = useSelector(
     (state: RootState) => state.app.walletConnectedReducer.value
   );
+  const [shopLoading, setShopLoading] = useState<boolean>(false);
+  const [purchaseLoading, setPurchaseLoading] = useState<boolean>(false);
+  const [currentIndexItem, setCurrentIndexItem] = useState<number[]>(
+    Array.from(
+      {
+        length: cartItems?.length,
+      },
+      () => 0
+    )
+  );
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
+  const [switchNeeded, setSwitchNeeded] = useState<boolean>(false);
+  const [approved, setApproved] = useState<boolean>(false);
+  const [address, setAddress] = useState<boolean>(false);
+  const [oracleValue, setOracleValue] = useState<number>(1);
   const [checkoutCurrency, setCheckoutCurrency] = useState<string>("USDT");
   const [encryptedFulfillmentDetails, setEncryptedFulfillmentDetails] =
     useState<string>("");
@@ -297,87 +310,158 @@ const useShop = () => {
   const getAllShop = async () => {
     setShopLoading(true);
     try {
-      dispatch(
-        setAllShop([
-          {
-            uri: {
-              template: "ipfs://QmXnZvpUJaRJqZyG2EYzpGuB8yk3HrqEFs945pScvsZaVV",
-              images: [
-                "ipfs://QmXnZvpUJaRJqZyG2EYzpGuB8yk3HrqEFs945pScvsZaVV",
-                "ipfs://QmUF1A5VHb9EbtU9HaFNpgw3f9RPR7tSpY8MchaxyEKNCd",
-              ],
-              description:
-                "this is a description for the token that i have here",
-            },
-            acceptedTokens: [],
-            prices: ["1000000", "3000000"],
-            amount: "10",
-            noLimit: false,
-            mintedTokens: ["1", "2"],
-            collectionId: "1",
-            tokenIds: ["1", "2", "3", "4", "5"],
-            name: "shop 1",
+      const allShopValues = [
+        {
+          uri: {
+            images: [
+              "ipfs://QmXnZvpUJaRJqZyG2EYzpGuB8yk3HrqEFs945pScvsZaVV",
+              "ipfs://QmUF1A5VHb9EbtU9HaFNpgw3f9RPR7tSpY8MchaxyEKNCd",
+            ],
+            description: "this is a description for the token that i have here",
           },
-          {
-            uri: {
-              template: "ipfs://QmXnZvpUJaRJqZyG2EYzpGuB8yk3HrqEFs945pScvsZaVV",
-              images: [
-                "ipfs://QmXnZvpUJaRJqZyG2EYzpGuB8yk3HrqEFs945pScvsZaVV",
-                "ipfs://QmUF1A5VHb9EbtU9HaFNpgw3f9RPR7tSpY8MchaxyEKNCd",
-              ],
-              description:
-                "this is a description for the token that i have here",
-            },
-            acceptedTokens: [],
-            prices: ["1000000", "3000000"],
+          acceptedTokens: [],
+          prices: ["1000000", "3000000"],
+          amount: "10",
+          noLimit: false,
+          mintedTokens: ["1", "2"],
+          collectionId: "1",
+          tokenIds: ["1", "2", "3", "4", "5"],
+          name: "shop 1",
+        },
+        {
+          uri: {
+            images: [
+              "ipfs://QmdwN9emrCjhaURLWDqi1T5jJKQS9nfuBVN1iBr6jwm61R",
+              "ipfs://QmUF1A5VHb9EbtU9HaFNpgw3f9RPR7tSpY8MchaxyEKNCd",
+            ],
+            description: "this is a description for the token that i have here",
+          },
+          acceptedTokens: [],
+          prices: ["1000000", "3000000"],
 
-            amount: "10",
-            noLimit: false,
-            mintedTokens: ["1", "2"],
-            collectionId: "1",
-            tokenIds: ["1", "2", "3", "4", "5"],
-            name: "shop 2",
+          amount: "10",
+          noLimit: false,
+          mintedTokens: ["1", "2"],
+          collectionId: "1",
+          tokenIds: ["1", "2", "3", "4", "5"],
+          name: "shop 2",
+        },
+        {
+          uri: {
+            images: [
+              "ipfs://QmbNUCcFqdmobTJzPA5gKkk71tERReB1MXcNyUjeQ53yVy",
+              "ipfs://QmUF1A5VHb9EbtU9HaFNpgw3f9RPR7tSpY8MchaxyEKNCd",
+            ],
+            description: "this is a description for the token that i have here",
           },
-          {
-            uri: {
-              template: "ipfs://QmXnZvpUJaRJqZyG2EYzpGuB8yk3HrqEFs945pScvsZaVV",
-              images: [
-                "ipfs://QmXnZvpUJaRJqZyG2EYzpGuB8yk3HrqEFs945pScvsZaVV",
-                "ipfs://QmUF1A5VHb9EbtU9HaFNpgw3f9RPR7tSpY8MchaxyEKNCd",
-              ],
-              description:
-                "this is a description for the token that i have here",
-            },
-            amount: "10",
-            noLimit: true,
-            mintedTokens: ["1", "2"],
-            collectionId: "1",
-            tokenIds: ["1", "2", "3", "4", "5"],
-            name: "shop 3",
-            acceptedTokens: [],
-            prices: ["1000000", "3000000"],
+          amount: "10",
+          noLimit: true,
+          mintedTokens: ["1", "2"],
+          collectionId: "1",
+          tokenIds: ["1", "2", "3", "4", "5"],
+          name: "shop 3",
+          acceptedTokens: [],
+          prices: ["1000000", "3000000"],
+        },
+        {
+          uri: {
+            images: [
+              "ipfs://QmXnZvpUJaRJqZyG2EYzpGuB8yk3HrqEFs945pScvsZaVV",
+              "ipfs://QmUF1A5VHb9EbtU9HaFNpgw3f9RPR7tSpY8MchaxyEKNCd",
+            ],
+            description: "this is a description for the token that i have here",
           },
-          {
-            uri: {
-              template: "ipfs://QmXnZvpUJaRJqZyG2EYzpGuB8yk3HrqEFs945pScvsZaVV",
-              images: [
-                "ipfs://QmXnZvpUJaRJqZyG2EYzpGuB8yk3HrqEFs945pScvsZaVV",
-                "ipfs://QmUF1A5VHb9EbtU9HaFNpgw3f9RPR7tSpY8MchaxyEKNCd",
-              ],
-              description:
-                "this is a description for the token that i have here",
-            },
-            acceptedTokens: [""],
-            prices: ["1000000", "3000000"],
-            amount: "10",
-            noLimit: true,
-            mintedTokens: ["1", "2"],
-            collectionId: "1",
-            tokenIds: ["1", "2", "3", "4", "5"],
-            name: "shop 4",
+          acceptedTokens: [""],
+          prices: ["1000000", "3000000"],
+          amount: "10",
+          noLimit: true,
+          mintedTokens: ["1", "2"],
+          collectionId: "1",
+          tokenIds: ["1", "2", "3", "4", "5"],
+          name: "shop 4",
+        },
+        {
+          uri: {
+            images: [
+              "ipfs://QmdwN9emrCjhaURLWDqi1T5jJKQS9nfuBVN1iBr6jwm61R",
+              "ipfs://QmUF1A5VHb9EbtU9HaFNpgw3f9RPR7tSpY8MchaxyEKNCd",
+            ],
+            description: "this is a description for the token that i have here",
           },
-        ])
+          acceptedTokens: [],
+          prices: ["1000000", "3000000"],
+          amount: "10",
+          noLimit: false,
+          mintedTokens: ["1", "2"],
+          collectionId: "1",
+          tokenIds: ["1", "2", "3", "4", "5"],
+          name: "shop 1",
+        },
+        {
+          uri: {
+            images: [
+              "ipfs://QmbNUCcFqdmobTJzPA5gKkk71tERReB1MXcNyUjeQ53yVy",
+              "ipfs://QmUF1A5VHb9EbtU9HaFNpgw3f9RPR7tSpY8MchaxyEKNCd",
+            ],
+            description: "this is a description for the token that i have here",
+          },
+          acceptedTokens: [],
+          prices: ["1000000", "3000000"],
+
+          amount: "10",
+          noLimit: false,
+          mintedTokens: ["1", "2"],
+          collectionId: "1",
+          tokenIds: ["1", "2", "3", "4", "5"],
+          name: "shop 2",
+        },
+        {
+          uri: {
+            images: [
+              "ipfs://QmXnZvpUJaRJqZyG2EYzpGuB8yk3HrqEFs945pScvsZaVV",
+              "ipfs://QmUF1A5VHb9EbtU9HaFNpgw3f9RPR7tSpY8MchaxyEKNCd",
+            ],
+            description: "this is a description for the token that i have here",
+          },
+          amount: "10",
+          noLimit: true,
+          mintedTokens: ["1", "2"],
+          collectionId: "1",
+          tokenIds: ["1", "2", "3", "4", "5"],
+          name: "shop 3",
+          acceptedTokens: [],
+          prices: ["1000000", "3000000"],
+        },
+        {
+          uri: {
+            images: [
+              "ipfs://QmXnZvpUJaRJqZyG2EYzpGuB8yk3HrqEFs945pScvsZaVV",
+              "ipfs://QmUF1A5VHb9EbtU9HaFNpgw3f9RPR7tSpY8MchaxyEKNCd",
+            ],
+            description: "this is a description for the token that i have here",
+          },
+          acceptedTokens: [""],
+          prices: ["1000000", "3000000"],
+          amount: "10",
+          noLimit: true,
+          mintedTokens: ["1", "2"],
+          collectionId: "1",
+          tokenIds: ["1", "2", "3", "4", "5"],
+          name: "shop 4",
+        },
+      ]?.map((obj) => {
+        const modifiedObj = {
+          ...obj,
+          chosenSize: "M",
+          sizes: ["XS", "S", "M", "L", "XL"],
+        };
+
+        return modifiedObj;
+      });
+      setCurrentIndexItem(
+        Array.from({ length: allShopValues.length }, () => 0)
       );
+      dispatch(setAllShop(allShopValues));
     } catch (err: any) {
       console.error(err.message);
     }
@@ -478,6 +562,10 @@ const useShop = () => {
     ),
   ]);
 
+  useEffect(() => {
+    setSwitchNeeded(chain?.id !== 137 ? true : false);
+  }, [isConnected, walletConnected, chain?.id]);
+
   return {
     shopLoading,
     purchaseLoading,
@@ -490,6 +578,11 @@ const useShop = () => {
     fulfillmentDetails,
     checkoutCurrency,
     setCheckoutCurrency,
+    switchNeeded,
+    currentIndex,
+    setCurrentIndex,
+    currentIndexItem,
+    setCurrentIndexItem,
   };
 };
 

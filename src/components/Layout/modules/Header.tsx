@@ -25,7 +25,7 @@ const Header: FunctionComponent = (): JSX.Element => {
   useEffect(() => {
     dispatch(setWalletConnected(isConnected));
     setSwitchState(chain?.id !== 175177 && chain?.id !== 137 ? true : false);
-  }, [isConnected, walletConnected]);
+  }, [isConnected, walletConnected, chain?.id]);
   return (
     <div className="relative w-full flex flex-col gap-3 pt-2 pb-[4.5rem]">
       <div className="flex flex-row w-full h-fit text-white flex items-center justify-center px-3">
