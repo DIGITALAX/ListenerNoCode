@@ -12,17 +12,14 @@ const useConditionalLogic = () => {
   const [logicType, setLogicType] = useState<string>("EVERY");
   const [targetConditionOpen, setTargetConditionOpen] =
     useState<boolean>(false);
-  const [interval, setInterval] = useState<number>(120000);
+  const [interval, setInterval] = useState<number>(180000000);
   const [thresholdValue, setThresholdValue] = useState<number>(1);
   const [targetCondition, setTargetCondition] = useState<number>(1);
 
   const handleSetConditionalLogic = (): boolean => {
     let logicCorrect = true;
 
-    if (
-      !Number(interval) ||
-      (typeof interval === "number" && interval <= 0)
-    ) {
+    if (!Number(interval) || (typeof interval === "number" && interval <= 0)) {
       dispatch(
         setModalOpen({
           actionOpen: true,
@@ -48,7 +45,7 @@ const useConditionalLogic = () => {
 
     let conditionalLogic: any = {
       type: logicType,
-      interval: interval,
+      interval: interval ? interval : 180000000,
     };
 
     if (logicType === "THRESHOLD") {

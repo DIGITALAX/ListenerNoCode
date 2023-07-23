@@ -33,11 +33,11 @@ const FinalCondition: FunctionComponent<FinalConditionProps> = ({
           <div className="relative w-full h-full flex items-center justify-center text-center">
             <div className="relative w-3/4 h-fit font-vcr text-white items-center justify-center flex text-center break-words whitespace-pre-wrap">
               {`Your webhook condition will query ${
-                webHookInfo?.baseUrl + webHookInfo?.endpoint
+                webHookInfo?.baseUrl || "" + webHookInfo?.endpoint || ""
               } and check if the returned value at ${
-                webHookInfo?.responsePath
-              } is ${webHookInfo?.matchOperator} to ${
-                webHookInfo?.expectedValue
+                webHookInfo?.responsePath || ""
+              } is ${webHookInfo?.matchOperator || ""} to ${
+                webHookInfo?.expectedValue || ""
               }.`}
             </div>
           </div>
@@ -136,14 +136,14 @@ const FinalCondition: FunctionComponent<FinalConditionProps> = ({
           <div className="relative w-full h-full flex items-center justify-center text-center">
             <div className="relative w-3/4 h-fit font-vcr text-white items-center justify-center flex text-center break-words whitespace-pre-wrap">
               {`Your contract condition will monitor the ${
-                contractInfo?.eventName
-              } event emitted by ${contractInfo?.contractAddress} on ${
-                contractInfo?.chainId
+                contractInfo?.eventName || ""
+              } event emitted by ${contractInfo?.contractAddress || ""} on ${
+                contractInfo?.chainId || ""
               } and check if the returned values from ${JSON.stringify(
-                eventArgs
-              )} at are ${contractInfo?.matchOperator} to ${JSON.stringify(
-                expectedValues
-              )}
+                eventArgs || ""
+              )} at are ${
+                contractInfo?.matchOperator || ""
+              } to ${JSON.stringify(expectedValues || "")}
             .`}
             </div>
           </div>

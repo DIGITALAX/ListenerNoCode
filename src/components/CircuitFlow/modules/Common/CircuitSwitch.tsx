@@ -92,16 +92,19 @@ const CircuitSwitch: FunctionComponent<CircuitSwitchProps> = ({
   setDropDownsSignOpen,
   executionConstraintFlowIndex,
   litActionCode,
+  switchNeeded,
+  openChainModal,
   ipfsFlowIndex,
+  switchNeededPKP,
+  address,
+  openConnectModal
 }): JSX.Element => {
   switch (circuitFlowIndex) {
     case 6:
       return (
         <RunCircuit
-          signedPKPTx={signedPKPTx}
           handleRunCircuit={handleRunCircuit}
           circuitRunning={circuitRunning}
-          ipfsHash={ipfsHash}
           circuitRunLoading={circuitRunLoading}
           handleClearCircuit={handleClearCircuit}
         />
@@ -113,6 +116,8 @@ const CircuitSwitch: FunctionComponent<CircuitSwitchProps> = ({
           pkpLoading={pkpLoading}
           handleMintGrantBurnPKP={handleMintGrantBurnPKP}
           signedPKPTx={signedPKPTx}
+          switchNeededPKP={switchNeededPKP}
+          openChainModal={openChainModal}
         />
       );
 
@@ -127,6 +132,10 @@ const CircuitSwitch: FunctionComponent<CircuitSwitchProps> = ({
           dbAdded={dbAdded}
           litActionCode={litActionCode}
           ipfsFlowIndex={ipfsFlowIndex}
+          switchNeeded={switchNeeded}
+          openChainModal={openChainModal}
+          address={address}
+          openConnectModal={openConnectModal}
         />
       );
 

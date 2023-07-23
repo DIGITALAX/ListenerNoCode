@@ -24,7 +24,7 @@ const Header: FunctionComponent = (): JSX.Element => {
 
   useEffect(() => {
     dispatch(setWalletConnected(isConnected));
-    setSwitchState(chain?.id !== 175177 ? true : false);
+    setSwitchState(chain?.id !== 175177 && chain?.id !== 137 ? true : false);
   }, [isConnected, walletConnected]);
   return (
     <div className="relative w-full flex flex-col gap-3 pt-2 pb-[4.5rem]">
@@ -46,6 +46,13 @@ const Header: FunctionComponent = (): JSX.Element => {
             draggable={false}
           >{`( Docs )`}</Link>
           <Link
+            href={"https://github.com/DIGITALAX/LitListenerSDK"}
+            target="_blank"
+            rel="noreferrer"
+            className="relative w-fit h-fit justify-center items-center flex cursor-pointer hover:opacity-70"
+            draggable={false}
+          >{`( SDK )`}</Link>
+          <Link
             href={"/shop"}
             className="relative w-fit h-fit justify-center items-center flex cursor-pointer hover:opacity-70"
             draggable={false}
@@ -55,6 +62,11 @@ const Header: FunctionComponent = (): JSX.Element => {
             className="relative w-fit h-fit justify-center items-center flex cursor-pointer hover:opacity-70"
             draggable={false}
           >{`( Account )`}</Link>
+          <Link
+            href={"/actions"}
+            className="relative w-fit h-fit justify-center items-center flex cursor-pointer hover:opacity-70"
+            draggable={false}
+          >{`( Actions )`}</Link>
         </div>
         <div
           className="relative flex justify-end w-fit h-fit items-center ml-auto whitespace-nowrap break-words cursor-pointer active:scale-95 px-3 py-1.5"

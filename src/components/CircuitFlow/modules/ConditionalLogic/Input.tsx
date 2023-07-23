@@ -20,7 +20,7 @@ const Input: FunctionComponent<InputLogicProps> = ({
           {mainText}
         </div>
         <input
-          value={valueCondition || 120000}
+          value={valueCondition || 180000000}
           placeholder={placeholderText}
           className="bg-aBlack w-full h-10 p-1 text-white font-vcr text-sm justify-start items-start flex bg-black/40 border border-ballena border-l-8"
           onChange={(e) => setCondition(Number(e.target.value))}

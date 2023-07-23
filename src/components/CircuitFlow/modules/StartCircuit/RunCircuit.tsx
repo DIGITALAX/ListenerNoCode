@@ -11,20 +11,18 @@ const RunCircuit: FunctionComponent<RunCircuitProps> = ({
   handleClearCircuit,
 }): JSX.Element => {
   return (
-    <div className="relative w-full h-full flex flex-col">
-      <div className="relative w-full h-full flex flex-row items-center justify-center gap-4">
+    <div className="relative w-full h-full flex flex-col items-center justify-center">
+      {circuitRunning ? (
+        <ViewInAccount
+          circuitRunning={circuitRunning}
+          handleClearCircuit={handleClearCircuit}
+        />
+      ) : (
         <CircuitStart
           handleRunCircuit={handleRunCircuit}
-          circuitRunning={circuitRunning}
           circuitRunLoading={circuitRunLoading}
         />
-        {circuitRunning && (
-          <ViewInAccount
-            circuitRunning={circuitRunning}
-            handleClearCircuit={handleClearCircuit}
-          />
-        )}
-      </div>
+      )}
     </div>
   );
 };

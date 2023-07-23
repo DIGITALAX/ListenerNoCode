@@ -24,7 +24,8 @@ const NextButton: FunctionComponent<NextButtonProps> = ({
   signedPKPTx,
   mintPKPFlowIndex,
   circuitRunning,
-  router
+  router,
+  handleClearCircuit,
 }): JSX.Element => {
   return (
     <div
@@ -119,20 +120,19 @@ const NextButton: FunctionComponent<NextButtonProps> = ({
 
           return;
         } else if (circuitFlowIndex === 4) {
-          if (ipfsHash?.trim() === "" && 0 === stepCount) {
-            () =>
-              dispatch(
-                setModalOpen({
-                  actionOpen: true,
-                  actionMessage: "Hash to IPFS before continuing.",
-                  actionImage: "QmSjfHHFeLfMhgdwjuvczjxqDbRhs3rW3z4kvo1Jqf9TfM",
-                })
-              );
+          if (ipfsHash?.trim() === "" && 0 === ipfsFlowIndex.index) {
+            dispatch(
+              setModalOpen({
+                actionOpen: true,
+                actionMessage: "Hash to IPFS before continuing.",
+                actionImage: "QmSjfHHFeLfMhgdwjuvczjxqDbRhs3rW3z4kvo1Jqf9TfM",
+              })
+            );
           } else if (
             ipfsHash?.trim() !== "" &&
             stepCount - 1 == ipfsFlowIndex.index
           ) {
-            () => dispatch(setCircuitFlow(circuitFlowIndex + 1));
+            dispatch(setCircuitFlow(circuitFlowIndex + 1));
           } else if (ipfsHash?.trim() !== "") {
             dispatch(
               setIpfsFlow({
@@ -144,26 +144,25 @@ const NextButton: FunctionComponent<NextButtonProps> = ({
           return;
         } else if (circuitFlowIndex === 5) {
           if (signedPKPTx?.publicKey === "" || signedPKPTx.address === "") {
-            () =>
-              dispatch(
-                setModalOpen({
-                  actionOpen: true,
-                  actionMessage: "MintGrantBurn PKP before continuing.",
-                  actionImage: "QmSjfHHFeLfMhgdwjuvczjxqDbRhs3rW3z4kvo1Jqf9TfM",
-                })
-              );
+            dispatch(
+              setModalOpen({
+                actionOpen: true,
+                actionMessage: "MintGrantBurn PKP before continuing.",
+                actionImage: "QmSjfHHFeLfMhgdwjuvczjxqDbRhs3rW3z4kvo1Jqf9TfM",
+              })
+            );
           } else if (
             signedPKPTx?.publicKey?.trim() !== "" &&
             signedPKPTx?.address?.trim() !== "" &&
             stepCount - 1 == mintPKPFlowIndex.index
           ) {
-            () => dispatch(setCircuitFlow(circuitFlowIndex + 1));
+            dispatch(setCircuitFlow(circuitFlowIndex + 1));
           }
           return;
         } else if (circuitFlowIndex === 6) {
           if (circuitRunning) {
             router.push("/account");
-            dispatch(setCircuitFlow(0));
+            handleClearCircuit();
           }
 
           return;

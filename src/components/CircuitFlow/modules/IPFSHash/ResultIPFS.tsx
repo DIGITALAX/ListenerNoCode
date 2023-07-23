@@ -1,11 +1,14 @@
 import { FunctionComponent } from "react";
 import { ResultIPFSProps } from "../../types/circuitflow.types";
 import { AiOutlineLoading } from "react-icons/ai";
+import Link from "next/link";
 
 const ResultIPFS: FunctionComponent<ResultIPFSProps> = ({
   handleSaveToIPFSDB,
   dbLoading,
   dbAdded,
+  switchNeeded,
+  openChainModal,
 }): JSX.Element => {
   return (
     <div
@@ -14,7 +17,7 @@ const ResultIPFS: FunctionComponent<ResultIPFSProps> = ({
     >
       <div
         className={`relative w-36 px-1.5 h-10 bg-aBlack text-white font-vcr text-sm flex justify-center items-center text-center cursor-pointer uppercase border border-white`}
-        onClick={() => handleSaveToIPFSDB()}
+        onClick={switchNeeded ? openChainModal : () => handleSaveToIPFSDB()}
       >
         <div
           className={`relative w-fit h-fit items-center justify-center flex  ${
@@ -30,6 +33,25 @@ const ResultIPFS: FunctionComponent<ResultIPFSProps> = ({
           )}
         </div>
       </div>
+      {dbAdded && (
+        <div
+          className={`flex flex-col w-full h-full p-1 gap-4 items-center justify-center font-vcr text-white`}
+        >
+          <Link
+            className={`relative w-36 px-1.5 h-10 bg-aBlack text-white font-vcr text-sm flex justify-center items-center text-center cursor-pointer uppercase`}
+            id="borderLight"
+            target="_blank"
+            rel="noreferrer"
+            href={"/actions"}
+          >
+            <div
+              className={`relative w-fit h-fit items-center justify-center flex`}
+            >
+              view saved actions
+            </div>
+          </Link>
+        </div>
+      )}
     </div>
   );
 };

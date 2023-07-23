@@ -12,20 +12,30 @@ import {
   ContractAction,
 } from "@/components/CircuitFlow/types/litlistener.types";
 import { setModalOpen } from "../../../../../../redux/reducers/modalOpenSlice";
-import { useContractWrite, usePrepareContractWrite } from "wagmi";
+import {
+  useAccount,
+  useContractWrite,
+  useNetwork,
+  usePrepareContractWrite,
+} from "wagmi";
 import { waitForTransaction } from "@wagmi/core";
 import LitDbAbi from "./../../../../../../abi/LitDbAbi.json";
 
 const useIPFS = () => {
   const dispatch = useDispatch();
+  const { isConnected, address } = useAccount();
+  const { chain } = useNetwork();
   const circuitInformation = useSelector(
     (state: RootState) => state.app.circuitInformationReducer.value
+  );
+  const walletConnected = useSelector(
+    (state: RootState) => state.app.walletConnectedReducer.value
   );
   const ipfsHash = useSelector(
     (state: RootState) => state.app.ipfsHashReducer.value
   );
+  const [switchNeeded, setSwitchNeeded] = useState<boolean>(false);
   const [ipfsLoading, setIpfsLoading] = useState<boolean>(false);
-  const [callSocket, setCallSocket] = useState<boolean>(false);
   const [dbLoading, setDbLoading] = useState<boolean>(false);
   const [dbAdded, setDBAdded] = useState<boolean>(false);
 
@@ -62,16 +72,24 @@ const useIPFS = () => {
       const res = await fetch("/api/azure/instantiate", {
         method: "POST",
         body: JSON.stringify({
-          provider: circuitInformation?.providerURL,
-          contractConditions: circuitInformation.conditions,
-          contractActions: circuitInformation.actions,
+          circuitConditions: circuitInformation.conditions,
+          circuitActions: circuitInformation.actions,
           conditionalLogic: circuitInformation.conditionalLogic,
           executionConstraints: circuitInformation.executionConstraints,
+          instantiatorAddress: address,
         }),
       });
       if (res.status === 200) {
         setIpfsLoading(false);
-        setCallSocket(true);
+      } else if (res.status === 500) {
+        dispatch(
+          setModalOpen({
+            actionOpen: true,
+            actionMessage:
+              "There was an error instantiating your circuit. Try Again.",
+            actionImage: "QmSUH38BqmfPci9NEvmC2KRQEJeoyxdebHiZi1FABbtueg",
+          })
+        );
       }
     } catch (err: any) {
       setIpfsLoading(false);
@@ -97,45 +115,48 @@ const useIPFS = () => {
   };
 
   useEffect(() => {
-    if (ipfsLoading && callSocket) {
-      const websocket = new WebSocket("ws://localhost:3000");
+    const websocket = new WebSocket("ws://localhost:3000");
 
-      websocket.addEventListener("open", () => {
-        console.log("WebSocket connection is open");
-      });
+    websocket.addEventListener("open", () => {
+      console.log("WebSocket connection is open");
+    });
 
-      websocket.addEventListener("message", async (event) => {
-        const message = event.data;
-        console.log("Received message from server:", message);
+    websocket.addEventListener("message", async (event) => {
+      const message = event.data;
+      console.log("Received message from server:", message);
 
-        const data = JSON.parse(message);
-        dispatch(
-          setCircuitInformation({
-            ...circuitInformation,
-            id: data?.id,
-          })
-        );
-        const res = await fetch(`${INFURA_GATEWAY}/ipfs/${data?.ipfs}`);
-        console.log(res)
+      const data = JSON.parse(message);
+
+      dispatch(
+        setCircuitInformation({
+          ...circuitInformation,
+          id: data?.id,
+        })
+      );
+      const res = await fetch(`${INFURA_GATEWAY}/ipfs/${data?.ipfs}`);
+      if (res) {
         const litActionCode = await res.text();
         dispatch(
           setIpfsHash({
-            ipfs: String(data?.ipfs),
-            litCode: litActionCode,
+            ipfs: String(data?.ipfs || ""),
+            litCode: litActionCode || "",
           })
         );
-        setCallSocket(false);
-      });
+      }
+    });
 
-      websocket.addEventListener("close", () => {
-        console.log("WebSocket connection closed");
-      });
+    websocket.addEventListener("close", () => {
+      console.log("WebSocket connection closed");
+    });
 
-      return () => {
-        websocket.close();
-      };
-    }
-  }, [ipfsLoading, callSocket]);
+    return () => {
+      websocket.close();
+    };
+  }, []);
+
+  useEffect(() => {
+    setSwitchNeeded(chain?.id !== 137 ? true : false);
+  }, [isConnected, walletConnected, chain?.id]);
 
   return {
     ipfsLoading,
@@ -143,6 +164,7 @@ const useIPFS = () => {
     handleSaveToIPFSDB,
     dbLoading,
     dbAdded,
+    switchNeeded,
   };
 };
 

@@ -153,29 +153,7 @@ const SetConditions: FunctionComponent<SetConditionsProps> = ({
                   : "ethereum"
               }
               title={"Chain Name"}
-              inputArray={
-                Array.from([
-                  "ethereum",
-                  "polygon",
-                  "fantom",
-                  "bsc",
-                  "arbitrum",
-                  "avalanche",
-                  "fuji",
-                  "harmony",
-                  "mumbai",
-                  "goerli",
-                  "cronos",
-                  "optimism",
-                  "celo",
-                  "aurora",
-                  "alfajores",
-                  "xdc",
-                  "evmos",
-                  "evmosTestnet",
-                  "hardhat",
-                ])
-              }
+              inputArray={Array.from(["ethereum", "polygon", "mumbai"])}
             />
           );
 

@@ -9,6 +9,8 @@ const Overview: FunctionComponent<OverviewProps> = ({
   handleSetConditionalLogic,
   ipfsHash,
   handleAddExecutionConstraints,
+  handleClearCircuit,
+  circuitRunning,
 }): JSX.Element => {
   return (
     <div className="relative w-96 grow border-l-2 border-sol bg-aBlack px-4 py-6">
@@ -50,9 +52,12 @@ const Overview: FunctionComponent<OverviewProps> = ({
                     circuitFlowIndex === index ? "text-sol" : "text-rio"
                   }`}
                   onClick={
-                    circuitFlowIndex === 0 &&
-                    circuitInformation?.conditions?.length < 1 &&
-                    index > 0
+                    circuitFlowIndex === 6 && circuitRunning
+                      ? () => handleClearCircuit()
+                      
+                      : circuitFlowIndex === 0 &&
+                        circuitInformation?.conditions?.length < 1 &&
+                        index > 0
                       ? () =>
                           dispatch(
                             setModalOpen({

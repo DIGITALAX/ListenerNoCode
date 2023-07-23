@@ -41,7 +41,7 @@ const ConditionalLogic: FunctionComponent<ConditionalLogicProps> = ({
         case 1:
           return (
             <Input
-              valueCondition={interval || 120000}
+              valueCondition={interval || 180000000}
               setCondition={(e: number) => setInterval(e)}
               placeholderText={"enter interval"}
               mainText={"Interval"}
@@ -70,7 +70,7 @@ const ConditionalLogic: FunctionComponent<ConditionalLogicProps> = ({
           return (
             <Input
               setCondition={(e: number) => setInterval(e)}
-              valueCondition={interval || 120000}
+              valueCondition={interval || 180000000}
               placeholderText={"enter interval"}
               mainText={"Interval"}
             />
@@ -88,7 +88,7 @@ const ConditionalLogic: FunctionComponent<ConditionalLogicProps> = ({
           return (
             <Input
               setCondition={(e: number) => setInterval(e)}
-              valueCondition={interval || 120000}
+              valueCondition={interval || 180000000}
               placeholderText={"enter interval"}
               mainText={"Interval"}
             />

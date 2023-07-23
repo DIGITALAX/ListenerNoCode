@@ -10,16 +10,24 @@ import {
   useContractWrite,
   usePrepareContractWrite,
   useContractRead,
+  useAccount,
+  useNetwork,
 } from "wagmi";
 import { waitForTransaction } from "@wagmi/core";
 
 const usePKP = () => {
   const dispatch = useDispatch();
+  const { isConnected } = useAccount();
+  const { chain } = useNetwork();
   const ipfsData = useSelector(
     (state: RootState) => state.app.ipfsHashReducer.value
   );
+  const walletConnected = useSelector(
+    (state: RootState) => state.app.walletConnectedReducer.value
+  );
   const [pkpLoading, setPkpLoading] = useState<boolean>(false);
   const [tokenId, setTokenId] = useState<string>("");
+  const [switchNeededPKP, setSwitchNeededPKP] = useState<boolean>(false);
 
   const { config } = usePrepareContractWrite({
     address: PKP_CONTRACT,
@@ -72,9 +80,14 @@ const usePKP = () => {
     }
   }, [tokenId, data]);
 
+  useEffect(() => {
+    setSwitchNeededPKP(chain?.id !== 175177 ? true : false);
+  }, [isConnected, walletConnected, chain?.id]);
+
   return {
     handleMintGrantBurnPKP,
     pkpLoading,
+    switchNeededPKP,
   };
 };
 

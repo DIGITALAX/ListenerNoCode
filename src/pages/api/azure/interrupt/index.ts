@@ -7,7 +7,7 @@ export default async function handler(
 ) {
   try {
     const response = await axios.post(
-      "https://172.173.175.82:3000/interrupt",
+      "http://localhost:3000/interrupt",
       req.body,
       {
         headers: {

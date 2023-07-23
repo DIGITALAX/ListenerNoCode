@@ -24,7 +24,7 @@ const Start: FunctionComponent<EndStartProps> = ({
             onChange={(date) =>
               setTime({
                 startDate: date
-                  ? (new Date(time?.startDate as any) as any)
+                  ? date?.toString()
                   : undefined,
                 endDate: new Date(time?.endDate as any) as any,
               })

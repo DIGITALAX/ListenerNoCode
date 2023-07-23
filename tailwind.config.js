@@ -18,12 +18,16 @@ module.exports = {
         rio: "#8EADB5",
         verde: "#2CC5AF",
         ballena: "#FFD85F",
-        fria: "#C1D17A"
+        fria: "#C1D17A",
+        costa: "#2b90fd",
+        run: "#ed8801",
+        comp: "#5fabb9",
+        rojo: "#8a021b",
       },
       fontFamily: {
         vcr: "VCR",
         ignite: "Ignite",
-        mine: "Minecrafter"
+        mine: "Minecrafter",
       },
       width: {
         100: "33rem",
