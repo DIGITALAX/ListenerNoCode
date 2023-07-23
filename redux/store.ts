@@ -5,6 +5,7 @@ import circuitFlowReducer from "./reducers/circuitFlowSlice";
 import circuitInformationReducer from "./reducers/circuitInformationSlice";
 import modalOpenReducer from "./reducers/modalOpenSlice";
 import previewConditionModalReducer from "./reducers/previewConditionModalSlice";
+import litClientReducer from "./reducers/litClientSlice";
 import newContractConditionInformationReducer from "./reducers/newContractConditionInformationSlice";
 import newWebhookConditionInformationReducer from "./reducers/newWebhookConditionInformationSlice";
 import ipfsHashReducer from "./reducers/ipfsHashSlice";
@@ -23,6 +24,8 @@ import circuitRunningReducer from "./reducers/circuitRunningSlice";
 import selectedCircuitReducer from "./reducers/selectedCircuitSlice";
 import selectedCircuitSideBarReudcer from "./reducers/selectedCircuitSideBarSlice";
 import allEntriesReducer from "./reducers/allEntriesSlice";
+import allShopReducer from "./reducers/allShopSlice";
+import cartItemsReducer from "./reducers/cartItemsSlice";
 
 const reducer = combineReducers({
   walletConnectedReducer,
@@ -48,6 +51,9 @@ const reducer = combineReducers({
   selectedCircuitReducer,
   selectedCircuitSideBarReudcer,
   allEntriesReducer,
+  allShopReducer,
+  cartItemsReducer,
+  litClientReducer
 });
 
 export const store = configureStore({

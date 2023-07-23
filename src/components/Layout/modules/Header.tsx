@@ -83,7 +83,11 @@ const Header: FunctionComponent = (): JSX.Element => {
             className="relative flex items-center justify-start font-vcr"
             id="blurText"
           >
-            {switchState ? "switch" : walletConnected ? "connected" : "connect"}
+            {switchState && walletConnected
+              ? "switch"
+              : walletConnected
+              ? "connected"
+              : "connect"}
           </div>
         </div>
       </div>

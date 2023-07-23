@@ -47,6 +47,16 @@ export default function Actions() {
               No Entries Yet. Start A Circuit & Publish Your Lit Action?
             </Link>
           </div>
+        ) : entriesLoading ? (
+          <div className="relative w-full h-ful flex items-center justify-center">
+            <div className="relative w-6 h-6 animate-spin flex items-center justify-center">
+              <Image
+                draggable={false}
+                layout="fill"
+                src={`${INFURA_GATEWAY}/ipfs/QmUxiEqnDfFGSPTCrjt4rpnch84v2pEopzhXUEMJFVNuo6`}
+              />
+            </div>
+          </div>
         ) : (
           <div className="relative flex flex-row w-full h-full justify-center items-center">
             <AllActions allEntries={allEntries} />
