@@ -197,7 +197,7 @@ const useShop = () => {
             },
           ],
     functionName: "approve",
-    args: [LISTENER_MARKET, ethers.utils.parseEther(totalAmount.toString())],
+    args: [LISTENER_MARKET, ethers.utils.parseEther(totalAmount.toString() || "0")],
     enabled: Boolean(!Number.isNaN(totalAmount)),
     value: 0 as any,
   });
