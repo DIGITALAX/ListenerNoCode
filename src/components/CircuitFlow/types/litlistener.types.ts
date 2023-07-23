@@ -322,7 +322,7 @@ export interface IContractCondition {
       | string[]
       | bigint[]
       | object[]
-      | (string | number | bigint | object)[],
+      | (string | number | bigint | object)[]
   ) => Promise<void>;
   onUnMatched: (
     emittedValue:
@@ -330,7 +330,7 @@ export interface IContractCondition {
       | string[]
       | bigint[]
       | object[]
-      | (string | number | bigint | object)[],
+      | (string | number | bigint | object)[]
   ) => Promise<void>;
   onError: (error: Error) => void;
 }
@@ -385,7 +385,7 @@ export class ContractCondition implements IContractCondition {
         | string[]
         | bigint[]
         | object[]
-        | (string | number | bigint | object)[],
+        | (string | number | bigint | object)[]
     ) => Promise<void> = async () => {},
     public onUnMatched: (
       emittedValue:
@@ -393,9 +393,9 @@ export class ContractCondition implements IContractCondition {
         | string[]
         | bigint[]
         | object[]
-        | (string | number | bigint | object)[],
+        | (string | number | bigint | object)[]
     ) => Promise<void> = async () => {},
-    public onError: (error: Error) => void = () => {},
+    public onError: (error: Error) => void = () => {}
   ) {}
 }
 
@@ -438,7 +438,7 @@ export interface IWebhookCondition {
       | bigint[]
       | object
       | object[]
-      | (string | number | bigint | object)[],
+      | (string | number | bigint | object)[]
   ) => Promise<void>;
   onUnMatched: (
     emittedValue:
@@ -450,7 +450,7 @@ export interface IWebhookCondition {
       | bigint[]
       | object
       | object[]
-      | (string | number | bigint | object)[],
+      | (string | number | bigint | object)[]
   ) => Promise<void>;
   onError: (error: Error) => void;
 }
@@ -508,7 +508,7 @@ export class WebhookCondition implements IWebhookCondition {
         | bigint[]
         | object
         | object[]
-        | (string | number | bigint | object)[],
+        | (string | number | bigint | object)[]
     ) => Promise<void> = async () => {},
     public onUnMatched: (
       emittedValue:
@@ -520,9 +520,9 @@ export class WebhookCondition implements IWebhookCondition {
         | bigint[]
         | object
         | object[]
-        | (string | number | bigint | object)[],
+        | (string | number | bigint | object)[]
     ) => Promise<void> = async () => {},
-    public onError: (error: Error) => void = () => {},
+    public onError: (error: Error) => void = () => {}
   ) {}
 }
 
@@ -556,6 +556,7 @@ export interface ILogEntry {
   category: LogCategory;
   message: string;
   responseObject: string;
+  isoDate: string;
 }
 
 export type LitAuthSig = {

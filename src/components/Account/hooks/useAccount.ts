@@ -11,7 +11,7 @@ import {
   getUserCircuitsCompleted,
   getUserCircuitsCompletedById,
 } from "../../../../graphql/queries/getUserCircuitsCompleted";
-import { AllCircuits} from "../types/account.types";
+import { AllCircuits } from "../types/account.types";
 import {
   getUserCircuitsInterrupted,
   getUserCircuitsInterruptedById,
@@ -20,6 +20,7 @@ import { setSelectedUserCircuit } from "../../../../redux/reducers/selectedCircu
 import { getUserLogs } from "../../../../graphql/queries/getUserLogs";
 import { fetchIpfsJson } from "../../../../lib/helpers/fetchIpfsJson";
 import { setModalOpen } from "../../../../redux/reducers/modalOpenSlice";
+import { ILogEntry } from "@/components/CircuitFlow/types/litlistener.types";
 
 const useAccountPage = () => {
   const { address } = useAccount();
@@ -150,17 +151,39 @@ const useAccountPage = () => {
         );
 
         if (res === circuitId) {
+          const res = await fetchIpfsJson(
+            circuitLogs?.data?.logAddeds[i]?.stringifiedLogs,
+            true
+          );
+
+          const parsedLogs = res?.map((stringLog: any) =>
+            JSON.parse(stringLog)
+          );
+
+          const filteredLogsCondition = parsedLogs.filter((log: any) =>
+            log.message.includes("Condition Monitor Count Increased")
+          );
+          const filteredLogsExecution = parsedLogs.filter((log: any) =>
+            log.message.includes("Lit Action Completion Increased")
+          );
+
           newLogs = {
             ...circuitLogs?.data?.logAddeds[i],
             hashedId: res,
-            stringifiedLogs:
-              circuitLogs?.data?.logAddeds[i]?.stringifiedLogs?.length > 0
-                ? JSON.parse(
-                    await fetchIpfsJson(
-                      circuitLogs?.data?.logAddeds[i]?.stringifiedLogs
-                    )
-                  )
-                : [],
+            stringifiedLogs: parsedLogs.sort(
+              (a: ILogEntry, b: ILogEntry) =>
+                new Date(b.isoDate).getTime() - new Date(a.isoDate).getTime()
+            ),
+            monitorExecutions:
+              Number(
+                filteredLogsCondition?.[filteredLogsCondition?.length - 1]
+                  ?.responseObject
+              ) || 0,
+            circuitExecutions:
+              Number(
+                filteredLogsExecution?.[filteredLogsExecution?.length - 1]
+                  ?.responseObject
+              ) || 0,
           };
           break;
         }

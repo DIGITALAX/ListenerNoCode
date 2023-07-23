@@ -65,6 +65,7 @@ const AllActions: FunctionComponent<AllActionsProps> = ({
                 onClick={() => {
                   const newActions = [...circuitInformation.actions];
                   newActions.splice(index, 1);
+                  setEditingStateAction(false);
                   dispatch(setNewContractActionInformation(undefined));
                   dispatch(setNewFetchActionInformation(undefined));
                   dispatch(

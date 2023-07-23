@@ -128,8 +128,8 @@ const SetConditions: FunctionComponent<SetConditionsProps> = ({
           return (
             <Abi
               inputs={
-                !inputs || inputs?.length < 1
-                  ? (newContractConditionInformation?.abi as any)?.inputs
+                (newContractConditionInformation?.abi as any)?.[0]?.inputs?.length > 0
+                  ? (newContractConditionInformation?.abi as any)?.[0]?.inputs
                   : inputs
               }
               setInputs={setInputs}

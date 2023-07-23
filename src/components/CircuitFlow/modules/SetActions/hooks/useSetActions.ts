@@ -33,7 +33,7 @@ const useSetActions = () => {
   const [apiPasswordAction, setApiPasswordAction] = useState<boolean>(false);
   const [dropDownChainContractAction, setDropDownChainContractAction] =
     useState<boolean>(false);
-  const [stateMutability, setStateMutability] = useState<string>("external");
+  const [stateMutability, setStateMutability] = useState<string>("nonpayable");
   const [signConditions, setSignConditions] = useState<
     {
       type: string;
@@ -187,8 +187,6 @@ const useSetActions = () => {
       functionArgs.filter((value) => value?.trim() !== "")
     );
 
-    console.log(isValid, convertedArgs)
-
     if (
       !newContractActionInformation?.contractAddress ||
       newContractActionInformation?.contractAddress?.trim() === ""
@@ -224,18 +222,6 @@ const useSetActions = () => {
           actionImage: "QmRyjnEuR6sKeejA92eRbUXFZg9G6BtXQRprwgLc9zNkNn",
         })
       );
-    } else if (
-      !newContractActionInformation?.chainId ||
-      newContractActionInformation?.chainId?.trim() === ""
-    ) {
-      checker = false;
-      dispatch(
-        setModalOpen({
-          actionOpen: true,
-          actionMessage: "Chain Id Missing. Try Again.",
-          actionImage: "QmU7QLvyHbSoGTxkDGBgCXDh5rsr9BBHubSsZBoYPcSeDq",
-        })
-      );
     } else if (newInputs?.length !== functionArgs?.length) {
       checker = false;
       dispatch(
@@ -262,19 +248,6 @@ const useSetActions = () => {
           actionOpen: true,
           actionMessage: "Contract ABI Outputs Missing. Try Again.",
           actionImage: "QmWMQKSDzchgfe3KSVSLh98ArZT2k9r8tV772T2EMEH9E4",
-        })
-      );
-    } else if (
-      !Object.values(CHAIN_NAME)
-        .map((enumValue) => enumValue.toLowerCase())
-        .includes(newContractActionInformation?.chainId?.toLowerCase()!)
-    ) {
-      checker = false;
-      dispatch(
-        setModalOpen({
-          actionOpen: true,
-          actionMessage: "Chain Name Invalid. Try Again.",
-          actionImage: "QmaLbRzzCP1axGEd6vJsDs7Jm7hyyiBGYsnBfv3jW51KiX",
         })
       );
     } else if (!isValid || convertedArgs?.length < 1) {
@@ -405,8 +378,6 @@ const useSetActions = () => {
         newOutputs
       );
 
-      console.log({ abi });
-
       dispatch(
         setCircuitInformation({
           ...circuitInformation,
@@ -417,6 +388,7 @@ const useSetActions = () => {
               type: "contract",
               priority: circuitInformation?.actions?.length + 1,
               abi: [abi],
+              chainId: newContractActionInformation?.chainId || "ethereum",
               args: convertedArgs,
             } as ContractAction,
           ],
@@ -437,7 +409,7 @@ const useSetActions = () => {
           type: "string",
         },
       ]);
-      setFunctionArgs([""]);
+      setFunctionArgs([]);
       setDropDownsOpenAction({
         internalTypesInput: [false],
         typesInput: [false],
@@ -499,8 +471,6 @@ const useSetActions = () => {
         newOutputs
       );
 
-      console.log({ abi });
-
       dispatch(
         setCircuitInformation({
           ...circuitInformation,
@@ -511,6 +481,8 @@ const useSetActions = () => {
                   ...({
                     ...newContractActionInformation,
                     abi: [abi],
+                    chainId:
+                      newContractActionInformation?.chainId || "ethereum",
                     args: convertedArgs,
                   } as ContractAction),
                 }
@@ -534,7 +506,7 @@ const useSetActions = () => {
           type: "string",
         },
       ]);
-      setFunctionArgs([""]);
+      setFunctionArgs([]);
       setDropDownsOpenAction({
         internalTypesInput: [false],
         typesInput: [false],

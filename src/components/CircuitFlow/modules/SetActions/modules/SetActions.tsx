@@ -94,20 +94,20 @@ const SetActions: FunctionComponent<SetActionsProps> = ({
               dropDownsOpen={dropDownsOpenAction}
               setDropDownsOpen={setDropDownsOpenAction}
               outputs={
-                !actionOutputs || actionOutputs?.length < 1
-                  ? (newContractActionInformation?.abi as any)?.outputs
+                (newContractActionInformation?.abi as any)?.[0]?.outputs?.length > 0
+                  ? (newContractActionInformation?.abi as any)?.[0]?.outputs
                   : actionOutputs
               }
               setOutputs={setActionOutputs}
               type={"output"}
               payable={
-                (newContractActionInformation?.abi as any)?.payable
-                  ? (newContractActionInformation?.abi as any)?.payable
+                (newContractActionInformation?.abi as any)?.[0]?.payable
+                  ? (newContractActionInformation?.abi as any)?.[0]?.payable
                   : payable
               }
               stateMutability={
-                (newContractActionInformation?.abi as any)?.stateMutability
-                  ? (newContractActionInformation?.abi as any)?.stateMutability
+                (newContractActionInformation?.abi as any)?.[0]?.stateMutability
+                  ? (newContractActionInformation?.abi as any)?.[0]?.stateMutability
                   : stateMutability
               }
               setPayable={setPayable}
@@ -119,9 +119,9 @@ const SetActions: FunctionComponent<SetActionsProps> = ({
           return (
             <Abi
               inputs={
-                actionInputs
-                  ? actionInputs
-                  : (newContractActionInformation?.abi as any)?.inputs
+                (newContractActionInformation?.abi as any)?.[0]?.inputs?.length > 0
+                  ? (newContractActionInformation?.abi as any)?.[0]?.inputs?.length
+                  : actionInputs
               }
               setInputs={setActionInputs}
               dropDownsOpen={dropDownsOpenAction}
@@ -227,7 +227,7 @@ const SetActions: FunctionComponent<SetActionsProps> = ({
           return (
             <SignCondition
               signConditions={
-                signConditions?.length < 1 || !signConditions
+                (newFetchActionInformation?.signCondition as any)?.length > 0
                   ? (newFetchActionInformation?.signCondition as any)
                   : signConditions
               }
@@ -253,7 +253,7 @@ const SetActions: FunctionComponent<SetActionsProps> = ({
               }
               setAddSignConditions={() => {
                 const prevSign =
-                  signConditions?.length < 1 || !signConditions
+                  (newFetchActionInformation?.signCondition as any)?.length > 0
                     ? (newFetchActionInformation?.signCondition as any)
                     : signConditions;
 

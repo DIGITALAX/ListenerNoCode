@@ -34,6 +34,7 @@ const FinalAction: FunctionComponent<FinalActionProps> = ({
             .map((code) => String.fromCharCode(Number(code)))
             .join("")
         : "";
+
       return (
         <div
           className={`relative w-full overflow-y-scroll flex flex-col gap-10 items-start justify-start h-60 grow p-2.5 ${
@@ -47,8 +48,9 @@ const FinalAction: FunctionComponent<FinalActionProps> = ({
               } and check if the returned value at ${
                 fetchInfo?.responsePath || ""
               } matches ${JSON.stringify(
-                !signConditions?.map((item) => item.value || "") ||
-                  signConditions?.map((item) => item.value || "")?.length < 1
+                fetchInfo?.signCondition?.map((item) => item.value || "") &&
+                  fetchInfo?.signCondition?.map((item) => item.value || "")
+                    ?.length > 0
                   ? fetchInfo?.signCondition?.map((item) => item.value || "")
                   : signConditions?.map((item) => item.value || "")
               )} before signing ${toSign || ""}.`}
@@ -63,7 +65,9 @@ const FinalAction: FunctionComponent<FinalActionProps> = ({
               String(fetchInfo?.responsePath || ""),
               String(fetchInfo?.apiKey || "") || "null",
               String(toSign || ""),
-              (!signConditions || signConditions?.length < 1
+              (fetchInfo?.signCondition?.map((item) => item.value || "") &&
+              fetchInfo?.signCondition?.map((item) => item.value || "")
+                ?.length > 0
                 ? fetchInfo?.signCondition
                 : signConditions) || [],
             ]).map((value: string | any[], index: number) => {
@@ -253,7 +257,7 @@ const FinalAction: FunctionComponent<FinalActionProps> = ({
               } for the ${
                 contractInfo?.functionName || ""
               } function and with the ${JSON.stringify(
-                (!functionArgs || functionArgs?.length < 1
+                (contractInfo?.args && contractInfo?.args?.length > 0
                   ? contractInfo?.args
                   : functionArgs) || ""
               )} args on the ${contractInfo?.chainId || ""} network.`}
@@ -264,14 +268,14 @@ const FinalAction: FunctionComponent<FinalActionProps> = ({
               String(contractInfo?.contractAddress || ""),
               String(contractInfo?.chainId || "ethereum"),
               String(contractInfo?.functionName || ""),
-              (!functionArgs || functionArgs?.length < 1
+              (contractInfo?.args && contractInfo?.args?.length > 0
                 ? contractInfo?.args
                 : functionArgs) || [],
-              (!inputs || inputs?.length < 1
-                ? (contractInfo?.abi as any)?.inputs
+              ((contractInfo?.abi as any)?.[0]?.inputs?.length > 0
+                ? (contractInfo?.abi as any)?.[0]?.inputs
                 : inputs) || [],
-              (!outputs || outputs?.length < 1
-                ? (contractInfo?.abi as any)?.outputs
+              ((contractInfo?.abi as any)?.[0]?.outputs?.length > 0
+                ? (contractInfo?.abi as any)?.[0]?.outputs
                 : outputs) || [],
             ]).map((value: string | any[], index: number) => {
               return (
