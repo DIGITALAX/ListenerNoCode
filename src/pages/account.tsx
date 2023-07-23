@@ -12,6 +12,7 @@ import Link from "next/link";
 export default function Account() {
   const dispatch = useDispatch();
   const [globalLoader, setGlobalLoader] = useState<boolean>(true);
+  const [largeScreen, setLargeScreen] = useState<boolean>(true);
   const allCircuits = useSelector(
     (state: RootState) => state.app.allUserCircuitsReducer.value
   );
@@ -27,6 +28,8 @@ export default function Account() {
     addressExists,
     interruptLoading,
     handleInterruptCircuit,
+    circuitsOpen,
+    setCircuitsOpen,
   } = useAccountPage();
 
   useEffect(() => {
@@ -35,8 +38,17 @@ export default function Account() {
     }
   }, [allCircuitsLoading, circuitLogsLoading]);
 
+  useEffect(() => {
+    if (window) {
+      setLargeScreen(Boolean(window.innerWidth > 500));
+    }
+  }, []);
+
   return (
-    <div className="relative w-full h-full flex flex-col xl:flex-row border-t-2 border-sol grow">
+    <div
+      className="relative w-full flex flex-row border-t-2 border-sol grow"
+      id="heightCheckout"
+    >
       <Head>
         <title>No-Code Lit Listener | Account</title>
         <link rel="icon" href="/favicon.ico" />
@@ -99,9 +111,12 @@ export default function Account() {
         )}
       </div>
       <AllCircuits
+        largeScreen={largeScreen}
         allUserCircuits={allCircuits}
         selectedCircuitSideBar={selectedCircuitSideBar}
         dispatch={dispatch}
+        circuitsOpen={circuitsOpen}
+        setCircuitsOpen={setCircuitsOpen}
       />
     </div>
   );

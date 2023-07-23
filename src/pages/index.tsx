@@ -821,6 +821,7 @@ export default function Home() {
         handleAddExecutionConstraints={handleAddExecutionConstraints}
         ipfsHash={ipfsHash.ipfs}
         circuitRunning={circuitRunning}
+      
       />
     </div>
   );

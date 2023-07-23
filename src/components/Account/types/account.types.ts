@@ -53,7 +53,7 @@ export interface SelectedCircuit {
       category: string;
       message: string;
       responseObject: string;
-      isoDate: string
+      isoDate: string;
     }[];
     circuitId: string;
     listenerDBContract: string;
@@ -108,6 +108,9 @@ export type AllCircuitsProps = {
   allUserCircuits: AllCircuits[];
   selectedCircuitSideBar: string;
   dispatch: Dispatch<AnyAction>;
+  circuitsOpen: boolean;
+  setCircuitsOpen: (e: boolean) => void;
+  largeScreen: boolean;
 };
 
 export type SelectedCircuitProps = {
