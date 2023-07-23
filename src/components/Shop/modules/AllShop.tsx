@@ -12,14 +12,15 @@ const AllShop: FunctionComponent<AllShopProps> = ({
   allCartItems,
   currentIndexItem,
   setCurrentIndexItem,
+  checkOutOpen,
+  largeScreen
 }): JSX.Element => {
   return (
     <div
-      className="relative h-4/5 items-center justify-center flex flex-col gap-5"
-      id="widthShopItems"
+      className="relative h-4/5 w-full items-center justify-center flex flex-col gap-5"
     >
       <div className="relative w-fit h-full flex flex-row gap-4">
-        {[...Array(6)]
+        {[...Array(largeScreen ? 6 : 1)]
           .map((_, i) => allShopItems[(currentIndex + i) % allShopItems.length])
           ?.map((item: AllShop, index: number) => {
             return (
@@ -36,7 +37,9 @@ const AllShop: FunctionComponent<AllShopProps> = ({
             );
           })}
       </div>
-      <div className="relative w-fit h-fit items-center justify-center flex flex-row gap-4">
+      <div className={`relative w-full h-fit items-center justify-center flex flex-row gap-4 ${
+        checkOutOpen && largeScreen && "-left-36"
+      }`}>
         <div
           className="relative w-10 h-10 flex items-center justify-center cursor-pointer active:scale-95 rotate-180 border border-ballena"
           onClick={() => {

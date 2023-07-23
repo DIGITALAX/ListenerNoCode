@@ -7,6 +7,7 @@ import useShop from "@/components/Shop/hooks/useShop";
 import AllShop from "@/components/Shop/modules/AllShop";
 import Checkout from "@/components/Shop/modules/Checkout";
 import { useChainModal, useConnectModal } from "@rainbow-me/rainbowkit";
+import { useEffect, useState } from "react";
 
 export default function Shop() {
   const dispatch = useDispatch();
@@ -28,7 +29,9 @@ export default function Shop() {
     setCurrentIndex,
     currentIndex,
     currentIndexItem,
-    setCurrentIndexItem
+    setCurrentIndexItem,
+    checkOutOpen,
+    setCheckoutOpen,
   } = useShop();
   const allShopItems = useSelector(
     (state: RootState) => state.app.allShopReducer.value
@@ -36,8 +39,18 @@ export default function Shop() {
   const cartItems = useSelector(
     (state: RootState) => state.app.cartItemsReducer.value
   );
+  const [largeScreen, setLargeScreen] = useState<boolean>(true);
+
+  useEffect(() => {
+    if (window) {
+      setLargeScreen(Boolean(window.innerWidth > 600));
+    }
+  }, []);
   return (
-    <div className="relative w-full h-full flex flex-row border-t-2 border-sol grow">
+    <div
+      className="relative w-full flex flex-row border-t-2 border-sol grow"
+      id="heightCheckout"
+    >
       <Head>
         <title>No-Code Lit Listener | Shop</title>
         <link rel="icon" href="/favicon.ico" />
@@ -73,6 +86,7 @@ export default function Shop() {
           </div>
         ) : (
           <AllShop
+            checkOutOpen={checkOutOpen}
             currentIndex={currentIndex}
             setCurrentIndex={setCurrentIndex}
             allShopItems={allShopItems}
@@ -80,6 +94,7 @@ export default function Shop() {
             allCartItems={cartItems}
             currentIndexItem={currentIndexItem}
             setCurrentIndexItem={setCurrentIndexItem}
+            largeScreen={largeScreen}
           />
         )}
       </div>
@@ -99,6 +114,8 @@ export default function Shop() {
         handleApproveSpend={handleApproveSpend}
         switchNeeded={switchNeeded}
         openChainModal={openChainModal}
+        checkOutOpen={checkOutOpen}
+        setCheckoutOpen={setCheckoutOpen}
       />
     </div>
   );

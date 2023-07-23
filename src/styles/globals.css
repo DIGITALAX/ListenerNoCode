@@ -70,6 +70,16 @@ html {
   overflow-y: scroll;
 }
 
+#heightCheckout {
+  @media (max-width: 1024px) {
+    height: calc(100vh - 18.5rem);
+  }
+
+  @media (min-width: 1025px) {
+    height: calc(100vh - 1.75rem - 22.25rem);
+  }
+}
+
 #heightAllCircuitsResponsive {
   overflow-y: scroll;
 
@@ -87,10 +97,17 @@ html {
   overflow-y: scroll;
 }
 
-#widthShopItems {
-  width: calc(100vw - 26rem);
+/* #widthShopItems {
   overflow-x: hidden;
-}
+
+  @media (max-width: 1279px) {
+    width: calc(100vh - 10rem);
+  }
+
+  @media (min-width: 1280px) {
+    width: calc(100vw - 16rem);
+  }
+} */
 
 #blurText {
   background-image: linear-gradient(

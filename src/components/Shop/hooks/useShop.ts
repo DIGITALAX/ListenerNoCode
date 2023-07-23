@@ -41,6 +41,7 @@ const useShop = () => {
   const walletConnected = useSelector(
     (state: RootState) => state.app.walletConnectedReducer.value
   );
+  const [checkOutOpen, setCheckoutOpen] = useState<boolean>(true);
   const [shopLoading, setShopLoading] = useState<boolean>(false);
   const [purchaseLoading, setPurchaseLoading] = useState<boolean>(false);
   const [currentIndexItem, setCurrentIndexItem] = useState<number[]>(
@@ -197,7 +198,10 @@ const useShop = () => {
             },
           ],
     functionName: "approve",
-    args: [LISTENER_MARKET, ethers.utils.parseEther(totalAmount.toString() || "0")],
+    args: [
+      LISTENER_MARKET,
+      ethers.utils.parseEther(totalAmount.toString() || "0"),
+    ],
     enabled: Boolean(!Number.isNaN(totalAmount)),
     value: 0 as any,
   });
@@ -583,6 +587,8 @@ const useShop = () => {
     setCurrentIndex,
     currentIndexItem,
     setCurrentIndexItem,
+    checkOutOpen,
+    setCheckoutOpen,
   };
 };
 
