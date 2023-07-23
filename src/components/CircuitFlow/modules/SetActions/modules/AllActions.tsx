@@ -16,7 +16,7 @@ const AllActions: FunctionComponent<AllActionsProps> = ({
   dispatch,
   setActionType,
   setEditingStateAction,
-  actionFlowIndex
+  actionFlowIndex,
 }): JSX.Element => {
   return (
     <div
@@ -39,13 +39,13 @@ const AllActions: FunctionComponent<AllActionsProps> = ({
                     : dispatch(
                         setNewFetchActionInformation(action as FetchAction)
                       );
-                      dispatch(
-                        setActionFlow({
-                          index: 1,
-                          fetchCount: actionFlowIndex.fetchCount,
-                          contractCount: actionFlowIndex.contractCount,
-                        })
-                      );
+                  dispatch(
+                    setActionFlow({
+                      index: 1,
+                      fetchCount: actionFlowIndex.fetchCount,
+                      contractCount: actionFlowIndex.contractCount,
+                    })
+                  );
                   (action as ContractAction)?.chainId
                     ? setActionType("contract")
                     : setActionType("fetch");
@@ -65,6 +65,8 @@ const AllActions: FunctionComponent<AllActionsProps> = ({
                 onClick={() => {
                   const newActions = [...circuitInformation.actions];
                   newActions.splice(index, 1);
+                  dispatch(setNewContractActionInformation(undefined));
+                  dispatch(setNewFetchActionInformation(undefined));
                   dispatch(
                     setCircuitInformation({
                       ...circuitInformation,

@@ -339,7 +339,7 @@ const Abi: FunctionComponent<AbiProps> = ({
             </div>
             {dropDownsOpenAction.stateMutability && (
               <div className="z-10 absolute w-full h-fit flex flex-col bg-aBlack">
-                {Array.from(["external", "private", "public", "internal"]).map(
+                {Array.from(["pure", "view", "payable", "nonpayable"]).map(
                   (state: string, index: number) => {
                     return (
                       <div
@@ -626,14 +626,12 @@ const Abi: FunctionComponent<AbiProps> = ({
                           id="borderLight"
                           onClick={() =>
                             setDropDownsOpen(((prevState: any) => {
-                              const updatedInternalTypes = [
-                                ...prevState.internalTypesInput,
-                              ];
-                              updatedInternalTypes[index] =
-                                !dropDownsOpen.internalTypesInput[index];
+                              const updatedTypes = [...prevState.typesInput];
+                              updatedTypes[index] =
+                                !dropDownsOpen.typesInput[index];
                               return {
                                 ...prevState,
-                                internalTypesInput: updatedInternalTypes,
+                                typesInput: updatedTypes,
                               };
                             }) as any)
                           }

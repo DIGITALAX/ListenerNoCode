@@ -35,7 +35,6 @@ export default function Account() {
     }
   }, [allCircuitsLoading, circuitLogsLoading]);
 
-
   return (
     <div className="relative w-full h-full flex flex-row border-t-2 border-sol grow">
       <Head>

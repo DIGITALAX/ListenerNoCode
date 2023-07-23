@@ -46,11 +46,12 @@ const FinalAction: FunctionComponent<FinalActionProps> = ({
                 fetchInfo?.baseUrl || "" + fetchInfo?.endpoint || ""
               } and check if the returned value at ${
                 fetchInfo?.responsePath || ""
-              } matches ${
-                JSON.stringify(
-                  signConditions?.map((item) => item.value || "")
-                ) || ""
-              } before signing ${toSign || ""}.`}
+              } matches ${JSON.stringify(
+                !signConditions?.map((item) => item.value || "") ||
+                  signConditions?.map((item) => item.value || "")?.length < 1
+                  ? fetchInfo?.signCondition?.map((item) => item.value || "")
+                  : signConditions?.map((item) => item.value || "")
+              )} before signing ${toSign || ""}.`}
             </div>
           </div>
           <div
@@ -62,7 +63,9 @@ const FinalAction: FunctionComponent<FinalActionProps> = ({
               String(fetchInfo?.responsePath || ""),
               String(fetchInfo?.apiKey || "") || "null",
               String(toSign || ""),
-              signConditions || [],
+              (!signConditions || signConditions?.length < 1
+                ? fetchInfo?.signCondition
+                : signConditions) || [],
             ]).map((value: string | any[], index: number) => {
               return (
                 <div
@@ -250,7 +253,9 @@ const FinalAction: FunctionComponent<FinalActionProps> = ({
               } for the ${
                 contractInfo?.functionName || ""
               } function and with the ${JSON.stringify(
-                contractInfo?.args || ""
+                (!functionArgs || functionArgs?.length < 1
+                  ? contractInfo?.args
+                  : functionArgs) || ""
               )} args on the ${contractInfo?.chainId || ""} network.`}
             </div>
           </div>
@@ -259,9 +264,15 @@ const FinalAction: FunctionComponent<FinalActionProps> = ({
               String(contractInfo?.contractAddress || ""),
               String(contractInfo?.chainId || "ethereum"),
               String(contractInfo?.functionName || ""),
-              functionArgs || [],
-              inputs || [],
-              outputs || [],
+              (!functionArgs || functionArgs?.length < 1
+                ? contractInfo?.args
+                : functionArgs) || [],
+              (!inputs || inputs?.length < 1
+                ? (contractInfo?.abi as any)?.inputs
+                : inputs) || [],
+              (!outputs || outputs?.length < 1
+                ? (contractInfo?.abi as any)?.outputs
+                : outputs) || [],
             ]).map((value: string | any[], index: number) => {
               return (
                 <div
@@ -297,7 +308,6 @@ const FinalAction: FunctionComponent<FinalActionProps> = ({
                     <div className="relative w-fit h-fit flex flex-col gap-1 justify-start items-start overflow-y-scroll">
                       {(
                         value as {
-                          indexed: boolean;
                           internalType: string;
                           name: string;
                           type: string;
@@ -305,7 +315,6 @@ const FinalAction: FunctionComponent<FinalActionProps> = ({
                       )?.map(
                         (
                           item: {
-                            indexed: boolean;
                             internalType: string;
                             name: string;
                             type: string;
@@ -317,22 +326,6 @@ const FinalAction: FunctionComponent<FinalActionProps> = ({
                               className="relative w-72 h-fit flex flex-col font-vcr text-white gap-3"
                               key={indexTwo}
                             >
-                              {index !== 5 && (
-                                <div className="relative w-full h-fit flex flex-col gap-1">
-                                  <div
-                                    className="relative w-fit h-fit flex"
-                                    id="blur"
-                                  >
-                                    Indexed
-                                  </div>
-                                  <div
-                                    className="relative w-full h-10 bg-aBlack text-white font-vcr text-sm flex justify-center items-center text-center"
-                                    id="borderLight"
-                                  >
-                                    {`${item?.indexed}`}
-                                  </div>
-                                </div>
-                              )}
                               <div className="relative w-full h-fit flex flex-col gap-1">
                                 <div
                                   className="relative w-fit h-fit flex"

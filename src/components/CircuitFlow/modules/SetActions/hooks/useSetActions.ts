@@ -113,7 +113,8 @@ const useSetActions = () => {
     }[] = []
   ) => {
     const abi = {
-      constant: true,
+      constant:
+        stateMutability === "pure" || stateMutability === "view" ? true : false,
       inputs: [],
       outputs: [],
       stateMutability,
@@ -165,18 +166,28 @@ const useSetActions = () => {
     let checker = true;
     const newInputs = actionInputs.filter((obj) =>
       Object.values(obj).every(
-        (value) => typeof value !== "string" || value.trim() !== ""
+        (value) =>
+          typeof value !== "string" ||
+          value.trim() !== "" ||
+          typeof value !== "number" ||
+          typeof value !== "boolean"
       )
     );
     const newOutputs = actionOutputs.filter((obj) =>
       Object.values(obj).every(
-        (value) => typeof value !== "string" || value.trim() !== ""
+        (value) =>
+          typeof value !== "string" ||
+          typeof value !== "number" ||
+          typeof value !== "boolean"
       )
     );
+
     const { isValid, convertedArgs } = typeChecker(
       actionInputs,
       functionArgs.filter((value) => value?.trim() !== "")
     );
+
+    console.log(isValid, convertedArgs)
 
     if (
       !newContractActionInformation?.contractAddress ||
@@ -394,6 +405,8 @@ const useSetActions = () => {
         newOutputs
       );
 
+      console.log({ abi });
+
       dispatch(
         setCircuitInformation({
           ...circuitInformation,
@@ -403,7 +416,7 @@ const useSetActions = () => {
               ...newContractActionInformation,
               type: "contract",
               priority: circuitInformation?.actions?.length + 1,
-              abi,
+              abi: [abi],
               args: convertedArgs,
             } as ContractAction,
           ],
@@ -486,6 +499,8 @@ const useSetActions = () => {
         newOutputs
       );
 
+      console.log({ abi });
+
       dispatch(
         setCircuitInformation({
           ...circuitInformation,
@@ -495,7 +510,7 @@ const useSetActions = () => {
                   ...obj,
                   ...({
                     ...newContractActionInformation,
-                    abi,
+                    abi: [abi],
                     args: convertedArgs,
                   } as ContractAction),
                 }

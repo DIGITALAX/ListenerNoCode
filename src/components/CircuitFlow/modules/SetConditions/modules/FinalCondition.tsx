@@ -140,10 +140,16 @@ const FinalCondition: FunctionComponent<FinalConditionProps> = ({
               } event emitted by ${contractInfo?.contractAddress || ""} on ${
                 contractInfo?.chainId || ""
               } and check if the returned values from ${JSON.stringify(
-                eventArgs || ""
+                (!eventArgs || eventArgs?.length < 1
+                  ? contractInfo?.eventArgName
+                  : eventArgs) || ""
               )} at are ${
                 contractInfo?.matchOperator || ""
-              } to ${JSON.stringify(expectedValues || "")}
+              } to ${JSON.stringify(
+                (!expectedValues || expectedValues?.length < 1
+                  ? contractInfo?.expectedValue
+                  : expectedValues) || ""
+              )}
             .`}
             </div>
           </div>
@@ -153,9 +159,13 @@ const FinalCondition: FunctionComponent<FinalConditionProps> = ({
               String(contractInfo?.chainId || "ethereum"),
               String(contractInfo?.matchOperator || ""),
               String(contractInfo?.eventName || ""),
-              eventArgs || [],
-              expectedValues || [],
-              inputs || [],
+              (!eventArgs || eventArgs?.length < 1
+                ? contractInfo?.eventArgName
+                : eventArgs) || [],
+              (!expectedValues || expectedValues?.length < 1
+                ? contractInfo?.expectedValue
+                : expectedValues) || [],
+              inputs || (contractInfo?.abi as any)?.inputs || [],
             ]).map((value: string | any[], index: number) => {
               return (
                 <div

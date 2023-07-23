@@ -33,6 +33,9 @@ const ResultIPFS: FunctionComponent<ResultIPFSProps> = ({
           )}
         </div>
       </div>
+      {switchNeeded && (
+        <div className="relative break-words text-xs font-vcr text-ballena flex items-center justify-center  text-center">{`( switch to polygon network )`}</div>
+      )}
       {dbAdded && (
         <div
           className={`flex flex-col w-full h-full p-1 gap-4 items-center justify-center font-vcr text-white`}

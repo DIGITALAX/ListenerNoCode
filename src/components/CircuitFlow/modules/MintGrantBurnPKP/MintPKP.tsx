@@ -31,13 +31,14 @@ const MintPKP: FunctionComponent<MintPKPProps> = ({
             >
               {pkpLoading ? (
                 <AiOutlineLoading size={15} color="white" opacity={80} />
-              ) : switchNeededPKP ? (
-                "switch to chronicle"
               ) : (
                 "mint pkp"
               )}
             </div>
           </div>
+          {switchNeededPKP && (
+            <div className="relative break-words text-xs font-vcr text-ballena flex items-center text-center justify-center">{`( switch to chronicle network )`}</div>
+          )}
           {signedPKPTx?.address && (
             <div
               className={`relative w-fit flex flex-col gap-3 justify-center items-center h-fit`}

@@ -240,7 +240,9 @@ const SelectedCircuit: FunctionComponent<SelectedCircuitProps> = ({
                           ? "text-run"
                           : Number(log?.category) === 2
                           ? "text-costa"
-                          : "text-comp"
+                          : Number(log?.category) === 3
+                          ? "text-comp"
+                          : "text-moda"
                       }`}
                     >
                       {Number(log?.category) === 0
@@ -249,7 +251,9 @@ const SelectedCircuit: FunctionComponent<SelectedCircuitProps> = ({
                         ? "RESPONSE >>>"
                         : Number(log?.category) === 2
                         ? "CONDITION >>>"
-                        : "BROADCAST >>>"}
+                        : Number(log?.category) === 3
+                        ? "BROADCAST >>>"
+                        : "EXECUTION >>>"}
                     </div>
                     <div className="relative w-fit h-fit flex flex-col gap-1.5 text-white">
                       <div className="relative w-full h-fit flex text-ballena">
