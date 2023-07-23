@@ -36,7 +36,7 @@ export default function Account() {
   }, [allCircuitsLoading, circuitLogsLoading]);
 
   return (
-    <div className="relative w-full h-full flex flex-row border-t-2 border-sol grow">
+    <div className="relative w-full h-full flex flex-col xl:flex-row border-t-2 border-sol grow">
       <Head>
         <title>No-Code Lit Listener | Account</title>
         <link rel="icon" href="/favicon.ico" />
@@ -59,7 +59,7 @@ export default function Account() {
           draggable={false}
         />
       </div>
-      <div className="relative w-full min-h-100 flex items-center justify-center grow">
+      <div className="relative w-full min-h-100 flex items-center justify-center grow xl:order-first order-last">
         {!addressExists &&
         !globalLoader &&
         !allCircuitsLoading &&
