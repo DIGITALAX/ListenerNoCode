@@ -34,6 +34,7 @@ const useSetConditions = () => {
   const [dropDownChainContract, setDropDownChainContract] =
     useState<boolean>(false);
   const [text, setText] = useState<string>(SET_CONDITIONS_TEXT_WEBHOOK[0]);
+  const [overviewOpen, setOverviewOpen] = useState<boolean>(true);
   const [conditionType, setConditionType] = useState<string>("web");
   const [editingState, setEditingState] = useState<boolean>(false);
   const [eventArgs, setEventArgs] = useState<string[]>([""]);
@@ -509,6 +510,8 @@ const useSetConditions = () => {
     setApiPassword,
     text,
     setText,
+    overviewOpen,
+    setOverviewOpen,
   };
 };
 

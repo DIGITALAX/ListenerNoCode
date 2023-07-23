@@ -21,7 +21,8 @@ export type OverviewProps = {
   handleClearCircuit: () => void;
   circuitRunning: boolean;
   overviewOpen: boolean;
-  setOverviewOpen: (e: boolean) => boolean;
+  setOverviewOpen: (e: boolean) => void;
+  largeScreen: boolean;
 };
 
 export type CircuitSwitchProps = {

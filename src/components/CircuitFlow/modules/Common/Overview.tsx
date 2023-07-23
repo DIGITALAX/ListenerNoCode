@@ -18,12 +18,14 @@ const Overview: FunctionComponent<OverviewProps> = ({
   circuitRunning,
   overviewOpen,
   setOverviewOpen,
+  largeScreen,
 }): JSX.Element => {
   return (
     <div
-      className={`absolute z-20 right-0 top-0 grow max:border-l-2 xl:border-sol xl:bg-aBlack px-3 xl:px-4 py-6 items-center justify-center ${
-        overviewOpen ? "w-80" : "w-10"
+      className={`absolute xl:relative z-20 right-0 top-0 grow border-l-2 border-sol px-4 py-6 bg-aBlack items-center justify-center ${
+        overviewOpen ? (largeScreen ? "w-96" : "w-11/12") : "w-10"
       }`}
+      id="heightCheckout"
     >
       <div
         className="absolute top-10 -left-4 flex opacity-80 cursor-pointer w-fit h-fit z-10 border border-ballena rounded-full bg-white"
@@ -35,7 +37,11 @@ const Overview: FunctionComponent<OverviewProps> = ({
           <PiArrowCircleUpLeftFill size={30} color="#FFD85F" />
         )}
       </div>
-      <div className="flex flex-row items-center justify-center relative w-full h-full xl:bg-none bg-aBlack xl:border-x-0 border-x-4 border-moda">
+      <div
+        className={`flex-row items-center justify-center relative w-full h-full border-x-0 border-x-4 border-moda ${
+          overviewOpen ? "flex" : "hidden"
+        }`}
+      >
         <div className="relative w-1 h-full bg-moda grow xl:flex hidden"></div>
         <div className="relative w-full h-full flex flex-col gap-5">
           <div className="relative w-full h-fit flex flex-row items-start justify-center">
@@ -56,7 +62,7 @@ const Overview: FunctionComponent<OverviewProps> = ({
             ></div>
             <div className="relative h-1 w-full bg-moda flex justify-center"></div>
           </div>
-          <div className="relative w-full h-full xl:flex flex-wrap inline-flex break-words xl:flex-col xl:flex-nowrap gap-3 text-base font-vcr px-2 justify-center text-center xl:text-left items-start">
+          <div className="relative w-full h-full flex flex-col break-words gap-3 text-base font-vcr px-2 justify-center items-start">
             {Array.from([
               "Set Conditions",
               "Conditional Logic",

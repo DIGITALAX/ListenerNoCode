@@ -96,6 +96,7 @@ export default function Home() {
     (state: RootState) => state.app.newFetchActionInformationReducer.value
   );
   const [stepCount, setStepCount] = useState<number>(0);
+  const [largeOverview, setLargeOverview] = useState<boolean>(true);
   const [largeScreen, setLargeScreen] = useState<number>(0);
 
   const {
@@ -119,6 +120,8 @@ export default function Home() {
     dropDownChainContract,
     text,
     setText,
+    overviewOpen,
+    setOverviewOpen,
   } = useSetConditions();
   const {
     actionType,
@@ -305,11 +308,15 @@ export default function Home() {
   useEffect(() => {
     if (window) {
       setLargeScreen(window.innerWidth > 940 ? 10 : 8);
+      setLargeOverview(Boolean(window.innerWidth > 500));
     }
   }, []);
 
   return (
-    <div className="relative w-full h-full flex flex-col xl:flex-row border-t-2 border-sol grow">
+    <div
+      className="relative w-full flex flex-row border-t-2 border-sol grow"
+      id="heightCheckout"
+    >
       <Head>
         <title>No-Code Lit Listener</title>
         <link rel="icon" href="/favicon.ico" />
@@ -332,7 +339,7 @@ export default function Home() {
           draggable={false}
         />
       </div>
-      <div className="relative w-full min-h-100 flex items-center justify-center grow max:order-first order-last">
+      <div className="relative w-full min-h-100 flex items-center justify-center grow">
         <div className="relative w-full h-full flex flex-row gap-4 items-center justify-center py-3">
           <div className="relative w-fit h-full hidden max:flex gap-3 items-center justify-start pl-10">
             <div className="relative w-60 h-full grow rounded-lg border-2 border-sol items-center justify-center flex bg-aBlack">
@@ -351,7 +358,7 @@ export default function Home() {
           >
             <div className="relative h-full w-full flex items-center justify-start renewed:py-0 renewed:justify-center rounded-sm border-2 border-sol renewed:flex-row flex-col">
               <div className="absolute w-full h-full mix-blend-darken bg-aBlack opacity-70"></div>
-              <div className="relative flex flex-col md:flex-row renewed:flex-col w-full items-center justify-center h-full">
+              <div className="relative flex flex-col w-full items-center justify-center h-full">
                 <div className="relative w-full h-full flex flex-col items-center justify-center renewed:overflow-y-auto overflow-y-scroll py-4">
                   <CircuitSwitch
                     apiPasswordAction={apiPasswordAction}
@@ -580,9 +587,9 @@ export default function Home() {
                     }
                   />
                 </div>
-                <div className="relative w-full md:w-fit h-60 md:h-full flex flex-row items-center justify-center renewed:hidden overflow-y-scroll">
+                <div className="relative w-full renewed:w-fit h-60 renewed:h-full flex flex-row items-center justify-center renewed:hidden overflow-y-scroll">
                   <div
-                    className="relative w-full md:w-fit h-full flex items-center justify-center flex-col gap-2 px-3 py-4"
+                    className="relative w-full renewed:w-fit h-full flex items-center justify-center flex-col gap-2 px-3 py-4"
                     id="explainerBg"
                   >
                     <div
@@ -621,7 +628,7 @@ export default function Home() {
                         ? "MintGrantBurn PKP"
                         : "Run Circuit"}
                     </div>
-                    <div className="relative w-full md:w-60 h-full items-start justify-start overflow-y-scroll flex">
+                    <div className="relative w-full renewed:w-60 h-full items-start justify-start overflow-y-scroll flex">
                       <div
                         className="relative w-full h-60 items-start justify-start flex font-vcr text-ballena whitespace-pre-wrap break-words"
                         style={{ wordBreak: "break-word" }}
@@ -633,7 +640,7 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-              <div className="relative flex flex-col md:flex-row renewed:flex-col grow h-fit w-full renewed:w-auto  renewed:h-full items-center justify-center">
+              <div className="relative flex flex-col flex-col grow h-fit w-full renewed:w-auto renewed:h-full items-center justify-center">
                 <div className="relative w-full h-full hidden renewed:flex flex-row items-center justify-center">
                   <div
                     className="relative w-full h-full flex items-center justify-center flex-col gap-2 px-3 py-4"
@@ -821,7 +828,9 @@ export default function Home() {
         handleAddExecutionConstraints={handleAddExecutionConstraints}
         ipfsHash={ipfsHash.ipfs}
         circuitRunning={circuitRunning}
-      
+        overviewOpen={overviewOpen}
+        setOverviewOpen={setOverviewOpen}
+        largeScreen={largeOverview}
       />
     </div>
   );
