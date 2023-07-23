@@ -1,5 +1,5 @@
 import { FunctionComponent } from "react";
-import { AllShop, CartItem, CheckoutProps } from "../types/shop.types";
+import { CartItem, CheckoutProps } from "../types/shop.types";
 import Image from "next/legacy/image";
 import { ACCEPTED_TOKENS, INFURA_GATEWAY } from "../../../../lib/constants";
 import { AiOutlineLoading } from "react-icons/ai";
@@ -8,6 +8,10 @@ import { ImCross } from "react-icons/im";
 import { setCartItems } from "../../../../redux/reducers/cartItemsSlice";
 import lodash from "lodash";
 import { setModalOpen } from "../../../../redux/reducers/modalOpenSlice";
+import {
+  PiArrowCircleUpLeftFill,
+  PiArrowCircleDownRightFill,
+} from "react-icons/pi";
 
 const Checkout: FunctionComponent<CheckoutProps> = ({
   cartItems,
@@ -25,13 +29,31 @@ const Checkout: FunctionComponent<CheckoutProps> = ({
   address,
   openChainModal,
   switchNeeded,
+  setCheckoutOpen,
+  checkOutOpen,
 }): JSX.Element => {
   return (
     <div
-      className="relative w-96 border-l-2 border-sol bg-aBlack px-4 py-6"
-      id="heightAllCircuits"
+      className={`absolute z-20 right-0 top-0 z-10 border-l-2 border-sol bg-aBlack px-4 py-6 ${
+        checkOutOpen ? "w-80" : "w-10"
+      }`}
+      id="heightCheckout"
     >
-      <div className="flex flex-row items-center justify-center relative w-full h-full">
+      <div
+        className="absolute top-10 -left-4 flex opacity-80 cursor-pointer w-fit h-fit z-10 border border-ballena rounded-full bg-white"
+        onClick={() => setCheckoutOpen(!checkOutOpen)}
+      >
+        {checkOutOpen ? (
+          <PiArrowCircleDownRightFill size={30} color="#FFD85F" />
+        ) : (
+          <PiArrowCircleUpLeftFill size={30} color="#FFD85F" />
+        )}
+      </div>
+      <div
+        className={`flex-row items-center justify-center relative w-full h-full ${
+          checkOutOpen ? "flex" : "hidden"
+        }`}
+      >
         <div className="relative w-1 h-full bg-moda"></div>
         <div className="relative w-full h-full flex flex-col gap-5">
           <div className="relative w-full h-fit flex flex-row items-start justify-center">

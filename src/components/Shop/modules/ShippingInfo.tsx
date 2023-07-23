@@ -6,7 +6,7 @@ const ShippingInfo: FunctionComponent<ShippingInfoProps> = ({
   setFulfillmentDetails,
 }): JSX.Element => {
   return (
-    <div className="relative w-3/4 h-fit flex flex-col gap-3 items-center justify-center text-white">
+    <div className="relative w-full h-fit flex flex-col gap-3 items-center justify-center text-white">
       <div className="relative flex w-full h-full overflow-y-scroll">
         <div className="relative flex flex-col w-full h-fit justify-start items-start gap-3">
           <div className="relative w-fit h-fit break-words font-vcr text-white text-xs flex items-center justify-center text-center">
