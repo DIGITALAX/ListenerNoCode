@@ -86,5 +86,32 @@ export const MINT_BURN_TEXT: string[] = [
 export const RUN_CIRCUIT_TEXT: string[] = [
   "Your circuit is ready to start running!<br/><br/>If you have set Contract Actions make sure that you have correctly funded your PKP on the network/s you specified so that your signed transactions can be successfully broadcast to the blockchain.<br/><br/>Click to start.",
   "Wait a moment while your circuit is starting up.",
-  "Your circuit is running!<br/><br/>View logs and details on your account page."
+  "Your circuit is running!<br/><br/>View logs and details on your account page.",
 ];
+
+export const ACCEPTED_TOKENS: string[][] = [
+  [
+    "QmYYUQ8nGDnyuk8jQSung1WmTksvLEQBXjnCctdRrKtsNk",
+    "WMATIC",
+    "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270",
+  ],
+  [
+    "QmZRhUgjK6bJM8fC7uV145yf66q2e7vGeT7CLosw1SdMdN",
+    "WETH",
+    "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
+  ],
+  [
+    "QmSbpsDRwxSCPBWPkwWvcb49jViSxzmNHjYy3AcGF3qM2x",
+    "USDT",
+    "0xc2132d05d31c914a87c6611c10748aeb04b58e8f",
+  ],
+  [
+    "QmS6f8vrNZok9j4pJttUuWpNrjsf4vP9RD5mRL36z6UdaL",
+    "MONA",
+    "0x6968105460f67c3bf751be7c15f92f5286fd0ce5",
+  ],
+];
+
+export const LISTENER_MARKET: `0x${string}` = "0x";
+export const LISTENER_ORACLE: `0x${string}` = "0x";
+export const FULFILLER_ADDRESS: `0x${string}` = "0x";
