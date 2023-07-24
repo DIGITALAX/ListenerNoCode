@@ -11,7 +11,7 @@ export default async function handler(
       rejectUnauthorized: false,
     });
     const response = await axios.post(
-      "http://localhost:3000/instantiate",
+      "https://litlistener.onrender.com/instantiate",
       req.body,
       {
         headers: {
