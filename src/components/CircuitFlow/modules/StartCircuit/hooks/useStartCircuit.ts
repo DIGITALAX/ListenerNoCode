@@ -97,7 +97,7 @@ const useStartCircuit = () => {
 
         if (res.status === 200) {
           dispatch(setCircuitRunning(true));
-        } else if (res.status === 500) {
+        } else  {
           dispatch(
             setModalOpen({
               actionOpen: true,

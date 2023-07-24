@@ -11,7 +11,7 @@ const useServerConnect = () => {
   const { address } = useAccount();
 
   const siweMessage = new SiweMessage({
-    domain: "https://listener.irrevocable.dev/",
+    domain: "localhost",
     address: address || process.env.SERVER_ADDRESS,
     statement: "This is an Auth Sig for LitListenerSDK",
     uri: "https://localhost/login",
