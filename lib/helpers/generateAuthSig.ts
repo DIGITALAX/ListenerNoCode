@@ -11,7 +11,7 @@ export const generateAuthSig = async (
     try {
       const address = await signer.getAddress();
       const siweMessage = new SiweMessage({
-        domain: "localhost",
+        domain: "https://listener.irrevocable.dev/",
         address: await signer.getAddress(),
         statement: "This is an Auth Sig for LitListenerSDK",
         uri: uri,
