@@ -308,11 +308,12 @@ export default function Home() {
   useEffect(() => {
     const handleResize = () => {
       setLargeScreen(window.innerWidth > 940 ? 10 : 8);
-      setLargeOverview(Boolean(window.innerWidth > 500));
-      if (Boolean(window.innerWidth > 500)) {
+      setLargeOverview(Boolean(window.innerWidth > 820));
+      if (Boolean(window.innerWidth < 820)) {
         setOverviewOpen(false);
       }
     };
+
     handleResize();
 
     window.addEventListener("resize", handleResize);
@@ -323,7 +324,8 @@ export default function Home() {
   return (
     <div
       className="relative w-full flex flex-row border-t-2 border-sol grow overflow-y-scroll"
-      id="heightCheckout"
+      id={largeOverview ? "heightCheckout" : ""}
+      style={{ height: largeOverview ? "" : "65rem" }}
     >
       <Head>
         <title>No-Code Lit Listener</title>
@@ -347,6 +349,7 @@ export default function Home() {
           draggable={false}
         />
       </div>
+
       <div className="relative w-full min-h-100 flex items-center justify-center grow">
         <div className="relative w-full h-full flex flex-row gap-4 items-center justify-center py-3">
           <div className="relative w-fit h-full hidden max:flex gap-3 items-center justify-start pl-10">
@@ -824,6 +827,7 @@ export default function Home() {
           </div>
         </div>
       </div>
+
       <Overview
         handleClearCircuit={handleClearCircuit}
         dispatch={dispatch}

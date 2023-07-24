@@ -12,10 +12,7 @@ const SelectedCircuit: FunctionComponent<SelectedCircuitProps> = ({
   handleInterruptCircuit,
 }): JSX.Element => {
   return (
-    <div
-      className="relative w-full h-full justify-center items-center flex"
-      id="heightAllCircuits"
-    >
+    <div className="relative w-full h-full justify-center items-center flex">
       <div
         className="relative w-5/6 h-5/6 justify-center items-center bg-black/50 flex flex-col p-3 gap-3"
         id="inputBorder"

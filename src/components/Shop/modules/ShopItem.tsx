@@ -14,9 +14,12 @@ const ShopItem: FunctionComponent<ShopItemProps> = ({
   setCurrentIndexItem,
   keyIndex,
   allShopItems,
+  largeScreen
 }): JSX.Element => {
   return (
-    <div className="relative w-60 h-full bg-black rounded-md border-2 border-moda flex flex-col">
+    <div className={`relative h-full bg-black rounded-md border-2 border-moda flex flex-col ${
+      largeScreen ? "w-60" : "w-72"
+    }`}>
       <div className="relative w-full h-full">
         <Image
           layout="fill"
