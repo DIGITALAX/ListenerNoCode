@@ -28,7 +28,7 @@ export const getUserCircuitsCompleted = async (
   const queryPromise = graphClient.query({
     query: gql(CIRCUITS_COMPLETED),
     variables: {
-      listenerDBContract: "0x853ed3a8e6f910e1dee7b0b4d10d907ad7dc1e33",
+      listenerDBContract: "0x94adbd035e5bc2959d9279143601a3686c1c3498",
       instantiatorAddress,
     },
     fetchPolicy: "no-cache",
@@ -55,7 +55,7 @@ export const getUserCircuitsCompletedById = async (
   const queryPromise = graphClient.query({
     query: gql(CIRCUIT_COMPLETED_ID),
     variables: {
-      listenerDBContract: "0x853ed3a8e6f910e1dee7b0b4d10d907ad7dc1e33",
+      listenerDBContract: "0x94adbd035e5bc2959d9279143601a3686c1c3498",
       instantiatorAddress,
     },
     fetchPolicy: "no-cache",

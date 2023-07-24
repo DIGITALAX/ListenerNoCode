@@ -22,7 +22,7 @@ export const getUserLogs = async (
   const queryPromise = graphClient.query({
     query: gql(LOGS_ADDED),
     variables: {
-      listenerDBContract: "0x853ed3a8e6f910e1dee7b0b4d10d907ad7dc1e33",
+      listenerDBContract: "0x94adbd035e5bc2959d9279143601a3686c1c3498",
       instantiatorAddress,
     },
     fetchPolicy: "no-cache",
