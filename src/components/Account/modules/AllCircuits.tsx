@@ -17,10 +17,9 @@ const AllCircuits: FunctionComponent<AllCircuitsProps> = ({
 }): JSX.Element => {
   return (
     <div
-      className={`absolute z-20 right-0 top-0 grow border-l-2 border-sol bg-aBlack px-3 xl:px-4 py-6 items-center justify-center ${
+      className={`absolute z-20 right-0 top-0 grow border-l-2 border-sol bg-aBlack px-3 xl:px-4 py-6 items-center justify-center h-full ${
         circuitsOpen ? (largeScreen ? "w-72" : "w-11/12") : "w-10"
       }`}
-      id="heightCheckout"
     >
       <div
         className="absolute top-10 -left-4 flex opacity-80 cursor-pointer w-fit h-fit z-10 border border-ballena rounded-full bg-white"
@@ -59,6 +58,19 @@ const AllCircuits: FunctionComponent<AllCircuitsProps> = ({
           <div className="relative w-full h-full gap-3 font-vcr px-2 items-center overflow-y-scroll">
             <div className="justify-start h-fit items-center gap-3 w-full flex flex-col break-words">
               {allUserCircuits?.map((value: AllCircuits, index: number) => {
+                const completed =
+                  value?.completed ||
+                  value.monitorExecutions ===
+                    JSON.parse(
+                      JSON.parse(value.circuitInformation?.information as any)
+                        ?.executionConstraints
+                    )?.conditionMonitorExecutions ||
+                  value.circuitExecutions ===
+                    JSON.parse(
+                      JSON.parse(value.circuitInformation?.information as any)
+                        ?.executionConstraints
+                    )?.maxLitActionCompletions;
+
                 return (
                   <div
                     key={index}
@@ -88,14 +100,14 @@ const AllCircuits: FunctionComponent<AllCircuitsProps> = ({
                           className={`relative w-fit h-fit flex items-center justify-start ${
                             value?.interrupted
                               ? "text-costa"
-                              : value?.completed
+                              : completed
                               ? "text-comp"
                               : "text-run"
                           }`}
                         >
                           {value?.interrupted
                             ? `(interrupted)`
-                            : value?.completed
+                            : completed
                             ? `(completed)`
                             : `(running)`}
                         </div>

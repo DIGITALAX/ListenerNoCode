@@ -13,7 +13,7 @@ const Steps: FunctionComponent<StepsProps> = ({
       id="xScroll"
     >
       <div className="relative inline-flex flex-row w-fit md:w-auto">
-        {Array.from({ length: largeScreen }).map((_, index: number) => {
+        {Array.from({ length: largeScreen })?.map((_, index: number) => {
           return (
             <div
               key={index}

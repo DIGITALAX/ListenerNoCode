@@ -17,9 +17,9 @@ const CodeComponent: FunctionComponent<CodeComponentProps> = ({
               overflowWrap: "break-word",
             }}
           >
-            {tokens.map((line, i) => (
+            {tokens?.map((line, i) => (
               <div key={i} {...getLineProps({ line })}>
-                {line.map((token, key) => (
+                {line?.map((token, key) => (
                   <span key={key} {...getTokenProps({ token })} />
                 ))}
               </div>

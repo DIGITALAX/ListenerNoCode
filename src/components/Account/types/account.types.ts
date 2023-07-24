@@ -8,6 +8,8 @@ import { AnyAction, Dispatch } from "redux";
 
 export interface AllCircuits {
   circuitId: string;
+  monitorExecutions: number;
+  circuitExecutions: number;
   blockTimestamp: string;
   completed: boolean;
   interrupted: boolean;

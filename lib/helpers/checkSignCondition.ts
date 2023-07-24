@@ -5,37 +5,38 @@ export const checkSignCondition = (
     value: boolean | number | string;
     valueType: boolean | number | string;
   }[]
-) => {
+): {
+  isValid: boolean;
+  updatedSignConditions: {
+    type: string;
+    operator: string;
+    value: boolean | number | string;
+  }[];
+} => {
   const validOperators = ["<", ">", "==", "===", "!==", "!=", ">=", "<="];
   const validValueTypes = ["boolean", "number", "string"];
 
-  for (let i = 0; i < objectArray.length; i++) {
-    const obj = objectArray[i];
+  let invalidObjects = false;
 
+  const updatedArray = objectArray.filter((obj) => {
     if (
       obj.type === undefined ||
       obj.operator === undefined ||
-      obj.value === undefined ||
-      obj.valueType === undefined
-    ) {
-      return { isValid: false, updatedArray: null };
-    }
-
-    if (obj.type !== "&&" && obj.type !== "||") {
-      return { isValid: false, updatedArray: null };
-    }
-
-    if (!validOperators.includes(obj.operator)) {
-      return { isValid: false, updatedArray: null };
-    }
-
-    if (
+      obj.valueType === undefined ||
+      (obj.type !== "&&" && obj.type !== "||") ||
+      !validOperators.includes(obj.operator) ||
       !validValueTypes.includes(
         obj.valueType as "boolean" | "number" | "string"
       )
     ) {
-      return { isValid: false, updatedArray: null };
+      invalidObjects = true;
+      return false;
     }
+
+    if (obj.value === undefined) {
+      return false;
+    }
+
     let convertedValue: boolean | number | string;
     if (obj.valueType === "boolean") {
       if (typeof obj.value === "boolean") {
@@ -46,7 +47,8 @@ export const checkSignCondition = (
       ) {
         convertedValue = obj.value === "true";
       } else {
-        return { isValid: false, updatedArray: null };
+        invalidObjects = true;
+        return false;
       }
     } else if (obj.valueType === "number") {
       if (typeof obj.value === "number") {
@@ -56,21 +58,29 @@ export const checkSignCondition = (
         if (!isNaN(parsedValue)) {
           convertedValue = parsedValue;
         } else {
-          return { isValid: false, updatedArray: null };
+          invalidObjects = true;
+          return false;
         }
       } else {
-        return { isValid: false, updatedArray: null };
+        invalidObjects = true;
+        return false;
       }
     } else {
       if (typeof obj.value === "string") {
         convertedValue = obj.value;
       } else {
-        return { isValid: false, updatedArray: null };
+        invalidObjects = true;
+        return false;
       }
     }
 
-    objectArray[i].value = convertedValue;
-  }
+    obj.value = convertedValue;
+    return true;
+  });
 
-  return { isValid: true, updatedSignConditions: objectArray };
+  const filteredArray = updatedArray
+    ? updatedArray?.map(({ valueType, ...rest }) => rest)
+    : [];
+
+  return { isValid: !invalidObjects, updatedSignConditions: filteredArray };
 };

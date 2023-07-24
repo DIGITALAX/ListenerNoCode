@@ -386,7 +386,7 @@ const useSetActions = () => {
             {
               ...newContractActionInformation,
               type: "contract",
-              priority: circuitInformation?.actions?.length + 1,
+              priority: circuitInformation?.actions?.length,
               abi: [abi],
               chainId: newContractActionInformation?.chainId || "ethereum",
               args: convertedArgs,
@@ -435,19 +435,54 @@ const useSetActions = () => {
           ...circuitInformation,
           actions: [
             ...circuitInformation.actions,
-            {
-              ...newFetchActionInformation,
-              type: "fetch",
-              priority: circuitInformation?.actions?.length + 1,
-              baseUrl: newBaseURL,
-              endpoint: newEndpoint,
-              signCondition: updatedSignConditions,
-              toSign: new Uint8Array(
-                buffer.buffer,
-                buffer.byteOffset,
-                buffer.byteLength
-              ),
-            } as FetchAction,
+            (newFetchActionInformation?.toSign as any)?.trim() !== "" &&
+            updatedSignConditions &&
+            updatedSignConditions?.length > 0 &&
+            (newFetchActionInformation?.toSign as any)?.trim() !== ""
+              ? ({
+                  ...newFetchActionInformation,
+                  type: "fetch",
+                  priority: circuitInformation?.actions?.length,
+                  baseUrl: newBaseURL,
+                  endpoint: newEndpoint,
+                  signCondition: updatedSignConditions,
+                  toSign: new Uint8Array(
+                    buffer.buffer,
+                    buffer.byteOffset,
+                    buffer.byteLength
+                  ),
+                } as FetchAction)
+              : !updatedSignConditions ||
+                (updatedSignConditions?.length < 1 &&
+                  (newFetchActionInformation?.toSign as any)?.trim() === "")
+              ? ({
+                  ...newFetchActionInformation,
+                  type: "fetch",
+                  priority: circuitInformation?.actions?.length ,
+                  baseUrl: newBaseURL,
+                  endpoint: newEndpoint,
+                } as FetchAction)
+              : (newFetchActionInformation?.toSign as any)?.trim() === ""
+              ? ({
+                  ...newFetchActionInformation,
+                  type: "fetch",
+                  priority: circuitInformation?.actions?.length,
+                  baseUrl: newBaseURL,
+                  endpoint: newEndpoint,
+                  signCondition: updatedSignConditions,
+                } as FetchAction)
+              : ({
+                  ...newFetchActionInformation,
+                  type: "fetch",
+                  priority: circuitInformation?.actions?.length ,
+                  baseUrl: newBaseURL,
+                  endpoint: newEndpoint,
+                  toSign: new Uint8Array(
+                    buffer.buffer,
+                    buffer.byteOffset,
+                    buffer.byteLength
+                  ),
+                } as FetchAction),
           ],
         })
       );

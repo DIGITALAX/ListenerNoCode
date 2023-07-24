@@ -22,10 +22,15 @@ const Overview: FunctionComponent<OverviewProps> = ({
 }): JSX.Element => {
   return (
     <div
-      className={`absolute xl:relative z-20 right-0 top-0 grow border-l-2 border-sol px-4 py-6 bg-aBlack items-center justify-center ${
-        overviewOpen ? (largeScreen ? "w-96" : "w-11/12") : "w-10"
+      className={`absolute xl:relative z-20 right-0 top-0 grow border-l-2 h-full border-sol px-4 py-6 bg-aBlack items-center justify-center ${
+        overviewOpen
+          ? largeScreen
+            ? "w-96"
+            : "w-11/12"
+          : largeScreen
+          ? "w-10"
+          : "w-4"
       }`}
-      id="heightCheckout"
     >
       <div
         className="absolute top-10 -left-4 flex opacity-80 cursor-pointer w-fit h-fit z-10 border border-ballena rounded-full bg-white"
@@ -38,7 +43,7 @@ const Overview: FunctionComponent<OverviewProps> = ({
         )}
       </div>
       <div
-        className={`flex-row items-center justify-center relative w-full h-full border-x-0 border-x-4 border-moda ${
+        className={`flex-row items-center justify-center relative w-full h-full xl:border-x-0 border-x-4 border-moda ${
           overviewOpen ? "flex" : "hidden"
         }`}
       >
@@ -62,7 +67,7 @@ const Overview: FunctionComponent<OverviewProps> = ({
             ></div>
             <div className="relative h-1 w-full bg-moda flex justify-center"></div>
           </div>
-          <div className="relative w-full h-full flex flex-col break-words gap-3 text-base font-vcr px-2 justify-center items-start">
+          <div className="relative w-full h-full flex flex-col break-words gap-3 text-base font-vcr px-2 justify-start items-start">
             {Array.from([
               "Set Conditions",
               "Conditional Logic",

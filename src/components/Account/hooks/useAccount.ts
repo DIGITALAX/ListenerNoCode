@@ -45,6 +45,7 @@ const useAccountPage = () => {
     try {
       const dataCircuits = await getUserCircuitsUser(address as string);
       const dataCompleted = await getUserCircuitsCompleted(address as string);
+      const dataLogs = await getUserLogs(address as string);
       const dataInterrupted = await getUserCircuitsInterrupted(
         address as string
       );
@@ -77,10 +78,51 @@ const useAccountPage = () => {
         circuit.completed = completedCircuitHashedIds.has(circuitId);
         circuit.interrupted = interruptedCircuitHashedIds.has(circuitId);
 
-        newAllCircuits.push({
-          ...circuit,
-          circuitInformation: circuitResponse?.circuitInformation,
-        });
+        for (let i = 0; i < dataLogs?.data?.logAddeds?.length; i++) {
+          const res = await fetchIpfsJson(
+            dataLogs?.data?.logAddeds[i].hashedId
+          );
+
+          if (res === circuitId) {
+            let parsedLogs = await fetchIpfsJson(
+              dataLogs?.data?.logAddeds[i]?.stringifiedLogs,
+              true
+            );
+
+            if (
+              !parsedLogs?.every(
+                (item: any) =>
+                  typeof item === "object" &&
+                  item !== null &&
+                  !Array.isArray(item)
+              )
+            ) {
+              parsedLogs = parsedLogs?.map((stringLog: any) => JSON.parse(stringLog));
+            }
+
+            const filteredLogsCondition = parsedLogs.filter((log: any) =>
+              log.message.includes("Condition Monitor Count Increased")
+            );
+            const filteredLogsExecution = parsedLogs.filter((log: any) =>
+              log.message.includes("Lit Action Completion Increased")
+            );
+            newAllCircuits.push({
+              ...circuit,
+              circuitInformation: circuitResponse?.circuitInformation,
+              monitorExecutions:
+                Number(
+                  filteredLogsCondition?.[filteredLogsCondition?.length - 1]
+                    ?.responseObject
+                ) || 0,
+              circuitExecutions:
+                Number(
+                  filteredLogsExecution?.[filteredLogsExecution?.length - 1]
+                    ?.responseObject
+                ) || 0,
+            });
+            break;
+          }
+        }
       }
 
       if (selectedCircuitSideBar === "" || !selectedCircuitSideBar) {
@@ -152,14 +194,21 @@ const useAccountPage = () => {
         );
 
         if (res === circuitId) {
-          const res = await fetchIpfsJson(
+          let parsedLogs = await fetchIpfsJson(
             circuitLogs?.data?.logAddeds[i]?.stringifiedLogs,
             true
           );
 
-          const parsedLogs = res?.map((stringLog: any) =>
-            JSON.parse(stringLog)
-          );
+          if (
+            !parsedLogs.every(
+              (item: any) =>
+                typeof item === "object" &&
+                item !== null &&
+                !Array.isArray(item)
+            )
+          ) {
+            parsedLogs = parsedLogs?.map((stringLog: any) => JSON.parse(stringLog));
+          }
 
           const filteredLogsCondition = parsedLogs.filter((log: any) =>
             log.message.includes("Condition Monitor Count Increased")
@@ -264,7 +313,7 @@ const useAccountPage = () => {
       if (res.status === 200) {
         setTimeout(async () => {
           await getAllCircuits();
-          await getSelectedCircuitLogs(id);
+          await getSelectedCircuitLogs(id?.replace(/-/g, ""));
           setInterruptLoading(false);
         }, 6000);
       } else if (res.status === 500) {
