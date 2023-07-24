@@ -10,39 +10,39 @@ import {
 const useServerConnect = () => {
   const { address } = useAccount();
 
-  const siweMessage = new SiweMessage({
-    domain: "localhost",
-    address: address || process.env.SERVER_ADDRESS,
-    statement: "This is an Auth Sig for LitListenerSDK",
-    uri: "https://localhost/login",
-    version: "1",
-    chainId: 137,
-  });
+  // const siweMessage = new SiweMessage({
+  //   domain: "localhost",
+  //   address: address || process.env.SERVER_ADDRESS,
+  //   statement: "This is an Auth Sig for LitListenerSDK",
+  //   uri: "https://localhost/login",
+  //   version: "1",
+  //   chainId: 137,
+  // });
 
-  const signedMessage = siweMessage.prepareMessage();
+  // const signedMessage = siweMessage.prepareMessage();
 
-  const { signMessageAsync } = useSignMessage({
-    message: signedMessage,
-  });
+  // const { signMessageAsync } = useSignMessage({
+  //   message: signedMessage,
+  // });
 
-  const handleServerConnect = async () => {
-    try {
-      const sig = await signMessageAsync();
-      const res = await fetch("/api/render/connect", {
-        method: "POST",
-        body: JSON.stringify({
-          globalAuthSignature: {
-            sig,
-            derivedVia: "web3.eth.personal.sign",
-            signedMessage,
-            address,
-          },
-        }),
-      });
-    } catch (err: any) {
-      console.error(err.message);
-    }
-  };
+  // const handleServerConnect = async () => {
+  //   try {
+  //     const sig = await signMessageAsync();
+  //     const res = await fetch("/api/render/connect", {
+  //       method: "POST",
+  //       body: JSON.stringify({
+  //         globalAuthSignature: {
+  //           sig,
+  //           derivedVia: "web3.eth.personal.sign",
+  //           signedMessage,
+  //           address,
+  //         },
+  //       }),
+  //     });
+  //   } catch (err: any) {
+  //     console.error(err.message);
+  //   }
+  // };
 
   const decryptLitKey = async (): Promise<void> => {
     try {
@@ -102,7 +102,7 @@ const useServerConnect = () => {
   };
 
   return {
-    handleServerConnect,
+    // handleServerConnect,
     decryptLitKey,
   };
 };
