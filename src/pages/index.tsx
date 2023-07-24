@@ -306,15 +306,23 @@ export default function Home() {
   }, [circuitFlowIndex, conditionType, logicType, actionType]);
 
   useEffect(() => {
-    if (window) {
+    const handleResize = () => {
       setLargeScreen(window.innerWidth > 940 ? 10 : 8);
       setLargeOverview(Boolean(window.innerWidth > 500));
-    }
+      if (Boolean(window.innerWidth > 500)) {
+        setOverviewOpen(false);
+      }
+    };
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   return (
     <div
-      className="relative w-full flex flex-row border-t-2 border-sol grow"
+      className="relative w-full flex flex-row border-t-2 border-sol grow overflow-y-scroll"
       id="heightCheckout"
     >
       <Head>
@@ -352,14 +360,11 @@ export default function Home() {
               />
             </div>
           </div>
-          <div
-            className="relative w-full h-full grow flex flex-col px-3 justify-center items-center"
-            id="heightHomeCircuits"
-          >
-            <div className="relative h-full w-full flex items-center justify-start renewed:py-0 renewed:justify-center rounded-sm border-2 border-sol renewed:flex-row flex-col">
+          <div className="relative w-full h-full grow flex flex-col px-3 justify-center items-center">
+            <div className="relative h-full w-full flex items-center justify-start renewed:py-0 renewed:justify-center rounded-sm renewed:border-2 renewed:border-sol renewed:flex-row flex-col">
               <div className="absolute w-full h-full mix-blend-darken bg-aBlack opacity-70"></div>
               <div className="relative flex flex-col w-full items-center justify-center h-full">
-                <div className="relative w-full h-full flex flex-col items-center justify-center renewed:overflow-y-auto overflow-y-scroll py-4">
+                <div className="relative w-full h-full flex flex-col items-start galaxy:items-center justify-center renewed:overflow-auto overflow-scroll p-10 galaxy:px-0 galaxy:py-4">
                   <CircuitSwitch
                     apiPasswordAction={apiPasswordAction}
                     setApiPasswordAction={setApiPasswordAction}

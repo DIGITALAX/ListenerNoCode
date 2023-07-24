@@ -42,13 +42,21 @@ export default function Shop() {
   const [largeScreen, setLargeScreen] = useState<boolean>(true);
 
   useEffect(() => {
-    if (window) {
+    const handleResize = () => {
       setLargeScreen(Boolean(window.innerWidth > 600));
-    }
+      if (Boolean(window.innerWidth > 600)) {
+        setCheckoutOpen(false);
+      }
+    };
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
   return (
     <div
-      className="relative w-full flex flex-row border-t-2 border-sol grow"
+      className="relative w-full flex flex-row border-t-2 border-sol grow overflow-y-scroll"
       id="heightCheckout"
     >
       <Head>

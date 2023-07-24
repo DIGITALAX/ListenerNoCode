@@ -58,7 +58,7 @@ const useStartCircuit = () => {
   );
   const { address } = useAccount();
   const [circuitRunLoading, setCircuitRunLoading] = useState<boolean>(false); 
- 
+       
   // const siweMessage = new SiweMessage({
   //   domain: "localhost",
   //   address: address,
@@ -66,8 +66,8 @@ const useStartCircuit = () => {
   //   uri: "https://localhost/login",
   //   version: "1",
   //   chainId: 137,
-  // });  
-   
+  // });     
+     
   // const signedMessage = siweMessage.prepareMessage();
 
   // const { signMessageAsync } = useSignMessage({
@@ -99,7 +99,7 @@ const useStartCircuit = () => {
         );
         const connectedSigner = web3Provider.getSigner();
 
-        const chainId = circuitInformation.actions.map((action: any) => {
+        const chainId = circuitInformation.actions?.map((action: any) => {
           if ((action as ContractAction).chainId) {
             return (action as ContractAction).chainId;
           } else {

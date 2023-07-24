@@ -31,14 +31,13 @@ const Checkout: FunctionComponent<CheckoutProps> = ({
   switchNeeded,
   setCheckoutOpen,
   checkOutOpen,
-  largeScreen
+  largeScreen,
 }): JSX.Element => {
   return (
     <div
-      className={`absolute z-20 right-0 top-0 border-l-2 border-sol bg-aBlack px-4 py-6 ${
-        checkOutOpen ? (largeScreen ? "w-80" : "w-11/12")  : "w-10"
+      className={`absolute z-20 right-0 top-0 border-l-2 border-sol bg-aBlack px-4 py-6 h-full ${
+        checkOutOpen ? (largeScreen ? "w-80" : "w-11/12") : "w-10"
       }`}
-      id="heightCheckout"
     >
       <div
         className="absolute top-10 -left-4 flex opacity-80 cursor-pointer w-fit h-fit z-10 border border-ballena rounded-full bg-white"

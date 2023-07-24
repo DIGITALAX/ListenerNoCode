@@ -3,6 +3,8 @@ import { SelectedCircuitProps } from "../types/account.types";
 import { convertDate } from "../../../../lib/helpers/convertDate";
 import { AiOutlineLoading } from "react-icons/ai";
 import moment from "moment";
+import copy from "copy-to-clipboard";
+import { BiCopy } from "react-icons/bi";
 
 const SelectedCircuit: FunctionComponent<SelectedCircuitProps> = ({
   selectedCircuit,
@@ -37,7 +39,13 @@ const SelectedCircuit: FunctionComponent<SelectedCircuitProps> = ({
           </div>
           {!selectedCircuit ||
           (Object.keys(selectedCircuit?.completed).length === 0 &&
-            Object.keys(selectedCircuit?.interrupted).length === 0) ? (
+            Object.keys(selectedCircuit?.interrupted).length === 0 &&
+            selectedCircuit.logs.monitorExecutions !==
+              selectedCircuit.circuitInformation?.information
+                ?.executionConstraints?.conditionMonitorExecutions &&
+            selectedCircuit.logs.circuitExecutions !==
+              selectedCircuit.circuitInformation?.information
+                ?.executionConstraints?.maxLitActionCompletions) ? (
             <div className="relative flex flex-row h-fit w-fit">
               <div
                 className={`relative flex items-center justify-center border border-white p-2 bg-ballena text-black h-8 w-36 ${
@@ -232,6 +240,8 @@ const SelectedCircuit: FunctionComponent<SelectedCircuitProps> = ({
                   } catch (error) {
                     data = log.responseObject?.split("[ See:")[0];
                   }
+                } else if (Number(log?.category) === 1) {
+                  data = "copy response object";
                 } else {
                   data = log?.responseObject;
                 }
@@ -275,9 +285,23 @@ const SelectedCircuit: FunctionComponent<SelectedCircuitProps> = ({
                       <div className="relative w-fit h-fit text-ballena items-end">
                         Data
                       </div>
-                      <div className="relative w-fit h-fit flex break-words">
-                        {data}
-                      </div>
+                      {Number(log?.category) === 1 ? (
+                        <div className="relative w-full h-fit flex break-words flex-row gap-1.5">
+                          <div className="relative w-fit h-fit flex items-center justify-center whitespace-no-wrap">
+                            {data}
+                          </div>
+                          <div
+                            className="relative w-fit h-fit flex items-center justify-center cursor-pointer active:scale-95"
+                            onClick={() => copy(log?.responseObject)}
+                          >
+                            <BiCopy size={15} color="#FFD85F" />
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="relative w-fit h-fit flex break-words">
+                          {data}
+                        </div>
+                      )}
                     </div>
                     <div className="relative w-fit h-fit flex flex-col gap-1.5 text-white sm:ml-auto sm:items-end justify-center">
                       <div className="relative w-fit h-fit text-ballena items-end">
