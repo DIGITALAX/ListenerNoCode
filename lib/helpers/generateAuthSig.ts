@@ -5,13 +5,13 @@ import { SiweMessage } from "siwe";
 export const generateAuthSig = async (
     signer: ethers.Signer,
     chainId = 1,
-    uri = "https://localhost/login",
+    uri = "https://listener.irrevocable.dev",
     version = "1",
   ): Promise<LitAuthSig> => {
     try {
       const address = await signer.getAddress();
       const siweMessage = new SiweMessage({
-        domain: "localhost",
+        domain: "listener.irrevocable.dev",
         address: await signer.getAddress(),
         statement: "This is an Auth Sig for LitListenerSDK",
         uri: uri,
