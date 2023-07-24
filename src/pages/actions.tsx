@@ -31,7 +31,7 @@ export default function Actions() {
     <div
       className="relative w-full flex flex-row border-t-2 border-sol grow"
       id={largeScreen ? "heightCheckout" : ""}
-      style={{ height: largeScreen ? "" : "45rem" }}
+      style={largeScreen ? {} : {height: "45rem"}}
     >
       <Head>
         <title>No-Code Lit Listener | Actions</title>

@@ -115,6 +115,6 @@ export const ACCEPTED_TOKENS: string[][] = [
 export const LISTENER_MARKET: `0x${string}` =
   "0x2F4a5544E8436ced2EE71CD3FfF76Cb6DAf9cf6F";
 export const LISTENER_ORACLE: `0x${string}` =
-  "0x0e92989B083b2eA0328EbA2db5c9ad3819e64794";
+  "0x0e92989b083b2ea0328eba2db5c9ad3819e64794";
 export const LISTENER_FULFILLMENT: `0x${string}` =
   "0x374551Baa42f590161a1FB2cA81E6b6D7b8DEe85";

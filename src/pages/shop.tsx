@@ -28,13 +28,14 @@ export default function Shop() {
     switchNeeded,
     setCurrentIndex,
     currentIndex,
-    currentIndexItem,
-    setCurrentIndexItem,
     checkOutOpen,
     setCheckoutOpen,
   } = useShop();
   const allShopItems = useSelector(
     (state: RootState) => state.app.allShopReducer.value
+  );
+  const currentIndexItem = useSelector(
+    (state: RootState) => state.app.currentIndexItemReducer.value
   );
   const cartItems = useSelector(
     (state: RootState) => state.app.cartItemsReducer.value
@@ -58,7 +59,7 @@ export default function Shop() {
     <div
       className="relative w-full flex flex-row border-t-2 border-sol grow overflow-hidden"
       id={largeScreen ? "heightCheckout" : ""}
-      style={{height: largeScreen ? "" : "45rem"}}
+      style={largeScreen ? {} : { height: "45rem" }}
     >
       <Head>
         <title>No-Code Lit Listener | Shop</title>
@@ -102,7 +103,6 @@ export default function Shop() {
             dispatch={dispatch}
             allCartItems={cartItems}
             currentIndexItem={currentIndexItem}
-            setCurrentIndexItem={setCurrentIndexItem}
             largeScreen={largeScreen}
           />
         )}

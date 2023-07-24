@@ -30,7 +30,7 @@ const DropDown: FunctionComponent<DropDownProps> = ({
       </div>
       {dropDownOpen && (
         <div
-          className={`absolute w-full h-60 overflow-y-scroll z-10`}
+          className={`absolute w-full h-60 overflow-y-scroll z-5`}
           style={{ top: top ? top : "auto" }}
         >
           <div className="relative w-full h-fit flex flex-col bg-aBlack">

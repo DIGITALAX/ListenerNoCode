@@ -5,34 +5,38 @@ import { INFURA_GATEWAY } from "../../../../lib/constants";
 import { setCartItems } from "../../../../redux/reducers/cartItemsSlice";
 import { setAllShop } from "../../../../redux/reducers/allShopSlice";
 import { setModalOpen } from "../../../../redux/reducers/modalOpenSlice";
+import { setCurrentIndexItem } from "../../../../redux/reducers/currentIndexItemSlice";
 
 const ShopItem: FunctionComponent<ShopItemProps> = ({
   item,
   dispatch,
   allCartItems,
   currentIndexItem,
-  setCurrentIndexItem,
   keyIndex,
   allShopItems,
-  largeScreen
+  largeScreen,
 }): JSX.Element => {
   return (
-    <div className={`relative h-full bg-black rounded-md border-2 border-moda flex flex-col ${
-      largeScreen ? "w-60" : "w-72"
-    }`}>
+    <div
+      className={`relative h-full bg-black rounded-md border-2 border-moda flex flex-col ${
+        largeScreen ? "w-60" : "w-72"
+      }`}
+    >
       <div className="relative w-full h-full">
-        <Image
-          layout="fill"
-          objectFit="cover"
-          src={`${INFURA_GATEWAY}/ipfs/${
-            item?.uri?.images?.[currentIndexItem[keyIndex]]?.split(
-              "ipfs://"
-            )?.[1]
-          }`}
-          className="rounded-md"
-          draggable={false}
-          key={item?.uri?.images?.[currentIndexItem[keyIndex]]}
-        />
+        {item?.uri?.images?.[currentIndexItem[keyIndex || 0]] && (
+          <Image
+            layout="fill"
+            objectFit="cover"
+            src={`${INFURA_GATEWAY}/ipfs/${
+              item?.uri?.images?.[currentIndexItem[keyIndex || 0]]?.split(
+                "ipfs://"
+              )?.[1]
+            }`}
+            className="rounded-md"
+            draggable={false}
+            key={item?.uri?.images?.[currentIndexItem[keyIndex || 0]]}
+          />
+        )}
       </div>
       <div className="absolute top-2 left-1 w-fit h-fit items-center justify-center flex flex-row gap-4">
         <div
@@ -42,7 +46,7 @@ const ShopItem: FunctionComponent<ShopItemProps> = ({
             newItems[keyIndex] =
               (currentIndexItem[keyIndex] - 1 + item?.uri?.images?.length) %
               item?.uri?.images?.length;
-            setCurrentIndexItem(newItems);
+            dispatch(setCurrentIndexItem(newItems));
           }}
         >
           <Image
@@ -58,7 +62,7 @@ const ShopItem: FunctionComponent<ShopItemProps> = ({
             newItems[keyIndex] =
               (currentIndexItem[keyIndex] + 1) % item?.uri?.images?.length;
 
-            setCurrentIndexItem(newItems);
+            dispatch(setCurrentIndexItem(newItems));
           }}
         >
           <Image
@@ -70,7 +74,7 @@ const ShopItem: FunctionComponent<ShopItemProps> = ({
       </div>
       <div className="absolute bottom-0 left-0 h-20 bg-black/70 w-full flex flex-col rounded-b-md border-t border-white px-2 py-1 justify-between items-center">
         <div className="relative w-full h-fit flex flex-col cursor-pointer text-xs text-white font-vcr">
-          {item?.name}
+          {item?.uri?.name}
         </div>
         <div className="relative flex flex-row gap-2 w-full h-fit items-center">
           <div className="relative flex flex-row gap-2 w-full h-fit">
@@ -85,7 +89,7 @@ const ShopItem: FunctionComponent<ShopItemProps> = ({
                   }`}
                   onClick={() => {
                     const updated = allShopItems.map((obj: AllShop) =>
-                      obj.name === item.name
+                      obj.uri.name === item?.uri?.name
                         ? { ...obj, chosenSize: size }
                         : obj
                     );
@@ -120,7 +124,7 @@ const ShopItem: FunctionComponent<ShopItemProps> = ({
 
               let { sizes, prices, ...newObj } = item;
               const existing = [...allCartItems].findIndex(
-                (item) => item?.name === newObj.name
+                (item) => item?.name === newObj?.uri?.name
               );
 
               let newCartItems: CartItem[] = [...allCartItems];
@@ -157,10 +161,10 @@ const ShopItem: FunctionComponent<ShopItemProps> = ({
         </div>
         <div className="relative flex flex-row gap-2 w-full h-fit items-center">
           <div className="relative font-vcr flex justify-start items-start w-fit h-fit text-ballena">
-            ${Number(item?.prices?.[0])}
+            ${Number(item?.prices?.[0]) / 10 ** 18}
           </div>
           <div className="relative font-vcr flex justify-start items-start w-fit h-fit text-ballena text-xs ml-auto">
-            {item?.mintedTokens?.length} / {item?.amount}
+            {item?.soldTokens?.length || 0} / {item?.amount}
           </div>
         </div>
       </div>

@@ -2,15 +2,13 @@ import { useEffect, useState } from "react";
 import { RootState } from "../../../../redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import { setAllShop } from "../../../../redux/reducers/allShopSlice";
-import { waitForTransaction } from "@wagmi/core";
-import * as LitJsSdk from "@lit-protocol/lit-node-client";
 import {
-  useAccount,
-  useContractRead,
-  useContractWrite,
-  useNetwork,
-  usePrepareContractWrite,
-} from "wagmi";
+  checkAndSignAuthMessage,
+  LitNodeClient,
+  encryptString,
+  uint8arrayToString,
+} from "@lit-protocol/lit-node-client";
+import { useAccount, useNetwork } from "wagmi";
 import {
   ACCEPTED_TOKENS,
   LISTENER_FULFILLMENT,
@@ -18,14 +16,21 @@ import {
   LISTENER_ORACLE,
 } from "../../../../lib/constants";
 import { BigNumber, ethers } from "ethers";
-import ListenerMarketAbi from "./../../../../abi/ListenerMarket.json";
-import ListenerOracleAbi from "./../../../../abi/ListenerOracle.json";
-import ListenerFulfillerAbi from "./../../../../abi/ListenerFulfiller.json";
 import { setCartItems } from "../../../../redux/reducers/cartItemsSlice";
-import { setLitClient } from "../../../../redux/reducers/litClientSlice";
 import { setPurchaseModal } from "../../../../redux/reducers/purchaseModalSlice";
+import { getAllCollections } from "../../../../graphql/queries/getCollections";
+import { createPublicClient, createWalletClient, custom, http } from "viem";
+import { fetchIpfsJson } from "../../../../lib/helpers/fetchIpfsJson";
+import { polygon } from "viem/chains";
+import { setModalOpen } from "../../../../redux/reducers/modalOpenSlice";
+import { setCurrentIndexItem } from "../../../../redux/reducers/currentIndexItemSlice";
 
 const useShop = () => {
+  const publicClient = createPublicClient({
+    chain: polygon,
+    transport: http(),
+  });
+
   const dispatch = useDispatch();
   const { address: addressConnected, isConnected } = useAccount();
   const { chain } = useNetwork();
@@ -35,32 +40,18 @@ const useShop = () => {
   const cartItems = useSelector(
     (state: RootState) => state.app.cartItemsReducer.value
   );
-  const litClient = useSelector(
-    (state: RootState) => state.app.litClientReducer.value
-  );
   const walletConnected = useSelector(
     (state: RootState) => state.app.walletConnectedReducer.value
   );
   const [checkOutOpen, setCheckoutOpen] = useState<boolean>(true);
   const [shopLoading, setShopLoading] = useState<boolean>(false);
   const [purchaseLoading, setPurchaseLoading] = useState<boolean>(false);
-  const [currentIndexItem, setCurrentIndexItem] = useState<number[]>(
-    Array.from(
-      {
-        length: cartItems?.length,
-      },
-      () => 0
-    )
-  );
-  const [fulfillerAddress, setFulfillerAddress] = useState<string>("");
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [switchNeeded, setSwitchNeeded] = useState<boolean>(false);
   const [approved, setApproved] = useState<boolean>(false);
   const [address, setAddress] = useState<boolean>(false);
   const [oracleValue, setOracleValue] = useState<number>(1);
   const [checkoutCurrency, setCheckoutCurrency] = useState<string>("USDT");
-  const [encryptedFulfillmentDetails, setEncryptedFulfillmentDetails] =
-    useState<string>("");
   const [totalAmount, setTotalAmount] = useState<number>(
     cartItems?.length > 0
       ? cartItems?.reduce(
@@ -86,166 +77,7 @@ const useShop = () => {
     state: "",
   });
 
-  const { data: oracleData } = useContractRead({
-    address: LISTENER_ORACLE,
-    abi: ListenerOracleAbi,
-    functionName: "getRateByAddress",
-    args: [
-      ACCEPTED_TOKENS.find(([_, token]) => token === checkoutCurrency)?.[2],
-    ],
-    enabled: Boolean(
-      ACCEPTED_TOKENS.find(([_, token]) => token === checkoutCurrency)?.[2]
-    ),
-  });
-
-  const { data: fulfillmentData, error: fulfillerError } = useContractRead({
-    address: LISTENER_FULFILLMENT,
-    abi: ListenerFulfillerAbi,
-    functionName: "getFulfillerAddress",
-    args: [1],
-  });
-
-  const { data, error } = useContractRead({
-    address: ACCEPTED_TOKENS.find(
-      ([_, token]) => token === checkoutCurrency
-    )?.[2] as `0x${string}`,
-    abi: [
-      {
-        inputs: [
-          {
-            internalType: "address",
-            name: "owner",
-            type: "address",
-          },
-          {
-            internalType: "address",
-            name: "spender",
-            type: "address",
-          },
-        ],
-        name: "allowance",
-        outputs: [
-          {
-            internalType: "uint256",
-            name: "",
-            type: "uint256",
-          },
-        ],
-        stateMutability: "view",
-        type: "function",
-      },
-    ],
-    functionName: "allowance",
-    args: [addressConnected as `0x${string}`, LISTENER_MARKET],
-    enabled:
-      Boolean(address) &&
-      Boolean(approved) &&
-      Boolean(checkoutCurrency) &&
-      Boolean(cartItems?.length > 0),
-  });
-
-  const { config } = usePrepareContractWrite({
-    address: ACCEPTED_TOKENS.find(
-      ([_, token]) => token === checkoutCurrency
-    )?.[2]! as `0x${string}`,
-    abi:
-      checkoutCurrency === "MONA"
-        ? [
-            {
-              inputs: [
-                { internalType: "address", name: "spender", type: "address" },
-                { internalType: "uint256", name: "tokens", type: "uint256" },
-              ],
-              name: "approve",
-              outputs: [
-                { internalType: "bool", name: "success", type: "bool" },
-              ],
-              stateMutability: "nonpayable",
-              type: "function",
-            },
-          ]
-        : checkoutCurrency === "WMATIC"
-        ? [
-            {
-              constant: false,
-              inputs: [
-                { name: "guy", type: "address" },
-                { name: "wad", type: "uint256" },
-              ],
-              name: "approve",
-              outputs: [{ name: "", type: "bool" }],
-              payable: false,
-              stateMutability: "nonpayable",
-              type: "function",
-            },
-          ]
-        : [
-            {
-              inputs: [
-                {
-                  internalType: "address",
-                  name: "spender",
-                  type: "address",
-                },
-                {
-                  internalType: "uint256",
-                  name: "amount",
-                  type: "uint256",
-                },
-              ],
-              name: "approve",
-              outputs: [
-                {
-                  internalType: "bool",
-                  name: "",
-                  type: "bool",
-                },
-              ],
-              stateMutability: "nonpayable",
-              type: "function",
-            },
-          ],
-    functionName: "approve",
-    args: [
-      LISTENER_MARKET,
-      ethers.utils.parseEther(totalAmount.toString() || "0"),
-    ],
-    enabled: Boolean(!Number.isNaN(totalAmount)),
-    value: 0 as any,
-  });
-
-  const { config: buyNFTConfig, isSuccess } = usePrepareContractWrite({
-    address: LISTENER_MARKET,
-    abi: ListenerMarketAbi,
-    args: [
-      {
-        preRollIds: cartItems?.reduce((accumulator: number[], item) => {
-          accumulator.push(Number(item.collectionId));
-          return accumulator;
-        }, []),
-        preRollAmounts: cartItems?.reduce((accumulator: number[], item) => {
-          accumulator.push(Number(item.amount));
-          return accumulator;
-        }, []),
-        customIds: [],
-        customAmounts: [],
-        customURIs: [],
-        fulfillmentDetails: encryptedFulfillmentDetails,
-        chosenTokenAddress: ACCEPTED_TOKENS.find(
-          ([_, token]) => token === checkoutCurrency
-        )?.[2],
-      },
-    ],
-    functionName: "buyTokens",
-    enabled: Boolean(
-      cartItems?.length > 0 && encryptedFulfillmentDetails !== ""
-    ),
-  });
-
-  const { writeAsync } = useContractWrite(config as any);
-  const { writeAsync: buyNFTAsync } = useContractWrite(buyNFTConfig);
-
-  const getTotalAmount = () => {
+  const getTotalAmount = async () => {
     if (cartItems.length < 1) {
       setTotalAmount(0);
     } else {
@@ -255,8 +87,37 @@ const useShop = () => {
         0
       );
 
-      if (oracleData) {
-        const oracle = Number(oracleData as BigNumber) / 10 ** 18;
+      const data = await publicClient.readContract({
+        address: LISTENER_ORACLE,
+        abi: [
+          {
+            inputs: [
+              {
+                internalType: "address",
+                name: "_tokenAddress",
+                type: "address",
+              },
+            ],
+            name: "getRateByAddress",
+            outputs: [
+              {
+                internalType: "uint256",
+                name: "",
+                type: "uint256",
+              },
+            ],
+            stateMutability: "view",
+            type: "function",
+          },
+        ],
+        functionName: "getRateByAddress",
+        args: [
+          ACCEPTED_TOKENS.find(([_, token]) => token === checkoutCurrency)?.[2],
+        ],
+      });
+
+      if (data) {
+        const oracle = Number(data as BigNumber) / 10 ** 18;
         setOracleValue(oracle);
         setTotalAmount(Number(total) / Number(oracle));
       }
@@ -266,38 +127,157 @@ const useShop = () => {
   const purchaseItems = async () => {
     setPurchaseLoading(true);
     try {
-      let client: LitJsSdk.LitNodeClient | undefined;
-      if (!litClient) {
-        client = await connectLit();
-      }
-      const authSig = await LitJsSdk.checkAndSignAuthMessage({
-        chain: "mumbai",
+      const client = new LitNodeClient({
+        debug: true,
+        alertWhenUnauthorized: true,
+        chain: 137,
+        provider: `https://polygon-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_POLYGON_KEY}`,
       });
-      const { encryptedString, symmetricKey } = await LitJsSdk.encryptString(
+      await client.connect();
+      const authSig = await checkAndSignAuthMessage({
+        chain: "polygon",
+      });
+      const { encryptedString, symmetricKey } = await encryptString(
         JSON.stringify(fulfillmentDetails)
       );
-      await (client ? client : litClient).saveEncryptionKey({
+      const fulfillerAddress = allShopItems[0].fulfillerAddress;
+
+      const encryptedSymmetricKey = await client!.saveEncryptionKey({
         accessControlConditions: [
           {
             contractAddress: "",
             standardContractType: "",
-            chain: "mumbai",
+            chain: "polygon",
             method: "",
-            parameters: [":userAddress", fulfillerAddress],
+            parameters: [":userAddress"],
             returnValueTest: {
               comparator: "=",
-              value: address,
+              value: fulfillerAddress,
+            },
+          },
+          {
+            operator: "or",
+          } as any,
+          {
+            contractAddress: "",
+            standardContractType: "",
+            chain: "polygon",
+            method: "",
+            parameters: [":userAddress"],
+            returnValueTest: {
+              comparator: "=",
+              value: addressConnected as string,
             },
           },
         ],
         symmetricKey,
-        authSig,
-        chain: "mumbai",
+        authSig: authSig,
+        chain: "polygon",
       });
+
       const buffer = await encryptedString.arrayBuffer();
-      const decoder = new TextDecoder();
-      setEncryptedFulfillmentDetails(decoder.decode(buffer));
+
+      const { request } = await publicClient.simulateContract({
+        address: LISTENER_MARKET,
+        abi: [
+          {
+            inputs: [
+              {
+                components: [
+                  {
+                    internalType: "uint256[]",
+                    name: "listenerIds",
+                    type: "uint256[]",
+                  },
+                  {
+                    internalType: "uint256[]",
+                    name: "listenerAmounts",
+                    type: "uint256[]",
+                  },
+                  {
+                    internalType: "uint256[]",
+                    name: "chosenIndexes",
+                    type: "uint256[]",
+                  },
+                  {
+                    internalType: "string",
+                    name: "fulfillmentDetails",
+                    type: "string",
+                  },
+                  {
+                    internalType: "address",
+                    name: "chosenTokenAddress",
+                    type: "address",
+                  },
+                ],
+                internalType: "struct MarketParamsLibrary.MarketParams",
+                name: "params",
+                type: "tuple",
+              },
+            ],
+            name: "buyTokens",
+            outputs: [],
+            stateMutability: "nonpayable",
+            type: "function",
+          } as any,
+        ],
+        functionName: "buyTokens",
+        args: [
+          {
+            listenerIds: cartItems?.reduce((accumulator: number[], item) => {
+              accumulator.push(Number(item.collectionId));
+              return accumulator;
+            }, []),
+            listenerAmounts: cartItems?.reduce(
+              (accumulator: number[], item) => {
+                accumulator.push(Number(item.amount));
+                return accumulator;
+              },
+              []
+            ),
+            chosenIndexes: Array.from({ length: cartItems.length }, () => 0),
+            fulfillmentDetails: JSON.stringify({
+              encryptedString: JSON.stringify(
+                Array.from(new Uint8Array(buffer))
+              ),
+              encryptedSymmetricKey: uint8arrayToString(
+                encryptedSymmetricKey,
+                "base16"
+              ),
+            }),
+
+            chosenTokenAddress: ACCEPTED_TOKENS.find(
+              ([_, token]) => token === checkoutCurrency
+            )?.[2],
+          },
+        ],
+        account: addressConnected,
+      });
+      const clientWallet = createWalletClient({
+        chain: polygon,
+        transport: custom((window as any).ethereum),
+      });
+      const res = await clientWallet.writeContract(request);
+      await publicClient.waitForTransactionReceipt({ hash: res });
+      dispatch(setCartItems([]));
+      setFulfillmentDetails({
+        name: "",
+        contact: "",
+        address: "",
+        zip: "",
+        city: "",
+        state: "",
+      });
+      dispatch(setPurchaseModal(true));
+      await getAllShop();
     } catch (err: any) {
+      dispatch(
+        setModalOpen({
+          actionOpen: true,
+          actionMessage: "Pockets Empty? Try Again.",
+          actionImage: "Qmf3knH67VUqS2icK5hbkSUqRTxCFdbfdZnyxWPrJVG5w4",
+        })
+      );
       console.error(err.message);
     }
     setPurchaseLoading(false);
@@ -306,11 +286,80 @@ const useShop = () => {
   const handleApproveSpend = async () => {
     setPurchaseLoading(true);
     try {
-      const tx = await writeAsync?.();
-      const res = await waitForTransaction({
-        hash: tx?.hash!,
+      const { request } = await publicClient.simulateContract({
+        address: ACCEPTED_TOKENS.find(
+          ([_, token]) => token === checkoutCurrency
+        )?.[2]! as `0x${string}`,
+        abi: (checkoutCurrency === "MONA"
+          ? [
+              {
+                inputs: [
+                  { internalType: "address", name: "spender", type: "address" },
+                  { internalType: "uint256", name: "tokens", type: "uint256" },
+                ],
+                name: "approve",
+                outputs: [
+                  { internalType: "bool", name: "success", type: "bool" },
+                ],
+                stateMutability: "nonpayable",
+                type: "function",
+              },
+            ]
+          : checkoutCurrency === "WMATIC"
+          ? [
+              {
+                constant: false,
+                inputs: [
+                  { name: "guy", type: "address" },
+                  { name: "wad", type: "uint256" },
+                ],
+                name: "approve",
+                outputs: [{ name: "", type: "bool" }],
+                payable: false,
+                stateMutability: "nonpayable",
+                type: "function",
+              },
+            ]
+          : [
+              {
+                inputs: [
+                  {
+                    internalType: "address",
+                    name: "spender",
+                    type: "address",
+                  },
+                  {
+                    internalType: "uint256",
+                    name: "amount",
+                    type: "uint256",
+                  },
+                ],
+                name: "approve",
+                outputs: [
+                  {
+                    internalType: "bool",
+                    name: "",
+                    type: "bool",
+                  },
+                ],
+                stateMutability: "nonpayable",
+                type: "function",
+              },
+            ]) as any,
+        functionName: "approve",
+        args: [
+          LISTENER_MARKET,
+          ethers.utils.parseEther(totalAmount.toString() || "0"),
+        ],
+        account: addressConnected,
       });
-      if (res.status === "success") {
+      const clientWallet = createWalletClient({
+        chain: polygon,
+        transport: custom((window as any).ethereum),
+      });
+      const res = await clientWallet.writeContract(request);
+      await publicClient.waitForTransactionReceipt({ hash: res });
+      if (res) {
         setApproved(true);
       }
     } catch (err: any) {
@@ -322,156 +371,33 @@ const useShop = () => {
   const getAllShop = async () => {
     setShopLoading(true);
     try {
-      const allShopValues = [
-        {
-          uri: {
-            images: [
-              "ipfs://QmXnZvpUJaRJqZyG2EYzpGuB8yk3HrqEFs945pScvsZaVV",
-              "ipfs://QmUF1A5VHb9EbtU9HaFNpgw3f9RPR7tSpY8MchaxyEKNCd",
-            ],
-            description: "this is a description for the token that i have here",
-          },
-          acceptedTokens: [],
-          prices: ["1000000", "3000000"],
-          amount: "10",
-          noLimit: false,
-          mintedTokens: ["1", "2"],
-          collectionId: "1",
-          tokenIds: ["1", "2", "3", "4", "5"],
-          name: "shop 1",
-        },
-        {
-          uri: {
-            images: [
-              "ipfs://QmdwN9emrCjhaURLWDqi1T5jJKQS9nfuBVN1iBr6jwm61R",
-              "ipfs://QmUF1A5VHb9EbtU9HaFNpgw3f9RPR7tSpY8MchaxyEKNCd",
-            ],
-            description: "this is a description for the token that i have here",
-          },
-          acceptedTokens: [],
-          prices: ["1000000", "3000000"],
+      const data = await getAllCollections();
 
-          amount: "10",
-          noLimit: false,
-          mintedTokens: ["1", "2"],
-          collectionId: "1",
-          tokenIds: ["1", "2", "3", "4", "5"],
-          name: "shop 2",
-        },
-        {
-          uri: {
-            images: [
-              "ipfs://QmbNUCcFqdmobTJzPA5gKkk71tERReB1MXcNyUjeQ53yVy",
-              "ipfs://QmUF1A5VHb9EbtU9HaFNpgw3f9RPR7tSpY8MchaxyEKNCd",
-            ],
-            description: "this is a description for the token that i have here",
-          },
-          amount: "10",
-          noLimit: true,
-          mintedTokens: ["1", "2"],
-          collectionId: "1",
-          tokenIds: ["1", "2", "3", "4", "5"],
-          name: "shop 3",
-          acceptedTokens: [],
-          prices: ["1000000", "3000000"],
-        },
-        {
-          uri: {
-            images: [
-              "ipfs://QmXnZvpUJaRJqZyG2EYzpGuB8yk3HrqEFs945pScvsZaVV",
-              "ipfs://QmUF1A5VHb9EbtU9HaFNpgw3f9RPR7tSpY8MchaxyEKNCd",
-            ],
-            description: "this is a description for the token that i have here",
-          },
-          acceptedTokens: [""],
-          prices: ["1000000", "3000000"],
-          amount: "10",
-          noLimit: true,
-          mintedTokens: ["1", "2"],
-          collectionId: "1",
-          tokenIds: ["1", "2", "3", "4", "5"],
-          name: "shop 4",
-        },
-        {
-          uri: {
-            images: [
-              "ipfs://QmdwN9emrCjhaURLWDqi1T5jJKQS9nfuBVN1iBr6jwm61R",
-              "ipfs://QmUF1A5VHb9EbtU9HaFNpgw3f9RPR7tSpY8MchaxyEKNCd",
-            ],
-            description: "this is a description for the token that i have here",
-          },
-          acceptedTokens: [],
-          prices: ["1000000", "3000000"],
-          amount: "10",
-          noLimit: false,
-          mintedTokens: ["1", "2"],
-          collectionId: "1",
-          tokenIds: ["1", "2", "3", "4", "5"],
-          name: "shop 1",
-        },
-        {
-          uri: {
-            images: [
-              "ipfs://QmbNUCcFqdmobTJzPA5gKkk71tERReB1MXcNyUjeQ53yVy",
-              "ipfs://QmUF1A5VHb9EbtU9HaFNpgw3f9RPR7tSpY8MchaxyEKNCd",
-            ],
-            description: "this is a description for the token that i have here",
-          },
-          acceptedTokens: [],
-          prices: ["1000000", "3000000"],
+      if (
+        !data?.data?.collectionCreateds ||
+        data?.data?.collectionCreateds?.length < 1
+      ) {
+        setShopLoading(false);
+        return;
+      }
+      const allShopValues = await Promise.all(
+        data?.data?.collectionCreateds?.map(async (obj: any) => {
+          const uri = await fetchIpfsJson(obj.uri, true);
 
-          amount: "10",
-          noLimit: false,
-          mintedTokens: ["1", "2"],
-          collectionId: "1",
-          tokenIds: ["1", "2", "3", "4", "5"],
-          name: "shop 2",
-        },
-        {
-          uri: {
-            images: [
-              "ipfs://QmXnZvpUJaRJqZyG2EYzpGuB8yk3HrqEFs945pScvsZaVV",
-              "ipfs://QmUF1A5VHb9EbtU9HaFNpgw3f9RPR7tSpY8MchaxyEKNCd",
-            ],
-            description: "this is a description for the token that i have here",
-          },
-          amount: "10",
-          noLimit: true,
-          mintedTokens: ["1", "2"],
-          collectionId: "1",
-          tokenIds: ["1", "2", "3", "4", "5"],
-          name: "shop 3",
-          acceptedTokens: [],
-          prices: ["1000000", "3000000"],
-        },
-        {
-          uri: {
-            images: [
-              "ipfs://QmXnZvpUJaRJqZyG2EYzpGuB8yk3HrqEFs945pScvsZaVV",
-              "ipfs://QmUF1A5VHb9EbtU9HaFNpgw3f9RPR7tSpY8MchaxyEKNCd",
-            ],
-            description: "this is a description for the token that i have here",
-          },
-          acceptedTokens: [""],
-          prices: ["1000000", "3000000"],
-          amount: "10",
-          noLimit: true,
-          mintedTokens: ["1", "2"],
-          collectionId: "1",
-          tokenIds: ["1", "2", "3", "4", "5"],
-          name: "shop 4",
-        },
-      ]?.map((obj) => {
-        const modifiedObj = {
-          ...obj,
-          chosenSize: "M",
-          sizes: ["XS", "S", "M", "L", "XL"],
-        };
+          const modifiedObj = {
+            ...obj,
+            chosenSize: "M",
+            sizes: ["XS", "S", "M", "L", "XL"],
+            uri,
+          };
 
-        return modifiedObj;
-      });
-      setCurrentIndexItem(
-        Array.from({ length: allShopValues.length }, () => 0)
+          return modifiedObj;
+        })
+      );
+      dispatch(
+        setCurrentIndexItem(
+          Array.from({ length: allShopValues.length }, () => 0)
+        )
       );
       dispatch(setAllShop(allShopValues));
     } catch (err: any) {
@@ -480,51 +406,60 @@ const useShop = () => {
     setShopLoading(false);
   };
 
-  const connectLit = async (): Promise<LitJsSdk.LitNodeClient | undefined> => {
+  const getAddressApproved = async () => {
     try {
-      const client = new LitJsSdk.LitNodeClient({
-        debug: false,
-        alertWhenUnauthorized: false,
+      const data = await publicClient.readContract({
+        address: ACCEPTED_TOKENS.find(
+          ([_, token]) => token === checkoutCurrency
+        )?.[2] as `0x${string}`,
+        abi: [
+          {
+            inputs: [
+              {
+                internalType: "address",
+                name: "owner",
+                type: "address",
+              },
+              {
+                internalType: "address",
+                name: "spender",
+                type: "address",
+              },
+            ],
+            name: "allowance",
+            outputs: [
+              {
+                internalType: "uint256",
+                name: "",
+                type: "uint256",
+              },
+            ],
+            stateMutability: "view",
+            type: "function",
+          },
+        ],
+        functionName: "allowance",
+        args: [addressConnected as `0x${string}`, LISTENER_MARKET],
       });
-      await client.connect();
-      dispatch(setLitClient(client));
-      return client;
-    } catch (err: any) {
-      console.error(err.message);
-    }
-  };
 
-  const writeTokens = async () => {
-    setPurchaseLoading(true);
-    try {
-      const tx = await buyNFTAsync?.();
-      const res = await waitForTransaction({
-        hash: tx?.hash!,
-      });
-      if (res.status === "success") {
-        dispatch(setCartItems([]));
-        setFulfillmentDetails({
-          name: "",
-          contact: "",
-          address: "",
-          zip: "",
-          city: "",
-          state: "",
-        });
-        setEncryptedFulfillmentDetails("");
-        dispatch(setPurchaseModal(true));
+      if (
+        Number(data as BigNumber) /
+          ((ACCEPTED_TOKENS.find(
+            ([_, token]) => token === checkoutCurrency
+          )?.[2] as `0x${string}`) ===
+          "0xc2132d05d31c914a87c6611c10748aeb04b58e8f"
+            ? 10 ** 6
+            : 10 ** 18) >=
+        totalAmount
+      ) {
+        setApproved(true);
+      } else {
+        setApproved(false);
       }
     } catch (err: any) {
       console.error(err.message);
     }
-    setPurchaseLoading(false);
   };
-
-  useEffect(() => {
-    if (encryptedFulfillmentDetails !== "" && isSuccess) {
-      writeTokens();
-    }
-  }, [encryptedFulfillmentDetails]);
 
   useEffect(() => {
     if (allShopItems?.length < 1 || !allShopItems) {
@@ -537,22 +472,16 @@ const useShop = () => {
   }, [addressConnected, walletConnected]);
 
   useEffect(() => {
-    if (address) {
-      if (Number(data as BigNumber) / 10 ** 18 >= totalAmount) {
-        setApproved(true);
-      } else {
-        setApproved(false);
-      }
-    }
+    getAddressApproved();
   }, [
     address,
     totalAmount,
+    checkoutCurrency,
     cartItems?.reduce(
       (accumulator, currentItem) =>
         accumulator + (currentItem.price * currentItem.amount) / 10 ** 18,
       0
     ),
-    data,
   ]);
 
   useEffect(() => {
@@ -571,10 +500,6 @@ const useShop = () => {
     setSwitchNeeded(chain?.id !== 137 ? true : false);
   }, [isConnected, walletConnected, chain?.id]);
 
-  useEffect(() => {
-    console.log(fulfillmentData, fulfillerError);
-  }, [fulfillmentData]);
-
   return {
     shopLoading,
     purchaseLoading,
@@ -590,8 +515,6 @@ const useShop = () => {
     switchNeeded,
     currentIndex,
     setCurrentIndex,
-    currentIndexItem,
-    setCurrentIndexItem,
     checkOutOpen,
     setCheckoutOpen,
   };

@@ -33,6 +33,12 @@ const Checkout: FunctionComponent<CheckoutProps> = ({
   checkOutOpen,
   largeScreen,
 }): JSX.Element => {
+  let value =
+    cartItems?.reduce(
+      (accumulator, currentItem) =>
+        accumulator + (currentItem.price * currentItem.amount) / 10 ** 18,
+      0
+    ) / oracleValue;
   return (
     <div
       className={`absolute z-20 right-0 top-0 border-l-2 border-sol bg-aBlack px-4 py-6 h-full ${
@@ -40,7 +46,7 @@ const Checkout: FunctionComponent<CheckoutProps> = ({
       }`}
     >
       <div
-        className="absolute top-10 -left-4 flex opacity-80 cursor-pointer w-fit h-fit z-10 border border-ballena rounded-full bg-white"
+        className="absolute top-10 -left-4 flex opacity-80 cursor-pointer w-fit h-fit z-5 border border-ballena rounded-full bg-white"
         onClick={() => setCheckoutOpen(!checkOutOpen)}
       >
         {checkOutOpen ? (
@@ -207,13 +213,10 @@ const Checkout: FunctionComponent<CheckoutProps> = ({
                     ACCEPTED_TOKENS.find(
                       (subArray) => subArray[1] === checkoutCurrency
                     )?.[1]
-                  } `}
-                  {cartItems?.reduce(
-                    (accumulator, currentItem) =>
-                      accumulator +
-                      (currentItem.price * currentItem.amount) / 10 ** 18,
-                    0
-                  ) / oracleValue}
+                  } `}{" "}
+                  {Math.floor(value) === value
+                    ? value.toFixed(0)
+                    : value.toFixed(3)}
                 </div>
               </div>
               <div className="relative flex flex-col gap-1.5 items-center justify-center">
@@ -245,18 +248,22 @@ const Checkout: FunctionComponent<CheckoutProps> = ({
                 </div>
               </div>
               <div className="relative w-full h-fit flex flex-col gap-1.5 items-center justify-center">
-                {switchNeeded && (
+                {switchNeeded && address && (
                   <div className="relative break-words text-xs font-vcr text-ballena flex items-center justify-center  text-center">{`( switch to polygon network )`}</div>
                 )}
                 <div
-                  className="relative w-3/4 h-12 border border-moda bg-azul text-ballena font-vcr items-center justify-center flex cursor-pointer active:scale-95"
+                  className={`relative w-3/4 h-12 border border-moda bg-azul text-ballena font-vcr items-center justify-center flex ${
+                    !purchaseLoading && cartItems?.length > 0 && "cursor-pointer active:scale-95"
+                  }`}
                   onClick={
                     !address && !purchaseLoading
                       ? openConnectModal
                       : address && switchNeeded
                       ? openChainModal
                       : approved
-                      ? () => !purchaseLoading && purchaseItems()
+                      ? cartItems?.length > 0
+                        ? () => !purchaseLoading && purchaseItems()
+                        : () => {}
                       : () => !purchaseLoading && handleApproveSpend()
                   }
                 >
@@ -273,8 +280,10 @@ const Checkout: FunctionComponent<CheckoutProps> = ({
                       "SWITCH NETWORK"
                     ) : !approved ? (
                       "APPROVE SPEND"
-                    ) : (
+                    ) : cartItems?.length > 0 ? (
                       "CHECKOUT"
+                    ) : (
+                      "ADD TO CART"
                     )}
                   </div>
                 </div>

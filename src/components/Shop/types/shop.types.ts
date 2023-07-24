@@ -3,18 +3,20 @@ import { AnyAction, Dispatch } from "redux";
 export interface AllShop {
   name: string;
   prices: string[];
-  acceptedTokens: string[];
   uri: {
     images: string[];
     description: string;
+    name: string;
   };
   amount: string;
-  mintedTokens: string[];
+  soldTokens: string[];
   noLimit: boolean;
   collectionId: string;
   tokenIds: string[];
   chosenSize: string;
   sizes: string[];
+  fulfillerAddress: string;
+  fulfillerId: string;
 }
 
 export interface CartItem {
@@ -36,7 +38,6 @@ export type AllShopProps = {
   setCurrentIndex: (index: number) => void;
   allCartItems: CartItem[];
   currentIndexItem: number[];
-  setCurrentIndexItem: (index: number[]) => void;
   checkOutOpen: boolean;
   largeScreen: boolean;
 };
@@ -49,7 +50,6 @@ export type ShopItemProps = {
   allCartItems: CartItem[];
   dispatch: Dispatch<AnyAction>;
   currentIndexItem: number[];
-  setCurrentIndexItem: (index: number[]) => void;
 };
 
 export type CheckoutProps = {

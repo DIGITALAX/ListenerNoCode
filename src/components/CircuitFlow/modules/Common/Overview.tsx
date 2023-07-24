@@ -33,7 +33,7 @@ const Overview: FunctionComponent<OverviewProps> = ({
       }`}
     >
       <div
-        className="absolute top-10 -left-4 flex opacity-80 cursor-pointer w-fit h-fit z-10 border border-ballena rounded-full bg-white"
+        className="absolute top-10 -left-4 flex opacity-80 cursor-pointer w-fit h-fit z-5 border border-ballena rounded-full bg-white"
         onClick={() => setOverviewOpen(!overviewOpen)}
       >
         {overviewOpen ? (
