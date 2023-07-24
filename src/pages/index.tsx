@@ -322,7 +322,7 @@ export default function Home() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // const { handleServerConnect, decryptLitKey } = useServerConnect();
+  const { handleServerConnect, decryptLitKey } = useServerConnect();
 
   return (
     <div
@@ -366,9 +366,9 @@ export default function Home() {
               /> 
             </div>
           </div>
-          {/* <div className="text-white" onClick={() => handleServerConnect()}>
+          <div className="text-white" onClick={() => handleServerConnect()}>
             here
-          </div> */}
+          </div>
           <div className="relative w-full h-full grow flex flex-col px-3 justify-center items-center">
             <div className="relative h-full w-full flex items-center justify-start renewed:py-0 renewed:justify-center rounded-sm renewed:border-2 renewed:border-sol renewed:flex-row flex-col">
               <div className="absolute w-full h-full mix-blend-darken bg-aBlack opacity-70"></div>
