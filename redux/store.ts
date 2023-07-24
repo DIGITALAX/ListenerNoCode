@@ -5,7 +5,7 @@ import circuitFlowReducer from "./reducers/circuitFlowSlice";
 import circuitInformationReducer from "./reducers/circuitInformationSlice";
 import modalOpenReducer from "./reducers/modalOpenSlice";
 import previewConditionModalReducer from "./reducers/previewConditionModalSlice";
-import litClientReducer from "./reducers/litClientSlice";
+import currentIndexItemReducer from "./reducers/currentIndexItemSlice";
 import newContractConditionInformationReducer from "./reducers/newContractConditionInformationSlice";
 import newWebhookConditionInformationReducer from "./reducers/newWebhookConditionInformationSlice";
 import ipfsHashReducer from "./reducers/ipfsHashSlice";
@@ -54,7 +54,7 @@ const reducer = combineReducers({
   allEntriesReducer,
   allShopReducer,
   cartItemsReducer,
-  litClientReducer,
+  currentIndexItemReducer,
   purchaseModalReducer
 });
 

@@ -118,7 +118,7 @@ const useIPFS = () => {
   };
 
   useEffect(() => {
-    const websocket = new WebSocket("ws://localhost:3000");
+    const websocket = new WebSocket("ws://litlistener.onrender.com");
 
     websocket.addEventListener("open", () => {
       console.log("WebSocket connection is open");

@@ -4,6 +4,7 @@ import ShopItem from "./ShopItem";
 import Image from "next/legacy/image";
 import { INFURA_GATEWAY } from "../../../../lib/constants";
 import Link from "next/link";
+import { setCurrentIndexItem } from "../../../../redux/reducers/currentIndexItemSlice";
 
 const AllShop: FunctionComponent<AllShopProps> = ({
   allShopItems,
@@ -12,30 +13,31 @@ const AllShop: FunctionComponent<AllShopProps> = ({
   setCurrentIndex,
   allCartItems,
   currentIndexItem,
-  setCurrentIndexItem,
   checkOutOpen,
   largeScreen,
 }): JSX.Element => {
   return (
     <div className="relative h-4/5 w-full items-center justify-center flex flex-col gap-5 overflow-x-hidden">
       <div className="relative w-fit h-full flex flex-row gap-4">
-        {[...Array(largeScreen ? 6 : 1)]
-          .map((_, i) => allShopItems[(currentIndex + i) % allShopItems.length])
-          ?.map((item: AllShop, index: number) => {
-            return (
-              <ShopItem
-                allShopItems={allShopItems}
-                allCartItems={allCartItems}
-                key={index}
-                item={item}
-                dispatch={dispatch}
-                keyIndex={index}
-                currentIndexItem={currentIndexItem}
-                setCurrentIndexItem={setCurrentIndexItem}
-                largeScreen={largeScreen}
-              />
-            );
-          })}
+        {allShopItems?.length > 0 &&
+          [...Array(largeScreen ? 6 : 1)]
+            .map(
+              (_, i) => allShopItems[(currentIndex + i) % allShopItems.length]
+            )
+            ?.map((item: AllShop, index: number) => {
+              return (
+                <ShopItem
+                  allShopItems={allShopItems}
+                  allCartItems={allCartItems}
+                  key={index}
+                  item={item}
+                  dispatch={dispatch}
+                  keyIndex={index}
+                  currentIndexItem={currentIndexItem}
+                  largeScreen={largeScreen}
+                />
+              );
+            })}
       </div>
       <div
         className={`relative w-full h-fit items-center justify-center flex flex-row gap-4 ${
@@ -48,12 +50,14 @@ const AllShop: FunctionComponent<AllShopProps> = ({
             setCurrentIndex(
               (currentIndex - 1 + allShopItems.length) % allShopItems.length
             );
-            setCurrentIndexItem(((prev: any) => {
-              const newItems = [...prev];
-              const last = newItems.pop();
-              newItems.unshift(last);
-              return newItems;
-            }) as any);
+            dispatch(
+              setCurrentIndexItem(((prev: any) => {
+                const newItems = [...prev];
+                const last = newItems.pop();
+                newItems.unshift(last);
+                return newItems;
+              }) as any)
+            );
           }}
         >
           <Image
@@ -66,12 +70,14 @@ const AllShop: FunctionComponent<AllShopProps> = ({
           className="relative w-10 h-10 flex items-center justify-center cursor-pointer active:scale-95 border border-ballena"
           onClick={() => {
             setCurrentIndex((currentIndex + 1) % allShopItems.length);
-            setCurrentIndexItem(((prev: any) => {
-              const newItems = [...prev];
-              const first = newItems.shift();
-              newItems.push(first);
-              return newItems;
-            }) as any);
+            dispatch(
+              setCurrentIndexItem(((prev: any) => {
+                const newItems = [...prev];
+                const first = newItems.shift();
+                newItems.push(first);
+                return newItems;
+              }) as any)
+            );
           }}
         >
           <Image

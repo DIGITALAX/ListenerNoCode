@@ -322,13 +322,13 @@ export default function Home() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // const { handleServerConnect } = useServerConnect();
+  // const { handleServerConnect, decryptLitKey } = useServerConnect();
 
   return (
     <div
       className="relative w-full flex flex-row border-t-2 border-sol grow overflow-y-scroll"
       id={largeOverview ? "heightCheckout" : ""}
-      style={{ height: largeOverview ? "" : "65rem" }}
+      style={largeOverview ? {} : { height: "65rem" }}
     >
       <Head>
         <title>No-Code Lit Listener</title>
@@ -363,7 +363,7 @@ export default function Home() {
                 objectFit="cover"
                 className="rounded-lg"
                 draggable={false}
-              />
+              /> 
             </div>
           </div>
           {/* <div className="text-white" onClick={() => handleServerConnect()}>

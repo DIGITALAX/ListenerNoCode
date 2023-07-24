@@ -27,6 +27,7 @@ const Header: FunctionComponent = (): JSX.Element => {
     dispatch(setWalletConnected(isConnected));
     setSwitchState(chain?.id !== 175177 && chain?.id !== 137 ? true : false);
   }, [isConnected, walletConnected, chain?.id]);
+
   return (
     <div className="relative w-full flex flex-col gap-3 pt-2 pb-[4.5rem]">
       <div className="grid grid-flow-col w-full h-fit text-white flex items-center justify-between px-3">
@@ -40,7 +41,7 @@ const Header: FunctionComponent = (): JSX.Element => {
           className="relative flex justify-end w-fit h-fit items-center ml-auto whitespace-nowrap break-words cursor-pointer active:scale-95 px-3 py-1.5"
           id="borderYellow"
           onClick={
-            switchState
+            switchState && walletConnected
               ? openChainModal
               : !walletConnected
               ? openConnectModal

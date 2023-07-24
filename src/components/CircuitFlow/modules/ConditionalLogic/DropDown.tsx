@@ -31,7 +31,7 @@ const DropDown: FunctionComponent<DropDownLogicProps> = ({
         } ${inputChosen}`}
       </div>
       {dropDownOpen && (
-        <div className="absolute w-full h-60 overflow-y-scroll z-10 top-16">
+        <div className="absolute w-full h-60 overflow-y-scroll z-5 top-16">
           <div className="relative w-full h-fit flex flex-col bg-aBlack">
             {circuitInformation?.conditions.map(
               (condition: Condition, index: number) => {

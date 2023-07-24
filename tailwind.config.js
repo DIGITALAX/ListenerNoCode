@@ -37,6 +37,7 @@ module.exports = {
       },
       zIndex: {
         1: 1,
+        5: 5
       },
       screens: {
         tablet: "800px",
