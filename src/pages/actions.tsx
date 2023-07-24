@@ -6,6 +6,7 @@ import Image from "next/legacy/image";
 import Link from "next/link";
 import useActions from "@/components/Actions/hooks/useActions";
 import AllActions from "@/components/Actions/modules/AllActions";
+import { useEffect, useState } from "react";
 
 export default function Actions() {
   const allEntries = useSelector(
@@ -13,8 +14,25 @@ export default function Actions() {
   );
   const { entriesLoading } = useActions();
 
+  const [largeScreen, setLargeScreen] = useState<boolean>(true);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setLargeScreen(Boolean(window.innerWidth > 600));
+    };
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
-    <div className="relative w-full h-full flex flex-row border-t-2 border-sol grow">
+    <div
+      className="relative w-full flex flex-row border-t-2 border-sol grow"
+      id={largeScreen ? "heightCheckout" : ""}
+      style={{ height: largeScreen ? "" : "45rem" }}
+    >
       <Head>
         <title>No-Code Lit Listener | Actions</title>
         <link rel="icon" href="/favicon.ico" />

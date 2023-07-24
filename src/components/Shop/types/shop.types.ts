@@ -44,6 +44,7 @@ export type AllShopProps = {
 export type ShopItemProps = {
   keyIndex: number;
   item: AllShop;
+  largeScreen: boolean;
   allShopItems: AllShop[];
   allCartItems: CartItem[];
   dispatch: Dispatch<AnyAction>;

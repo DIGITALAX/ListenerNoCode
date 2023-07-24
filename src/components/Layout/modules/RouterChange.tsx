@@ -4,7 +4,7 @@ import { INFURA_GATEWAY } from "../../../../lib/constants";
 
 const RouterChange: FunctionComponent = (): JSX.Element => {
   return (
-    <div className="relative w-full h-full flex flex-row border-t-2 border-sol grow">
+    <div className="relative w-full h-full flex flex-row border-t-2 border-sol grow" id="heightCheckout">
       <div className="absolute w-full h-full flex mix-blend-overlay">
         <Image
           src={`${INFURA_GATEWAY}/ipfs/QmZ3DdVrAmYaJTgXHu56eUGGLzLeQkhLeTc433wpxppu4S`}

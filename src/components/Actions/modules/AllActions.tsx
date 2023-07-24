@@ -9,10 +9,7 @@ const AllActions: FunctionComponent<AllActionsProps> = ({
   allEntries,
 }): JSX.Element => {
   return (
-    <div
-      className="relative w-full h-full justify-center items-center flex flex-wrap overflow-auto"
-      id="heightAllCircuits"
-    >
+    <div className="relative w-full h-full justify-center items-center flex flex-wrap overflow-auto">
       <div
         className="relative w-5/6 h-5/6 justify-center items-center bg-black/50 flex flex-col p-3 gap-3 overflow-y-scroll"
         id="inputBorder"

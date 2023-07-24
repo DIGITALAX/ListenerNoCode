@@ -40,8 +40,8 @@ export default function Account() {
 
   useEffect(() => {
     const handleResize = () => {
-      setLargeScreen(Boolean(window.innerWidth > 500));
-      if (Boolean(window.innerWidth > 500)) {
+      setLargeScreen(Boolean(window.innerWidth > 820));
+      if (Boolean(window.innerWidth < 820)) {
         setCircuitsOpen(false);
       }
     };
@@ -55,7 +55,8 @@ export default function Account() {
   return (
     <div
       className="relative w-full flex flex-row border-t-2 border-sol grow overflow-y-scroll"
-      id="heightCheckout"
+      id={largeScreen ? "heightCheckout" : ""}
+      style={{ height: largeScreen ? "" : "45rem" }}
     >
       <Head>
         <title>No-Code Lit Listener | Account</title>
