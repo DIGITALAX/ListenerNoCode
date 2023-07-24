@@ -7,10 +7,9 @@ import { setNewContractActionInformation } from "../../../../../../redux/reducer
 import { setNewFetchActionInformation } from "../../../../../../redux/reducers/newFetchActionInformationSlice";
 import { setNewContractConditionInformation } from "../../../../../../redux/reducers/newContractConditionInformationSlice";
 import { setNewWebhookConditionInformation } from "../../../../../../redux/reducers/newWebhookConditionInformationSlice";
-import { useAccount, useSignMessage } from "wagmi";
+import { useAccount } from "wagmi";
 import { generateAuthSig } from "../../../../../../lib/helpers/generateAuthSig";
 import { ethers } from "ethers";
-import { SiweMessage } from "siwe";
 import {
   ContractAction,
   LitChainIds,
@@ -57,42 +56,14 @@ const useStartCircuit = () => {
     (state: RootState) => state.app.executionConstraintFlowReducer.value
   );
   const { address } = useAccount();
-  const [circuitRunLoading, setCircuitRunLoading] = useState<boolean>(false); 
-       
-  // const siweMessage = new SiweMessage({
-  //   domain: "localhost",
-  //   address: address,
-  //   statement: "This is an Auth Sig for LitListenerSDK",
-  //   uri: "https://localhost/login",
-  //   version: "1",
-  //   chainId: 137,
-  // });     
-     
-  // const signedMessage = siweMessage.prepareMessage();
+  const [circuitRunLoading, setCircuitRunLoading] = useState<boolean>(false);
 
-  // const { signMessageAsync } = useSignMessage({
-  //   message: signedMessage,
-  // });  
- 
   const handleRunCircuit = async () => {
     if (!circuitInformation?.id) {
       return;
     }
     setCircuitRunLoading(true);
     try {
-      const sig = await signMessageAsync();
-      const res = await fetch("/api/azure/connect", {
-        method: "POST",
-        body: JSON.stringify({
-          globalAuthSignature: {
-            sig,
-            derivedVia: "web3.eth.personal.sign",
-            signedMessage,
-            address,
-          },
-        }),
-      });
-
       if (typeof window !== "undefined" && "ethereum" in window) {
         const web3Provider = new ethers.providers.Web3Provider(
           window.ethereum!
