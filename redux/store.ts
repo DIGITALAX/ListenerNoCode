@@ -26,6 +26,7 @@ import selectedCircuitSideBarReudcer from "./reducers/selectedCircuitSideBarSlic
 import allEntriesReducer from "./reducers/allEntriesSlice";
 import allShopReducer from "./reducers/allShopSlice";
 import cartItemsReducer from "./reducers/cartItemsSlice";
+import purchaseModalReducer from "./reducers/purchaseModalSlice";
 
 const reducer = combineReducers({
   walletConnectedReducer,
@@ -53,7 +54,8 @@ const reducer = combineReducers({
   allEntriesReducer,
   allShopReducer,
   cartItemsReducer,
-  litClientReducer
+  litClientReducer,
+  purchaseModalReducer
 });
 
 export const store = configureStore({

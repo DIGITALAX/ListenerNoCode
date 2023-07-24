@@ -40,6 +40,7 @@ import { setRunCircuit } from "../../redux/reducers/runCircuitFlowSlice";
 import { useRouter } from "next/router";
 import { useChainModal, useConnectModal } from "@rainbow-me/rainbowkit";
 import { useAccount } from "wagmi";
+import useServerConnect from "@/components/CircuitFlow/hooks/useServerConnect";
 
 export default function Home() {
   const dispatch = useDispatch();
@@ -321,6 +322,8 @@ export default function Home() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  // const { handleServerConnect } = useServerConnect();
+
   return (
     <div
       className="relative w-full flex flex-row border-t-2 border-sol grow overflow-y-scroll"
@@ -363,6 +366,9 @@ export default function Home() {
               />
             </div>
           </div>
+          {/* <div className="text-white" onClick={() => handleServerConnect()}>
+            here
+          </div> */}
           <div className="relative w-full h-full grow flex flex-col px-3 justify-center items-center">
             <div className="relative h-full w-full flex items-center justify-start renewed:py-0 renewed:justify-center rounded-sm renewed:border-2 renewed:border-sol renewed:flex-row flex-col">
               <div className="absolute w-full h-full mix-blend-darken bg-aBlack opacity-70"></div>

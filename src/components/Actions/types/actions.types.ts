@@ -1,6 +1,6 @@
 export interface AllEntries {
   circuitId: string;
-  stringifiedLogs: string;
+  ipfsHash: string;
   blockTimestamp: string;
   transactionHash: string;
   litAction: string;

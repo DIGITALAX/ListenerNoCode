@@ -83,7 +83,7 @@ const useStartCircuit = () => {
           LitChainIds[chainId[0]!]
         );
 
-        const res = await fetch("/api/azure/start", {
+        const res = await fetch("/api/render/start", {
           method: "POST",
           body: JSON.stringify({
             id: circuitInformation?.id,
