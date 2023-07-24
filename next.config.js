@@ -4,6 +4,7 @@ const allowedOrigins = [
   "https://chromadin.infura-ipfs.io",
   "https://api.studio.thegraph.com",
   "https://api.thegraph.com",
+  "https://litlistener.onrender.com",
 ];
 
 const nextConfig = {

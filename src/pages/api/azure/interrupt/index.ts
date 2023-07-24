@@ -7,7 +7,7 @@ export default async function handler(
 ) {
   try {
     const response = await axios.post(
-      "http://localhost:3000/interrupt",
+      "https://litlistener.onrender.com/interrupt",
       req.body,
       {
         headers: {

@@ -12,7 +12,7 @@ export default async function handler(
     });
 
     const response = await axios.post(
-      "http://localhost:3000/connect",
+      "https://litlistener.onrender.com/connect",
       req.body,
       {
         headers: {
