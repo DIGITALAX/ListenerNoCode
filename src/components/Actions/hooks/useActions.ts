@@ -30,9 +30,7 @@ const useActions = () => {
   };
 
   useEffect(() => {
-    if (!entriesLoading) {
-      getDBEntries();
-    }
+    getDBEntries();
   }, []);
 
   return {

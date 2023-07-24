@@ -50,14 +50,10 @@ const AllShop: FunctionComponent<AllShopProps> = ({
             setCurrentIndex(
               (currentIndex - 1 + allShopItems.length) % allShopItems.length
             );
-            dispatch(
-              setCurrentIndexItem(((prev: any) => {
-                const newItems = [...prev];
-                const last = newItems.pop();
-                newItems.unshift(last);
-                return newItems;
-              }) as any)
-            );
+            const newItems = [...currentIndexItem];
+            const last = newItems.pop()!;
+            newItems.unshift(last);
+            dispatch(setCurrentIndexItem(newItems));
           }}
         >
           <Image
@@ -70,14 +66,10 @@ const AllShop: FunctionComponent<AllShopProps> = ({
           className="relative w-10 h-10 flex items-center justify-center cursor-pointer active:scale-95 border border-ballena"
           onClick={() => {
             setCurrentIndex((currentIndex + 1) % allShopItems.length);
-            dispatch(
-              setCurrentIndexItem(((prev: any) => {
-                const newItems = [...prev];
-                const first = newItems.shift();
-                newItems.push(first);
-                return newItems;
-              }) as any)
-            );
+            const newItems = [...currentIndexItem];
+            const first = newItems.shift();
+            newItems.push(first!);
+            dispatch(setCurrentIndexItem(newItems));
           }}
         >
           <Image
