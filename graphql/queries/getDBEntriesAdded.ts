@@ -5,7 +5,7 @@ const CIRCUITS_INTERRUPTED = `
   query {
     dbentryAddeds(orderDirection: desc) {
         circuitId
-        stringifiedLogs
+        ipfsHash
         blockTimestamp
         transactionHash
       }

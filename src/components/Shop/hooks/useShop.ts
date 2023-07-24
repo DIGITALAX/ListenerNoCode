@@ -406,6 +406,7 @@ const useShop = () => {
     setShopLoading(false);
   };
 
+
   const getAddressApproved = async () => {
     try {
       const data = await publicClient.readContract({
