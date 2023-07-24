@@ -15,7 +15,7 @@ const useActions = () => {
       const newEntries = [];
       for (let i = 0; i < data?.data?.dbentryAddeds?.length; i++) {
         const res = await fetchIpfsJson(
-          data?.data?.dbentryAddeds[i].stringifiedLogs
+          data?.data?.dbentryAddeds[i].ipfsHash
         );
         newEntries.push({
           ...data?.data?.dbentryAddeds[i],

@@ -72,7 +72,7 @@ const useIPFS = () => {
 
     setIpfsLoading(true);
     try {
-      const res = await fetch("/api/azure/instantiate", {
+      const res = await fetch("/api/render/instantiate", {
         method: "POST",
         body: JSON.stringify({
           circuitConditions: circuitInformation.conditions,

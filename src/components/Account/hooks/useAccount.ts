@@ -303,7 +303,7 @@ const useAccountPage = () => {
   const handleInterruptCircuit = async (id: string) => {
     setInterruptLoading(true);
     try {
-      const res = await fetch("/api/azure/interrupt", {
+      const res = await fetch("/api/render/interrupt", {
         method: "POST",
         body: JSON.stringify({
           id,

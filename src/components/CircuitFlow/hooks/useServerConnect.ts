@@ -4,7 +4,7 @@ import { useAccount, useSignMessage } from "wagmi";
 
 const useServerConnect = () => {
   const { address } = useAccount();
-  const [messageToSign, setMessageToSign] = useState<string>("");
+  
   const siweMessage = new SiweMessage({
     domain: "localhost",
     address: address,
@@ -14,17 +14,16 @@ const useServerConnect = () => {
     chainId: 137,
   });
 
+  const signedMessage = siweMessage.prepareMessage();
+
   const { signMessageAsync } = useSignMessage({
-    message: messageToSign,
-  });
+    message: signedMessage,
+  }); 
 
   const handleServerConnect = async () => {
     try {
-      const signedMessage = siweMessage.prepareMessage();
-      setMessageToSign(signedMessage);
-
       const sig = await signMessageAsync();
-      const res = await fetch("/api/azure/connect", {
+      const res = await fetch("/api/render/connect", {
         method: "POST",
         body: JSON.stringify({
           globalAuthSignature: {
@@ -41,32 +40,6 @@ const useServerConnect = () => {
     }
   };
 
-  const writeMessage = async () => {
-    try {
-      const sig = await signMessageAsync();
-      const res = await fetch("/api/azure/connect", {
-        method: "POST",
-        body: JSON.stringify({
-          globalAuthSignature: {
-            sig,
-            derivedVia: "web3.eth.personal.sign",
-            messageToSign,
-            address,
-          },
-        }),
-      });
-      setMessageToSign("");
-      console.log({ res });
-    } catch (err: any) {
-      console.error(err.message);
-    }
-  };
-
-  useEffect(() => {
-    if (messageToSign !== "") {
-      writeMessage();
-    }
-  }, [messageToSign]);
 
   return {
     handleServerConnect,

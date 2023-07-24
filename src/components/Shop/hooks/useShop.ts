@@ -13,17 +13,17 @@ import {
 } from "wagmi";
 import {
   ACCEPTED_TOKENS,
+  LISTENER_FULFILLMENT,
   LISTENER_MARKET,
   LISTENER_ORACLE,
-  FULFILLER_ADDRESS,
 } from "../../../../lib/constants";
 import { BigNumber, ethers } from "ethers";
 import ListenerMarketAbi from "./../../../../abi/ListenerMarket.json";
 import ListenerOracleAbi from "./../../../../abi/ListenerOracle.json";
+import ListenerFulfillerAbi from "./../../../../abi/ListenerFulfiller.json";
 import { setCartItems } from "../../../../redux/reducers/cartItemsSlice";
-import { setModalOpen } from "../../../../redux/reducers/modalOpenSlice";
 import { setLitClient } from "../../../../redux/reducers/litClientSlice";
-import { AllShop } from "../types/shop.types";
+import { setPurchaseModal } from "../../../../redux/reducers/purchaseModalSlice";
 
 const useShop = () => {
   const dispatch = useDispatch();
@@ -52,6 +52,7 @@ const useShop = () => {
       () => 0
     )
   );
+  const [fulfillerAddress, setFulfillerAddress] = useState<string>("");
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [switchNeeded, setSwitchNeeded] = useState<boolean>(false);
   const [approved, setApproved] = useState<boolean>(false);
@@ -95,6 +96,13 @@ const useShop = () => {
     enabled: Boolean(
       ACCEPTED_TOKENS.find(([_, token]) => token === checkoutCurrency)?.[2]
     ),
+  });
+
+  const { data: fulfillmentData, error: fulfillerError } = useContractRead({
+    address: LISTENER_FULFILLMENT,
+    abi: ListenerFulfillerAbi,
+    functionName: "getFulfillerAddress",
+    args: [1],
   });
 
   const { data, error } = useContractRead({
@@ -275,7 +283,7 @@ const useShop = () => {
             standardContractType: "",
             chain: "mumbai",
             method: "",
-            parameters: [":userAddress", FULFILLER_ADDRESS],
+            parameters: [":userAddress", fulfillerAddress],
             returnValueTest: {
               comparator: "=",
               value: address,
@@ -504,14 +512,7 @@ const useShop = () => {
           state: "",
         });
         setEncryptedFulfillmentDetails("");
-        dispatch(
-          setModalOpen({
-            actionOpen: true,
-            actionMessage:
-              "Your items are on the way soon. Keep track of fulfillment progress through your account.",
-            actionImage: "QmSUH38BqmfPci9NEvmC2KRQEJeoyxdebHiZi1FABbtueg",
-          })
-        );
+        dispatch(setPurchaseModal(true));
       }
     } catch (err: any) {
       console.error(err.message);
@@ -569,6 +570,10 @@ const useShop = () => {
   useEffect(() => {
     setSwitchNeeded(chain?.id !== 137 ? true : false);
   }, [isConnected, walletConnected, chain?.id]);
+
+  useEffect(() => {
+    console.log(fulfillmentData, fulfillerError);
+  }, [fulfillmentData]);
 
   return {
     shopLoading,

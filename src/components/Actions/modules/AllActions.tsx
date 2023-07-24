@@ -57,14 +57,14 @@ const AllActions: FunctionComponent<AllActionsProps> = ({
                         target="_blank"
                         rel="noreferrer"
                         href={`${INFURA_GATEWAY}/ipfs/${
-                          entry?.stringifiedLogs?.split("ipfs://")[1]
+                          entry?.ipfsHash?.split("ipfs://")[1]
                         }`}
                         className="relative w-full h-fit flex"
                         style={{
                           wordBreak: "break-all",
                         }}
                       >
-                        {entry?.stringifiedLogs}
+                        {entry?.ipfsHash}
                       </Link>
                     </div>
                   </div>

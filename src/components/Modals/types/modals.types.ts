@@ -18,3 +18,7 @@ export type PreviewConditionProps = {
   newWebhookConditionInformation: WebhookCondition | undefined;
   newContractConditionInformation: ContractCondition | undefined;
 };
+
+export type PurchaseFulfillmentProps = {
+  dispatch: Dispatch<AnyAction>;
+};

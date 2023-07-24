@@ -3,6 +3,7 @@ import { AllShop, AllShopProps } from "../types/shop.types";
 import ShopItem from "./ShopItem";
 import Image from "next/legacy/image";
 import { INFURA_GATEWAY } from "../../../../lib/constants";
+import Link from "next/link";
 
 const AllShop: FunctionComponent<AllShopProps> = ({
   allShopItems,
@@ -80,6 +81,14 @@ const AllShop: FunctionComponent<AllShopProps> = ({
           />
         </div>
       </div>
+      <Link
+        className="absolute bottom-0 left-2 w-fit h-fit flex text-white font-vcr text-xs cursor-pointer"
+        href={`https://themanufactory.xyz`}
+        target="_blank"
+        rel="noreferrer"
+      >
+        {`(fulfilled in nyc @ the manufactory)`}
+      </Link>
     </div>
   );
 };
