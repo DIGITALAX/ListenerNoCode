@@ -85,6 +85,9 @@ const useAccountPage = () => {
             circuitExecutions: 0,
           });
         } else {
+          let monitorExecutions = 0;
+          let circuitExecutions = 0;
+
           for (let i = 0; i < dataLogs?.data?.logAddeds?.length; i++) {
             const res = await fetchIpfsJson(
               dataLogs?.data?.logAddeds[i].hashedId
@@ -115,23 +118,27 @@ const useAccountPage = () => {
               const filteredLogsExecution = parsedLogs.filter((log: any) =>
                 log.message.includes("Lit Action Completion Increased")
               );
-              newAllCircuits.push({
-                ...circuit,
-                circuitInformation: circuitResponse?.circuitInformation,
-                monitorExecutions:
-                  Number(
-                    filteredLogsCondition?.[filteredLogsCondition?.length - 1]
-                      ?.responseObject
-                  ) || 0,
-                circuitExecutions:
-                  Number(
-                    filteredLogsExecution?.[filteredLogsExecution?.length - 1]
-                      ?.responseObject
-                  ) || 0,
-              });
-              break;
+
+              monitorExecutions =
+                Number(
+                  filteredLogsCondition?.[filteredLogsCondition?.length - 1]
+                    ?.responseObject
+                ) || 0;
+
+              circuitExecutions =
+                Number(
+                  filteredLogsExecution?.[filteredLogsExecution?.length - 1]
+                    ?.responseObject
+                ) || 0;
             }
           }
+
+          newAllCircuits.push({
+            ...circuit,
+            circuitInformation: circuitResponse?.circuitInformation,
+            monitorExecutions,
+            circuitExecutions,
+          });
         }
       }
 
