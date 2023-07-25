@@ -70,7 +70,7 @@ const AllCircuits: FunctionComponent<AllCircuitsProps> = ({
                       JSON.parse(value.circuitInformation?.information as any)
                         ?.executionConstraints
                     )?.maxLitActionCompletions;
-
+                const reverseIndex = allUserCircuits.length - index;
                 return (
                   <div
                     key={index}
@@ -94,7 +94,7 @@ const AllCircuits: FunctionComponent<AllCircuitsProps> = ({
                         id="blur"
                       >
                         <div className="relative w-fit h-fit flex items-center justify-start">
-                          Circuit {index}:
+                          Circuit {reverseIndex}:
                         </div>
                         <div
                           className={`relative w-fit h-fit flex items-center justify-start ${
