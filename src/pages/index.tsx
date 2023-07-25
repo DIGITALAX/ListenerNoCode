@@ -363,7 +363,7 @@ export default function Home() {
                 objectFit="cover"
                 className="rounded-lg"
                 draggable={false}
-              /> 
+              />
             </div>
           </div>
           {/* <div className="text-white" onClick={() => handleServerConnect()}>

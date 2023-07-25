@@ -77,50 +77,60 @@ const useAccountPage = () => {
 
         circuit.completed = completedCircuitHashedIds.has(circuitId);
         circuit.interrupted = interruptedCircuitHashedIds.has(circuitId);
-
-        for (let i = 0; i < dataLogs?.data?.logAddeds?.length; i++) {
-          const res = await fetchIpfsJson(
-            dataLogs?.data?.logAddeds[i].hashedId
-          );
-
-          if (res === circuitId) {
-            let parsedLogs = await fetchIpfsJson(
-              dataLogs?.data?.logAddeds[i]?.stringifiedLogs,
-              true
+        if (dataLogs?.data?.logAddeds.length < 1) {
+          newAllCircuits.push({
+            ...circuit,
+            circuitInformation: circuitResponse?.circuitInformation,
+            monitorExecutions: 0,
+            circuitExecutions: 0,
+          });
+        } else {
+          for (let i = 0; i < dataLogs?.data?.logAddeds?.length; i++) {
+            const res = await fetchIpfsJson(
+              dataLogs?.data?.logAddeds[i].hashedId
             );
 
-            if (
-              !parsedLogs?.every(
-                (item: any) =>
-                  typeof item === "object" &&
-                  item !== null &&
-                  !Array.isArray(item)
-              )
-            ) {
-              parsedLogs = parsedLogs?.map((stringLog: any) => JSON.parse(stringLog));
+            if (res === circuitId) {
+              let parsedLogs = await fetchIpfsJson(
+                dataLogs?.data?.logAddeds[i]?.stringifiedLogs,
+                true
+              );
+
+              if (
+                !parsedLogs?.every(
+                  (item: any) =>
+                    typeof item === "object" &&
+                    item !== null &&
+                    !Array.isArray(item)
+                )
+              ) {
+                parsedLogs = parsedLogs?.map((stringLog: any) =>
+                  JSON.parse(stringLog)
+                );
+              }
+
+              const filteredLogsCondition = parsedLogs.filter((log: any) =>
+                log.message.includes("Condition Monitor Count Increased")
+              );
+              const filteredLogsExecution = parsedLogs.filter((log: any) =>
+                log.message.includes("Lit Action Completion Increased")
+              );
+              newAllCircuits.push({
+                ...circuit,
+                circuitInformation: circuitResponse?.circuitInformation,
+                monitorExecutions:
+                  Number(
+                    filteredLogsCondition?.[filteredLogsCondition?.length - 1]
+                      ?.responseObject
+                  ) || 0,
+                circuitExecutions:
+                  Number(
+                    filteredLogsExecution?.[filteredLogsExecution?.length - 1]
+                      ?.responseObject
+                  ) || 0,
+              });
+              break;
             }
-
-            const filteredLogsCondition = parsedLogs.filter((log: any) =>
-              log.message.includes("Condition Monitor Count Increased")
-            );
-            const filteredLogsExecution = parsedLogs.filter((log: any) =>
-              log.message.includes("Lit Action Completion Increased")
-            );
-            newAllCircuits.push({
-              ...circuit,
-              circuitInformation: circuitResponse?.circuitInformation,
-              monitorExecutions:
-                Number(
-                  filteredLogsCondition?.[filteredLogsCondition?.length - 1]
-                    ?.responseObject
-                ) || 0,
-              circuitExecutions:
-                Number(
-                  filteredLogsExecution?.[filteredLogsExecution?.length - 1]
-                    ?.responseObject
-                ) || 0,
-            });
-            break;
           }
         }
       }
@@ -207,7 +217,9 @@ const useAccountPage = () => {
                 !Array.isArray(item)
             )
           ) {
-            parsedLogs = parsedLogs?.map((stringLog: any) => JSON.parse(stringLog));
+            parsedLogs = parsedLogs?.map((stringLog: any) =>
+              JSON.parse(stringLog)
+            );
           }
 
           const filteredLogsCondition = parsedLogs.filter((log: any) =>
