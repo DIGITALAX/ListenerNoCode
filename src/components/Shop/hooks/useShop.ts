@@ -131,7 +131,7 @@ const useShop = () => {
         debug: true,
         alertWhenUnauthorized: true,
         chain: 137,
-        provider: `https://polygon-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_POLYGON_KEY}`,
+        provider: `https://polygon-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
       });
       await client.connect();
       const authSig = await checkAndSignAuthMessage({
