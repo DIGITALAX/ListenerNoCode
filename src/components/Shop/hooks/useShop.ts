@@ -245,7 +245,6 @@ const useShop = () => {
                 "base16"
               ),
             }),
-
             chosenTokenAddress: ACCEPTED_TOKENS.find(
               ([_, token]) => token === checkoutCurrency
             )?.[2],

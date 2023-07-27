@@ -9,6 +9,7 @@ import { getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { Provider } from "react-redux";
 import { Chain, configureChains, createConfig, WagmiConfig } from "wagmi";
 import { polygon } from "wagmi/chains";
+import { alchemyProvider } from "wagmi/providers/alchemy";
 import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
 import { MutableRefObject, useEffect, useState } from "react";
 import { createContext } from "react";
@@ -48,6 +49,9 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
       rpc: () => ({
         http: "https://chain-rpc.litprotocol.com/http",
       }),
+    }),
+    alchemyProvider({
+      apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY as string,
     }),
   ]
 );
