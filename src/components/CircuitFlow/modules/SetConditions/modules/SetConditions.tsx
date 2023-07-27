@@ -55,7 +55,7 @@ const SetConditions: FunctionComponent<SetConditionsProps> = ({
 
         case 5:
           return (
-            <div className="relative w-fit h-60 galaxy:h-fit flex flex-col items-start galaxy:items-center justify-start renewed:justify-center gap-3 relative w-full overflow-y-scroll grow">
+            <div className="relative w-fit h-60 galaxy:h-fit flex flex-col items-start galaxy:items-center justify-start  gap-3 relative w-full overflow-y-scroll grow">
               <div className="relative w-full h-fit flex flex-col renewed:flex-row gap-3 galaxy:items-center galaxy:justify-center">
                 <Args
                   args={

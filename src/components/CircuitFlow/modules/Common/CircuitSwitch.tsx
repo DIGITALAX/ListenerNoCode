@@ -62,6 +62,7 @@ const CircuitSwitch: FunctionComponent<CircuitSwitchProps> = ({
   setDropDownsOpenAction,
   functionArgs,
   setFunctionArgs,
+  serverLoaded,
   newFetchActionInformation,
   editingStateAction,
   handleUpdateAction,
@@ -136,6 +137,7 @@ const CircuitSwitch: FunctionComponent<CircuitSwitchProps> = ({
           openChainModal={openChainModal}
           address={address}
           openConnectModal={openConnectModal}
+          serverLoaded={serverLoaded}
         />
       );
 

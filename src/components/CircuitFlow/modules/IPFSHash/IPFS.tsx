@@ -15,7 +15,8 @@ const IPFS: FunctionComponent<IPFSProps> = ({
   switchNeeded,
   openChainModal,
   address,
-  openConnectModal
+  openConnectModal,
+  serverLoaded,
 }): JSX.Element => {
   switch (ipfsFlowIndex.index) {
     case 1:
@@ -32,6 +33,7 @@ const IPFS: FunctionComponent<IPFSProps> = ({
     default:
       return (
         <HashIPFS
+          serverLoaded={serverLoaded}
           handleInstantiateCircuit={handleInstantiateCircuit}
           ipfsLoading={ipfsLoading}
           ipfsHash={ipfsHash || ""}

@@ -22,7 +22,7 @@ const Overview: FunctionComponent<OverviewProps> = ({
 }): JSX.Element => {
   return (
     <div
-      className={`absolute xl:relative z-20 right-0 top-0 grow border-l-2 h-full border-sol px-4 py-6 bg-aBlack items-center justify-center ${
+      className={`absolute z-20 right-0 top-0 grow border-l-2 h-full border-sol px-4 py-6 bg-aBlack items-center justify-center ${
         overviewOpen
           ? largeScreen
             ? "w-96"

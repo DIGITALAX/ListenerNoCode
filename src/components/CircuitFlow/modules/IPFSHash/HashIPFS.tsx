@@ -10,7 +10,8 @@ const HashIPFS: FunctionComponent<HashIPFSProps> = ({
   ipfsHash,
   litActionCode,
   address,
-  openConnectModal
+  openConnectModal,
+  serverLoaded,
 }): JSX.Element => {
   return (
     <div
@@ -22,21 +23,39 @@ const HashIPFS: FunctionComponent<HashIPFSProps> = ({
           <div
             className={`relative w-36 px-1.5 h-10 bg-aBlack text-white font-vcr text-sm flex justify-center items-center text-center cursor-pointer uppercase border border-white`}
             onClick={
-              address ?
-              () => handleInstantiateCircuit() : openConnectModal}
+              serverLoaded || ipfsLoading
+                ? () => {}
+                : address
+                ? () => handleInstantiateCircuit()
+                : openConnectModal
+            }
           >
             <div
               className={`relative w-fit h-fit items-center justify-center flex  ${
-                ipfsLoading && "animate-spin"
+                (ipfsLoading || !serverLoaded) && "animate-spin"
               }`}
             >
-              {ipfsLoading ? (
+              {ipfsLoading || !serverLoaded ? (
                 <AiOutlineLoading size={15} color="white" opacity={80} />
               ) : (
                 "hash to ipfs"
               )}
             </div>
           </div>
+          {!serverLoaded && (
+            <div
+              className={`relative w-fit flex flex-col gap-3 justify-center items-center h-fit`}
+            >
+              <div className="relative w-full h-fit flex flex-row gap-1 justify-center items-center">
+                <div
+                  className="relative w-fit h-fit justify-start items-start flex font-vcr text-ballena text-base"
+                  id="blur"
+                >
+                  {`( server booting up )`}
+                </div>
+              </div>
+            </div>
+          )}
           {ipfsHash && (
             <div
               className={`relative w-fit flex flex-col gap-3 justify-center items-center h-fit`}

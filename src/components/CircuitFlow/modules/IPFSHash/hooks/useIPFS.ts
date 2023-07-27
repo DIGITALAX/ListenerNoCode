@@ -35,6 +35,7 @@ const useIPFS = () => {
     (state: RootState) => state.app.ipfsHashReducer.value
   );
   const [switchNeeded, setSwitchNeeded] = useState<boolean>(false);
+  const [serverLoaded, setServerLoaded] = useState<boolean>(false);
   const [ipfsLoading, setIpfsLoading] = useState<boolean>(false);
   const [dbLoading, setDbLoading] = useState<boolean>(false);
   const [dbAdded, setDBAdded] = useState<boolean>(false);
@@ -118,43 +119,50 @@ const useIPFS = () => {
   };
 
   useEffect(() => {
-    const websocket = new WebSocket("wss://litlistener.onrender.com");
+    fetch("https://litlistener.onrender.com/ping")
+      .then((response) => {
+        response.json();
+        setServerLoaded(true);
+      })
+      .then(() => {
+        const websocket = new WebSocket("wss://litlistener.onrender.com");
 
-    websocket.addEventListener("open", () => {
-      console.log("WebSocket connection is open");
-    });
+        websocket.addEventListener("open", () => {
+          console.log("WebSocket connection is open");
+        });
 
-    websocket.addEventListener("message", async (event) => {
-      const message = event.data;
-      console.log("Received message from server:", message);
+        websocket.addEventListener("message", async (event) => {
+          const message = event.data;
+          console.log("Received message from server:", message);
 
-      const data = JSON.parse(message);
+          const data = JSON.parse(message);
 
-      dispatch(
-        setCircuitInformation({
-          ...circuitInformation,
-          id: data?.id,
-        })
-      );
-      const res = await fetch(`${INFURA_GATEWAY}/ipfs/${data?.ipfs}`);
-      if (res) {
-        const litActionCode = await res.text();
-        dispatch(
-          setIpfsHash({
-            ipfs: String(data?.ipfs || ""),
-            litCode: litActionCode || "",
-          })
-        );
-      }
-    });
+          dispatch(
+            setCircuitInformation({
+              ...circuitInformation,
+              id: data?.id,
+            })
+          );
+          const res = await fetch(`${INFURA_GATEWAY}/ipfs/${data?.ipfs}`);
+          if (res) {
+            const litActionCode = await res.text();
+            dispatch(
+              setIpfsHash({
+                ipfs: String(data?.ipfs || ""),
+                litCode: litActionCode || "",
+              })
+            );
+          }
+        });
 
-    websocket.addEventListener("close", () => {
-      console.log("WebSocket connection closed");
-    });
+        websocket.addEventListener("close", () => {
+          console.log("WebSocket connection closed");
+        });
 
-    return () => {
-      websocket.close();
-    };
+        return () => {
+          websocket.close();
+        };
+      });
   }, []);
 
   useEffect(() => {
@@ -168,6 +176,7 @@ const useIPFS = () => {
     dbLoading,
     dbAdded,
     switchNeeded,
+    serverLoaded
   };
 };
 

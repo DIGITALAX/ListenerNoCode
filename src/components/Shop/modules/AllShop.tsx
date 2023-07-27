@@ -17,7 +17,7 @@ const AllShop: FunctionComponent<AllShopProps> = ({
   largeScreen,
 }): JSX.Element => {
   return (
-    <div className="relative h-4/5 w-full items-center justify-center flex flex-col gap-5 overflow-x-hidden">
+    <div className="relative h-fit w-full items-center justify-center flex flex-col gap-5 pt-4 overflow-x-hidden overflow-y-scroll">
       <div className="relative w-fit h-full flex flex-row gap-4">
         {allShopItems?.length > 0 &&
           [...Array(largeScreen ? 6 : 1)]
@@ -80,7 +80,7 @@ const AllShop: FunctionComponent<AllShopProps> = ({
         </div>
       </div>
       <Link
-        className="absolute bottom-0 left-2 w-fit h-fit flex text-white font-vcr text-xs cursor-pointer"
+        className="relative bottom-0 items-center justify-center w-fit h-fit flex text-white font-vcr text-xs cursor-pointer"
         href={`https://themanufactory.xyz`}
         target="_blank"
         rel="noreferrer"
