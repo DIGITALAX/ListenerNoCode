@@ -119,7 +119,7 @@ const useIPFS = () => {
   };
 
   useEffect(() => {
-    fetch("https://litlistener.onrender.com/ping")
+    fetch("/api/render/ping")
       .then((response) => {
         response.json();
         setServerLoaded(true);
@@ -176,7 +176,7 @@ const useIPFS = () => {
     dbLoading,
     dbAdded,
     switchNeeded,
-    serverLoaded
+    serverLoaded,
   };
 };
 
