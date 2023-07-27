@@ -9,8 +9,10 @@ const Choice: FunctionComponent<ChoiceProps> = ({
   titleValues,
 }): JSX.Element => {
   return (
-    <div className="relative w-fit h-fit flex items-center justify-center flex-col gap-4">
-      <div className="text-white relative w-3/4 text-center h-fit font-vcr text-xs items-center justify-center">{`(Note that the no-code instance is still in beta mode and uses an experimental PKP backend infrastructure for greater decentralisation, your circuit may be interrupted or reset at anytime). Use the SDK for more fine grained control.`}</div>
+    <div className="relative w-fit h-fit flex items-center justify-start flex-col gap-4 overflow-y-scroll">
+      {choiceType.includes("web") && (
+        <div className="text-white relative w-3/4 text-center h-fit font-vcr text-xs items-center justify-center">{`(Note that the no-code instance is still in beta mode and uses an experimental PKP backend infrastructure for greater decentralisation, your circuit may be interrupted or reset at anytime). Use the SDK for more fine grained control.`}</div>
+      )}
       <div
         className="relative w-80 h-60 flex flex-col p-2 gap-3 justify-center items-center"
         id="inputBorder"

@@ -159,6 +159,7 @@ export default function Home() {
     dbLoading,
     dbAdded,
     switchNeeded,
+    serverLoaded,
   } = useIPFS();
   const { handleMintGrantBurnPKP, pkpLoading, switchNeededPKP } = usePKP();
   const {
@@ -325,16 +326,15 @@ export default function Home() {
   // const { handleServerConnect, decryptLitKey } = useServerConnect();
 
   return (
-    <div
-      className="relative w-full flex flex-row border-t-2 border-sol grow overflow-y-scroll"
-      id={largeOverview ? "heightCheckout" : ""}
-      style={largeOverview ? {} : { height: "65rem" }}
-    >
+    <div className="relative w-full h-fit flex flex-row border-t-2 border-sol grow overflow-y-scroll">
       <Head>
         <title>No-Code Lit Listener</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className="absolute w-full h-full flex mix-blend-overlay">
+      <div
+        className="absolute w-full h-full flex mix-blend-overlay"
+        id={largeOverview ? "heightCheckout" : ""}
+      >
         <Image
           src={`${INFURA_GATEWAY}/ipfs/QmZ3DdVrAmYaJTgXHu56eUGGLzLeQkhLeTc433wpxppu4S`}
           layout="fill"
@@ -424,6 +424,7 @@ export default function Home() {
                     targetConditionOpen={targetConditionOpen}
                     setTargetConditionOpen={setTargetConditionOpen}
                     time={time}
+                    serverLoaded={serverLoaded}
                     setTime={setTime}
                     maxLitActionCompletions={maxLitActionCompletions}
                     setMaxLitActionCompletions={setMaxLitActionCompletions}
@@ -833,7 +834,6 @@ export default function Home() {
           </div>
         </div>
       </div>
-
       <Overview
         handleClearCircuit={handleClearCircuit}
         dispatch={dispatch}

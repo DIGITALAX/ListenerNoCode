@@ -27,6 +27,7 @@ export type OverviewProps = {
 
 export type CircuitSwitchProps = {
   address: boolean;
+  serverLoaded: boolean;
   openConnectModal: (() => void) | undefined;
   apiPasswordAction: boolean;
   litActionCode: string;
@@ -444,6 +445,7 @@ export type IPFSProps = {
     index: number;
     ipfsCount: number;
   };
+  serverLoaded: boolean;
   address: boolean;
   openConnectModal: (() => void) | undefined;
   switchNeeded: boolean;
@@ -460,6 +462,7 @@ export type IPFSProps = {
 export type HashIPFSProps = {
   handleInstantiateCircuit: () => Promise<void>;
   ipfsLoading: boolean;
+  serverLoaded: boolean;
   ipfsHash: string;
   litActionCode: string;
   address: boolean;

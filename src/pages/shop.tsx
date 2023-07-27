@@ -57,9 +57,9 @@ export default function Shop() {
   }, []);
   return (
     <div
-      className="relative w-full flex flex-row border-t-2 border-sol grow overflow-hidden"
-      id={largeScreen ? "heightCheckout" : ""}
-      style={largeScreen ? {} : { height: "45rem" }}
+      className="relative w-full flex flex-row border-t-2 border-sol grow overflow-hidden h-fit"
+      // id={largeScreen ? "heightCheckout" : ""}
+      // style={largeScreen ? {} : { height: "45rem" }}
     >
       <Head>
         <title>No-Code Lit Listener | Shop</title>
@@ -85,7 +85,7 @@ export default function Shop() {
       </div>
       <div className="relative w-full min-h-100 flex items-center justify-center grow">
         {shopLoading ? (
-          <div className="relative w-full h-ful flex items-center justify-center">
+          <div className="relative w-full h-full flex items-center justify-center">
             <div className="relative w-6 h-6 animate-spin flex items-center justify-center">
               <Image
                 draggable={false}

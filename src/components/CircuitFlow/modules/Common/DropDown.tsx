@@ -15,7 +15,7 @@ const DropDown: FunctionComponent<DropDownProps> = ({
     <div
       className={`relative w-72 ${
         border ? "h-fit" : "h-40"
-      } flex flex-col p-2 gap-3 justify-center items-center px-4 font-vcr text-ballena`}
+      } flex flex-col p-2 gap-3 justify-center items-center px-4 font-vcr text-ballena `}
       id={border ? "" : "inputBorder"}
     >
       <div className="relative w-fit h-fit flex" id="blur">
@@ -32,6 +32,7 @@ const DropDown: FunctionComponent<DropDownProps> = ({
         <div
           className={`absolute w-full h-60 overflow-y-scroll z-5`}
           style={{ top: top ? top : "auto" }}
+          id="xScroll"
         >
           <div className="relative w-full h-fit flex flex-col bg-aBlack">
             {inputArray.map((type: string, index: number) => {

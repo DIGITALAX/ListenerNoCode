@@ -100,7 +100,7 @@ const useServerConnect = () => {
       console.error(err);
     }
   };
-
+  
   return {
     handleServerConnect,
     decryptLitKey,

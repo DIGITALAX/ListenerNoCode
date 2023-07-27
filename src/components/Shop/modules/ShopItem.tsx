@@ -18,7 +18,7 @@ const ShopItem: FunctionComponent<ShopItemProps> = ({
 }): JSX.Element => {
   return (
     <div
-      className={`relative h-full bg-black rounded-md border-2 border-moda flex flex-col ${
+      className={`relative h-96 bg-black rounded-md border-2 border-moda flex flex-col ${
         largeScreen ? "w-60" : "w-72"
       }`}
     >

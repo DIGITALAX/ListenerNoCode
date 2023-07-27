@@ -54,9 +54,9 @@ export default function Account() {
 
   return (
     <div
-      className="relative w-full flex flex-row border-t-2 border-sol grow overflow-y-scroll"
-      id={largeScreen ? "heightCheckout" : ""}
-      style={largeScreen ? {} : {height: "45rem"}}
+      className="relative w-full h-fit flex flex-row border-t-2 border-sol grow overflow-y-scroll"
+      // id={largeScreen ? "heightCheckout" : ""}
+      // style={largeScreen ? {} : {height: "45rem"}}
     >
       <Head>
         <title>No-Code Lit Listener | Account</title>
