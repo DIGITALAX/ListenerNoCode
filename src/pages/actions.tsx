@@ -57,7 +57,7 @@ export default function Actions() {
       </div>
       <div className="relative w-full min-h-100 flex items-center justify-center grow">
         {allEntries?.length < 1 && !entriesLoading ? (
-          <div className="relative w-full h-ful flex items-center justify-center">
+          <div className="relative w-full h-full flex items-center justify-center">
             <Link
               className="relative w-fit h-fit text-center font-vcr text-white flex items-center justify-center cursor-pointer"
               href={`/`}
@@ -66,7 +66,7 @@ export default function Actions() {
             </Link>
           </div>
         ) : entriesLoading ? (
-          <div className="relative w-full h-ful flex items-center justify-center">
+          <div className="relative w-full h-full flex items-center justify-center">
             <div className="relative w-6 h-6 animate-spin flex items-center justify-center">
               <Image
                 draggable={false}
