@@ -68,6 +68,7 @@ const useShop = () => {
     zip: string;
     city: string;
     state: string;
+    country: string;
   }>({
     name: "",
     contact: "",
@@ -75,6 +76,7 @@ const useShop = () => {
     zip: "",
     city: "",
     state: "",
+    country: "",
   });
 
   const getTotalAmount = async () => {
@@ -138,7 +140,24 @@ const useShop = () => {
         chain: "polygon",
       });
       const { encryptedString, symmetricKey } = await encryptString(
-        JSON.stringify(fulfillmentDetails)
+        JSON.stringify({
+          ...fulfillmentDetails,
+          sizes: cartItems?.reduce((accumulator: string[], item) => {
+            accumulator.push(String(item.chosenSize));
+            return accumulator;
+          }, []),
+          collectionIds: cartItems?.reduce((accumulator: number[], item) => {
+            accumulator.push(Number(item.collectionId));
+            return accumulator;
+          }, []),
+          collectionAmounts: cartItems?.reduce(
+            (accumulator: number[], item) => {
+              accumulator.push(Number(item.amount));
+              return accumulator;
+            },
+            []
+          ),
+        })
       );
       const fulfillerAddress = allShopItems[0].fulfillerAddress;
 
@@ -266,6 +285,7 @@ const useShop = () => {
         zip: "",
         city: "",
         state: "",
+        country: "",
       });
       dispatch(setPurchaseModal(true));
       await getAllShop();
@@ -404,7 +424,6 @@ const useShop = () => {
     }
     setShopLoading(false);
   };
-
 
   const getAddressApproved = async () => {
     try {

@@ -21,6 +21,7 @@ import { getUserLogs } from "../../../../graphql/queries/getUserLogs";
 import { fetchIpfsJson } from "../../../../lib/helpers/fetchIpfsJson";
 import { setModalOpen } from "../../../../redux/reducers/modalOpenSlice";
 import { ILogEntry } from "@/components/CircuitFlow/types/litlistener.types";
+import { setSelectedUserCircuitSideBar } from "../../../../redux/reducers/selectedCircuitSideBarSlice";
 
 const useAccountPage = () => {
   const { address } = useAccount();
@@ -38,6 +39,9 @@ const useAccountPage = () => {
   );
   const selectedCircuitSideBar = useSelector(
     (state: RootState) => state.app.selectedCircuitSideBarReudcer.value
+  );
+  const switchAccount = useSelector(
+    (state: RootState) => state.app.switchAccountReducer.value
   );
 
   const getAllCircuits = async () => {
@@ -142,9 +146,9 @@ const useAccountPage = () => {
         }
       }
 
-      if (selectedCircuitSideBar === "" || !selectedCircuitSideBar) {
-        await getSelectedCircuitLogs(newAllCircuits[0]?.circuitInformation?.id);
-      }
+      dispatch(
+        setSelectedUserCircuitSideBar(newAllCircuits[0]?.circuitInformation?.id)
+      );
 
       dispatch(setAllUserCircuits(newAllCircuits));
     } catch (err: any) {
@@ -304,16 +308,16 @@ const useAccountPage = () => {
   };
 
   useEffect(() => {
-    if (address) {
+    if (address && !switchAccount) {
       getAllCircuits();
     }
-  }, [circuitRunning, address]);
+  }, [circuitRunning, address, switchAccount]);
 
   useEffect(() => {
-    if (selectedCircuitSideBar !== "" && address) {
+    if (selectedCircuitSideBar !== "" && address && !switchAccount) {
       getSelectedCircuitLogs(selectedCircuitSideBar);
     }
-  }, [selectedCircuitSideBar]);
+  }, [selectedCircuitSideBar, switchAccount, address]);
 
   useEffect(() => {
     setAddressExists(Boolean(address));

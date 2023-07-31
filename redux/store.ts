@@ -27,6 +27,10 @@ import allEntriesReducer from "./reducers/allEntriesSlice";
 import allShopReducer from "./reducers/allShopSlice";
 import cartItemsReducer from "./reducers/cartItemsSlice";
 import purchaseModalReducer from "./reducers/purchaseModalSlice";
+import allOrdersReducer from "./reducers/allOrdersSlice";
+import switchAccountReducer from "./reducers/switchAccountSlice";
+import selectedOrderReducer from "./reducers/selectedOrderSlice";
+import selectedOrderSideBarReducer from "./reducers/selectedOrderSideBarSlice";
 
 const reducer = combineReducers({
   walletConnectedReducer,
@@ -55,7 +59,11 @@ const reducer = combineReducers({
   allShopReducer,
   cartItemsReducer,
   currentIndexItemReducer,
-  purchaseModalReducer
+  purchaseModalReducer,
+  allOrdersReducer,
+  switchAccountReducer,
+  selectedOrderReducer,
+  selectedOrderSideBarReducer
 });
 
 export const store = configureStore({

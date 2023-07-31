@@ -4,6 +4,7 @@ import {
   IConditionalLogic,
   IExecutionConstraints,
 } from "@/components/CircuitFlow/types/litlistener.types";
+import { AllShop } from "@/components/Shop/types/shop.types";
 import { AnyAction, Dispatch } from "redux";
 
 export interface AllCircuits {
@@ -113,10 +114,52 @@ export type AllCircuitsProps = {
   circuitsOpen: boolean;
   setCircuitsOpen: (e: boolean) => void;
   largeScreen: boolean;
+  switchAccount: boolean;
+  allOrders: Order[];
+  selectedOrderSideBar: Order | undefined;
 };
 
 export type SelectedCircuitProps = {
   selectedCircuit: SelectedCircuit | undefined;
   interruptLoading: boolean;
   handleInterruptCircuit: (id: string) => Promise<void>;
+  selectedOrder: Order | undefined;
+  switchAccount: boolean;
+  decryptFulfillment: () => Promise<void>;
+  decryptLoading: boolean;
+  allOrders: Order[];
 };
+
+export interface Order {
+  orderId: string;
+  totalPrice: string;
+  transactionHash: string;
+  fulfillmentInformation: {
+    encryptedString: number[];
+    encryptedSymmetricKey: string;
+    decryptedFulfillment:
+      | {
+          address: string;
+          city: string;
+          contact: string;
+          name: string;
+          state: string;
+          zip: string;
+          country: string;
+          sizes: string[];
+          collectionIds: string[];
+          collectionAmounts: string[];
+        }
+      | undefined;
+  };
+  fulfillerId: string;
+  buyer: string;
+  blockTimestamp: string;
+  isFulfilled: boolean;
+  orderStatus: string[];
+  orderStatusTimestamps: string[];
+  blockNumber: string;
+  chosenAddress: string;
+  collectionId: string;
+  collectionDetails: AllShop[];
+}

@@ -66,6 +66,7 @@ export type CheckoutProps = {
     zip: string;
     city: string;
     state: string;
+    country: string;
   };
   largeScreen: boolean;
   setCheckoutOpen: (e: boolean) => void;
@@ -77,6 +78,7 @@ export type CheckoutProps = {
     zip: string;
     city: string;
     state: string;
+    country: string;
   }) => void;
   approved: boolean;
   handleApproveSpend: () => Promise<void>;
@@ -95,6 +97,7 @@ export type ShippingInfoProps = {
     zip: string;
     city: string;
     state: string;
+    country: string;
   };
   setFulfillmentDetails: (e: {
     name: string;
@@ -103,5 +106,6 @@ export type ShippingInfoProps = {
     zip: string;
     city: string;
     state: string;
+    country: string;
   }) => void;
 };

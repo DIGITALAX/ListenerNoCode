@@ -70,12 +70,23 @@ const ShippingInfo: FunctionComponent<ShippingInfoProps> = ({
             />
             <input
               placeholder="state"
-              className="bg-black border border-moda p-1.5 font-vcr w-full text-white text-xs  h-full"
+              className="bg-black border border-moda p-1.5 font-vcr w-16 text-white text-xs  h-full"
               value={fulfillmentDetails.state}
               onChange={(e) =>
                 setFulfillmentDetails({
                   ...fulfillmentDetails,
                   state: e.target.value,
+                })
+              }
+            />
+            <input
+              placeholder="country"
+              className="bg-black border border-moda p-1.5 font-vcr w-full text-white text-xs  h-full"
+              value={fulfillmentDetails.country}
+              onChange={(e) =>
+                setFulfillmentDetails({
+                  ...fulfillmentDetails,
+                  country: e.target.value,
                 })
               }
             />
