@@ -8,6 +8,10 @@ import useAccountPage from "@/components/Account/hooks/useAccount";
 import SelectedCircuit from "@/components/Account/modules/SelectedCircuit";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import useOrder from "@/components/Account/hooks/useOrder";
+import { IoShirtOutline } from "react-icons/io5";
+import { TbSwitchHorizontal, TbCircuitSwitchOpen } from "react-icons/tb";
+import { setSwitchAccount } from "../../redux/reducers/switchAccountSlice";
 
 export default function Account() {
   const dispatch = useDispatch();
@@ -16,11 +20,23 @@ export default function Account() {
   const allCircuits = useSelector(
     (state: RootState) => state.app.allUserCircuitsReducer.value
   );
+  const allOrders = useSelector(
+    (state: RootState) => state.app.allOrdersReducer.value
+  );
+  const switchAccount = useSelector(
+    (state: RootState) => state.app.switchAccountReducer.value
+  );
   const selectedCircuitSideBar = useSelector(
     (state: RootState) => state.app.selectedCircuitSideBarReudcer.value
   );
+  const selectedOrderSideBar = useSelector(
+    (state: RootState) => state.app.selectedOrderSideBarReducer.value
+  );
   const selectedCircuit = useSelector(
     (state: RootState) => state.app.selectedCircuitReducer.value
+  );
+  const selectedOrder = useSelector(
+    (state: RootState) => state.app.selectedOrderReducer.value
   );
   const {
     allCircuitsLoading,
@@ -31,12 +47,13 @@ export default function Account() {
     circuitsOpen,
     setCircuitsOpen,
   } = useAccountPage();
+  const { ordersLoading, decryptFulfillment, decryptLoading } = useOrder();
 
   useEffect(() => {
-    if (!allCircuitsLoading && !circuitLogsLoading) {
+    if (!allCircuitsLoading && !circuitLogsLoading && !ordersLoading) {
       setGlobalLoader(false);
     }
-  }, [allCircuitsLoading, circuitLogsLoading]);
+  }, [allCircuitsLoading, circuitLogsLoading, ordersLoading]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -80,26 +97,64 @@ export default function Account() {
           draggable={false}
         />
       </div>
-      <div className="relative w-full min-h-100 flex items-center justify-center grow xl:order-first order-last">
+      <div className="relative w-full min-h-100 flex flex-col items-center justify-center grow xl:order-first order-last">
+        {!globalLoader &&
+          !allCircuitsLoading &&
+          !circuitLogsLoading &&
+          !ordersLoading && (
+            <div className="relative w-5/6 h-fit flex">
+              <div
+                className="relative top-4 left-0 flex flex-row w-fit px-3 py-1.5 h-fit border border-white bg-black/40 gap-3 cursor-pointer active:scale-95 z-1 items-center justify-center"
+                onClick={() => dispatch(setSwitchAccount(!switchAccount))}
+              >
+                <div className="relative w-fit h-fit flex items-center justify-center">
+                  <IoShirtOutline
+                    color={switchAccount ? "#F6D39B" : "white"}
+                    size={15}
+                  />
+                </div>
+                <div className="relative w-fit h-fit flex items-center justify-center">
+                  <TbSwitchHorizontal color="white" size={15} />
+                </div>
+                <div className="relative w-fit h-fit flex items-center justify-center">
+                  <TbCircuitSwitchOpen
+                    color={!switchAccount ? "#F6D39B" : "white"}
+                    size={18}
+                  />
+                </div>
+              </div>
+            </div>
+          )}
         {!addressExists &&
         !globalLoader &&
         !allCircuitsLoading &&
-        !circuitLogsLoading ? (
+        !circuitLogsLoading &&
+        !ordersLoading ? (
           <div className="relative w-full h-ful flex items-center justify-center">
             <div className="relative w-fit h-fit text-center font-vcr text-white flex items-center justify-center">
-              Connect Account to View Your Active Circuits.
+              {!switchAccount
+                ? "Connect Account to View Your Active Circuits."
+                : "Connect Account to View Your Active Orders."}
             </div>
           </div>
-        ) : addressExists && !globalLoader && allCircuits?.length < 1 ? (
+        ) : addressExists &&
+          !globalLoader &&
+          ((!switchAccount && allCircuits?.length < 1) ||
+            (switchAccount && allOrders?.length < 1)) ? (
           <div className="relative w-full h-ful flex items-center justify-center">
             <Link
               className="relative w-fit h-fit text-center font-vcr text-white flex items-center justify-center cursor-pointer"
-              href={`/`}
+              href={!switchAccount ? `/` : "/shop"}
             >
-              No Circuits Yet. Start one?
+              {!switchAccount
+                ? "No Circuits Yet. Start one?"
+                : "No Orders Yet. Go to Shop?"}
             </Link>
           </div>
-        ) : allCircuitsLoading || circuitLogsLoading || globalLoader ? (
+        ) : allCircuitsLoading ||
+          circuitLogsLoading ||
+          globalLoader ||
+          ordersLoading ? (
           <div className="relative w-full h-ful flex items-center justify-center">
             <div className="relative w-6 h-6 animate-spin flex items-center justify-center">
               <Image
@@ -110,11 +165,16 @@ export default function Account() {
             </div>
           </div>
         ) : (
-          <div className="relative flex flex-row w-full h-full justify-center items-center">
+          <div className="relative flex flex-col w-full h-full justify-center items-center gap-3">
             <SelectedCircuit
+              allOrders={allOrders}
               selectedCircuit={selectedCircuit}
               handleInterruptCircuit={handleInterruptCircuit}
               interruptLoading={interruptLoading}
+              selectedOrder={selectedOrder}
+              switchAccount={switchAccount}
+              decryptFulfillment={decryptFulfillment}
+              decryptLoading={decryptLoading}
             />
           </div>
         )}
@@ -126,6 +186,9 @@ export default function Account() {
         dispatch={dispatch}
         circuitsOpen={circuitsOpen}
         setCircuitsOpen={setCircuitsOpen}
+        allOrders={allOrders}
+        switchAccount={switchAccount}
+        selectedOrderSideBar={selectedOrderSideBar}
       />
     </div>
   );
