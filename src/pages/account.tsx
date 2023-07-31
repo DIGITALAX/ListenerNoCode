@@ -130,7 +130,7 @@ export default function Account() {
         !allCircuitsLoading &&
         !circuitLogsLoading &&
         !ordersLoading ? (
-          <div className="relative w-full h-ful flex items-center justify-center">
+          <div className="relative w-full h-full flex items-center justify-center">
             <div className="relative w-fit h-fit text-center font-vcr text-white flex items-center justify-center">
               {!switchAccount
                 ? "Connect Account to View Your Active Circuits."
@@ -141,7 +141,7 @@ export default function Account() {
           !globalLoader &&
           ((!switchAccount && allCircuits?.length < 1) ||
             (switchAccount && allOrders?.length < 1)) ? (
-          <div className="relative w-full h-ful flex items-center justify-center">
+          <div className="relative w-full h-full flex items-center justify-center">
             <Link
               className="relative w-fit h-fit text-center font-vcr text-white flex items-center justify-center cursor-pointer"
               href={!switchAccount ? `/` : "/shop"}
@@ -155,7 +155,7 @@ export default function Account() {
           circuitLogsLoading ||
           globalLoader ||
           ordersLoading ? (
-          <div className="relative w-full h-ful flex items-center justify-center">
+          <div className="relative w-full h-full flex items-center justify-center">
             <div className="relative w-6 h-6 animate-spin flex items-center justify-center">
               <Image
                 draggable={false}

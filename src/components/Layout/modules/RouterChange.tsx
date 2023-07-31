@@ -24,7 +24,7 @@ const RouterChange: FunctionComponent = (): JSX.Element => {
         />
       </div>
       <div className="relative w-full min-h-100 flex items-center justify-center grow">
-        <div className="relative w-full h-ful flex items-center justify-center">
+        <div className="relative w-full h-full flex items-center justify-center">
           <div className="relative w-6 h-6 animate-spin flex items-center justify-center">
             <Image
               draggable={false}
