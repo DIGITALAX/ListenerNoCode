@@ -73,13 +73,7 @@ export const encryptItems = async (
         chain: "polygon",
         dataToEncrypt: JSON.stringify({
           ...rest,
-          prices: [
-            collection?.item?.prices[
-              ACCEPTED_TOKENS?.findIndex(
-                (item) => item[2] == fulfillmentDetails?.checkoutCurrency
-              )
-            ],
-          ],
+          prices: [collection?.item?.prices[0]],
           types: ["listener"],
           amounts: [chosenAmount],
           collectionIds: [collection?.item?.collectionId],
