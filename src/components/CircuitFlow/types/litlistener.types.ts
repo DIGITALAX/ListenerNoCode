@@ -1,5 +1,4 @@
 import { BigNumberish, BytesLike, ethers } from "ethers";
-import { AccessListish } from "ethers/lib/utils";
 
 /**
  * @constant LitChainIds
@@ -139,7 +138,7 @@ export type UnsignedTransaction = {
   type?: number | null;
 
   // EIP-2930; Type 1 & EIP-1559; Type 2
-  accessList?: AccessListish;
+  accessList?: any;
 
   // EIP-1559; Type 2
   maxPriorityFeePerGas?: BigNumberish;
