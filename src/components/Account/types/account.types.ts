@@ -4,7 +4,7 @@ import {
   IConditionalLogic,
   IExecutionConstraints,
 } from "@/components/CircuitFlow/types/litlistener.types";
-import { AllShop } from "@/components/Shop/types/shop.types";
+import { AccessControlConditions } from "@lit-protocol/types";
 import { AnyAction, Dispatch } from "redux";
 
 export interface AllCircuits {
@@ -133,33 +133,47 @@ export type SelectedCircuitProps = {
 export interface Order {
   orderId: string;
   totalPrice: string;
-  transactionHash: string;
-  fulfillmentInformation: {
-    encryptedString: number[];
-    encryptedSymmetricKey: string;
-    decryptedFulfillment:
-      | {
-          address: string;
-          city: string;
-          contact: string;
-          name: string;
-          state: string;
-          zip: string;
-          country: string;
-          sizes: string[];
-          collectionIds: string[];
-          collectionAmounts: string[];
-        }
-      | undefined;
-  };
-  fulfillerId: string;
+  currency: string;
+  pubId: string;
+  profileId: string;
   buyer: string;
-  blockTimestamp: string;
-  isFulfilled: boolean;
-  orderStatus: string[];
-  orderStatusTimestamps: string[];
   blockNumber: string;
-  chosenAddress: string;
-  collectionId: string;
-  collectionDetails: AllShop[];
+  blockTimestamp: string;
+  transactionHash: string;
+  images: string[];
+  names: string[];
+  messages: string[];
+  details?: Details | EncryptedDetails | string;
+  subOrders: Sub[];
+  decrypted: boolean;
+}
+export interface EncryptedDetails {
+  ciphertext: string;
+  dataToEncryptHash: string;
+  accessControlConditions: AccessControlConditions | undefined;
+}
+
+export interface Details {
+  name: string;
+  address: string;
+  zip: string;
+  city: string;
+  state: string;
+  country: string;
+}
+
+export interface Sub {
+  price: string;
+  status: string;
+  collection: {
+    name: string;
+    image: string;
+    origin: string;
+    pubId: string;
+  };
+  isFulfilled: boolean;
+  fulfillerAddress: string;
+  amount: string;
+  color?: string;
+  size?: string;
 }

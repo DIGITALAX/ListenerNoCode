@@ -1,5 +1,12 @@
 export const INFURA_GATEWAY: string = "https://chromadin.infura-ipfs.io";
-
+export const DIGITALAX_ADDRESS: `0x${string}` =
+  "0xAA3e5ee4fdC831e5274FE7836c95D670dC2502e6";
+export const LISTENER_OPEN_ACTION: `0x${string}` =
+  "0xF1e111fD643954234d6C8482fFa5f4dE778e7aD6";
+export const BASE_URL: string = "https://api-v2.lens.dev/";
+export const LENS_HUB_PROXY_ADDRESS_MATIC: `0x${string}` =
+  "0xDb46d1Dc155634FbC732f92E853b10B288AD5a1d";
+  
 export const CHRONICLE_PROVIDER: string =
   "https://chain-rpc.litprotocol.com/http";
 
@@ -111,10 +118,3 @@ export const ACCEPTED_TOKENS: string[][] = [
     "0x6968105460f67c3bf751be7c15f92f5286fd0ce5",
   ],
 ];
-
-export const LISTENER_MARKET: `0x${string}` =
-  "0x9300De7b8e1b4Cf443896d596853a34CcAe48f88";
-export const LISTENER_ORACLE: `0x${string}` =
-  "0x0e92989b083b2ea0328eba2db5c9ad3819e64794";
-export const LISTENER_FULFILLMENT: `0x${string}` =
-  "0x5EEa8a033aC23926c8674d1a89b855C80767f6bd";

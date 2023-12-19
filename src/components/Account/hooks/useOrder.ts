@@ -1,28 +1,27 @@
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 import {
+  getCollectionOrder,
   getOrderInformation,
   getOrders,
-} from "../../../../graphql/queries/getOrders";
+} from "../../../../graphql/subgraph/queries/getOrders";
 import { useDispatch, useSelector } from "react-redux";
 import { setAllOrders } from "../../../../redux/reducers/allOrdersSlice";
-import { setSelectedOrderCircuit } from "../../../../redux/reducers/selectedOrderSlice";
 import { RootState } from "../../../../redux/store";
 import { setSelectedOrderSideBar } from "../../../../redux/reducers/selectedOrderSideBarSlice";
 import {
   checkAndSignAuthMessage,
-  decryptString,
+  decryptToString,
 } from "@lit-protocol/lit-node-client";
-import { createPublicClient, http } from "viem";
-import { polygon } from "viem/chains";
-import { LISTENER_FULFILLMENT } from "../../../../lib/constants";
-import { getCollectionId } from "../../../../graphql/queries/getCollections";
+import * as LitJsSdk from "@lit-protocol/lit-node-client";
+import { getCollectionId } from "../../../../graphql/subgraph/queries/getCollections";
 import { fetchIpfsJson } from "../../../../lib/helpers/fetchIpfsJson";
+import { EncryptedDetails } from "../types/account.types";
 
 const useOrder = () => {
-  const publicClient = createPublicClient({
-    chain: polygon,
-    transport: http(),
+  const client = new LitJsSdk.LitNodeClient({
+    litNetwork: "cayenne",
+    debug: false,
   });
   const dispatch = useDispatch();
   const { address } = useAccount();
@@ -31,8 +30,8 @@ const useOrder = () => {
   const selectedOrderSideBar = useSelector(
     (state: RootState) => state.app.selectedOrderSideBarReducer.value
   );
-  const selectedOrder = useSelector(
-    (state: RootState) => state.app.selectedOrderReducer.value
+  const allOrders = useSelector(
+    (state: RootState) => state.app.allOrdersReducer.value
   );
   const switchAccount = useSelector(
     (state: RootState) => state.app.switchAccountReducer.value
@@ -45,8 +44,67 @@ const useOrder = () => {
       setOrdersLoading(false);
       return;
     }
-    dispatch(setSelectedOrderSideBar(res?.data?.orderCreateds[0]));
-    dispatch(setAllOrders(res?.data?.orderCreateds));
+
+    const promises = (res?.data?.orderCreateds || [])?.map(
+      async (item: {
+        orderId: string;
+        totalPrice: string;
+        currency: string;
+        pubId: string;
+        profileId: string;
+        buyer: string;
+        blockTimestamp: string;
+        transactionHash: string;
+        images: string[];
+        names: string[];
+        messages: string[];
+        details: string;
+        subOrderPrice: string[];
+        subOrderStatus: string[];
+        subOrderCollectionIds: string[];
+        subOrderIsFulfilled: boolean[];
+        subOrderAmount: string[];
+      }) => ({
+        ...item,
+        totalPrice: String(Number(item?.totalPrice) / 10 ** 18),
+        details: item?.details && (await JSON.parse(item?.details as string)),
+        decrypted: false,
+        subOrders: await Promise.all(
+          item?.subOrderCollectionIds?.map(
+            async (collectionId: string, index: number) => {
+              const collection = await getCollectionOrder(collectionId);
+
+              return {
+                collection: {
+                  name: collection?.data?.collectionCreateds?.[0]
+                    ?.collectionMetadata?.title as string,
+                  image: collection?.data?.collectionCreateds?.[0]
+                    ?.collectionMetadata?.images?.[0]
+                    ? collection?.data?.collectionCreateds?.[0]
+                        ?.collectionMetadata?.images?.[0]
+                    : (collection?.data?.collectionCreateds?.[0]
+                        ?.collectionMetadata?.cover as string),
+                  origin: collection?.data?.collectionCreateds?.[0]
+                    ?.origin as string,
+                  pubId: collection?.data?.collectionCreateds?.[0]
+                    ?.pubId as string,
+                },
+                price: String(
+                  Number(item?.subOrderPrice?.[index]) / 10 ** 18
+                ) as string,
+                status: item?.subOrderStatus?.[index] as string,
+                isFulfilled: item?.subOrderIsFulfilled?.[index],
+                fulfillerAddress: "",
+                amount: item?.subOrderAmount?.[index] as string,
+              };
+            }
+          )
+        ),
+      })
+    );
+    const awaited = await Promise.all(promises);
+    dispatch(setSelectedOrderSideBar(awaited?.[0]));
+    dispatch(setAllOrders(awaited));
     try {
     } catch (err: any) {
       console.error(err.message);
@@ -90,7 +148,7 @@ const useOrder = () => {
       }
 
       dispatch(
-        setSelectedOrderCircuit({
+        setSelectedOrderSideBar({
           ...res?.data?.orderCreateds[0],
           fulfillmentInformation: {
             encryptedString: JSON.parse(parsedInfo.encryptedString),
@@ -106,111 +164,63 @@ const useOrder = () => {
     setOrdersLoading(false);
   };
 
-  const getFulfillerAddress = async (): Promise<string | undefined> => {
-    try {
-      const data = await publicClient.readContract({
-        address: LISTENER_FULFILLMENT,
-        abi: [
-          {
-            inputs: [
-              {
-                internalType: "uint256",
-                name: "_fulfillerId",
-                type: "uint256",
-              },
-            ],
-            name: "getFulfillerAddress",
-            outputs: [
-              {
-                internalType: "address",
-                name: "",
-                type: "address",
-              },
-            ],
-            stateMutability: "view",
-            type: "function",
-          },
-        ],
-        functionName: "getFulfillerAddress",
-        args: [1],
-      });
-
-      return data as string | undefined;
-    } catch (err: any) {
-      console.error(err.message);
-    }
-  };
-
   const decryptFulfillment = async (): Promise<void> => {
-    if (
-      !selectedOrder?.fulfillmentInformation?.encryptedSymmetricKey ||
-      !selectedOrder?.fulfillmentInformation?.encryptedString ||
-      !address
-    ) {
-      return;
-    }
     setDecryptLoading(true);
+
     try {
-      const client = new LitNodeClient({ debug: false });
-      await client.connect();
+      if (
+        !(selectedOrderSideBar?.details as EncryptedDetails)?.ciphertext ||
+        !(selectedOrderSideBar?.details as EncryptedDetails)
+          ?.dataToEncryptHash ||
+        !address ||
+        selectedOrderSideBar?.decrypted
+      ) {
+        return;
+      }
+
       const authSig = await checkAndSignAuthMessage({
         chain: "polygon",
       });
-      const fulfillerAddress = await getFulfillerAddress();
-      if (fulfillerAddress) {
-        const symmetricKey = await client.getEncryptionKey({
-          accessControlConditions: [
-            {
-              contractAddress: "",
-              standardContractType: "",
-              chain: "polygon",
-              method: "",
-              parameters: [":userAddress"],
-              returnValueTest: {
-                comparator: "=",
-                value: fulfillerAddress.toLowerCase(),
-              },
-            },
-            {
-              operator: "or",
-            } as any,
-            {
-              contractAddress: "",
-              standardContractType: "",
-              chain: "polygon",
-              method: "",
-              parameters: [":userAddress"],
-              returnValueTest: {
-                comparator: "=",
-                value: address as string,
-              },
-            },
-          ],
-          toDecrypt:
-            selectedOrder?.fulfillmentInformation?.encryptedSymmetricKey!,
+
+      await client.connect();
+
+      const decryptedString = await decryptToString(
+        {
           authSig,
+          accessControlConditions: (
+            selectedOrderSideBar?.details as EncryptedDetails
+          ).accessControlConditions,
+          ciphertext: (selectedOrderSideBar?.details as EncryptedDetails)
+            .ciphertext,
+          dataToEncryptHash: (selectedOrderSideBar?.details as EncryptedDetails)
+            .dataToEncryptHash,
           chain: "polygon",
-        });
-        const uintString = new Uint8Array(
-          selectedOrder?.fulfillmentInformation?.encryptedString!
-        ).buffer;
-        const blob = new Blob([uintString], { type: "text/plain" });
-        const decryptedString = await decryptString(blob, symmetricKey);
-        dispatch(
-          setSelectedOrderCircuit({
-            ...selectedOrder,
-            fulfillmentInformation: {
-              encryptedString:
-                selectedOrder.fulfillmentInformation.encryptedString,
-              encryptedSymmetricKey:
-                selectedOrder.fulfillmentInformation.encryptedSymmetricKey,
-              decryptedFulfillment: JSON.parse(decryptedString),
-            },
-          })
-        );
-      }
+        },
+        client!
+      );
+
+      const details = await JSON.parse(decryptedString);
+
+      const current = [...allOrders];
+      const index = allOrders?.findIndex(
+        (order) => order?.orderId == selectedOrderSideBar?.orderId
+      );
+
+      current[index] = {
+        ...current[index],
+        details,
+        subOrders: current[index]?.subOrders.map((item, index) => ({
+          ...item,
+          size: details.sizes[details.sizes.length - 1 - index],
+          color: details.colors[details.colors.length - 1 - index],
+        })),
+        decrypted: true,
+      };
+
+      dispatch(setAllOrders(current));
+      dispatch(setSelectedOrderSideBar(current[index]));
     } catch (err: any) {
-      console.error(err);
+      console.error(err.message);
     }
     setDecryptLoading(false);
   };

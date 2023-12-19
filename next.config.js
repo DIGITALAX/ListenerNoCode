@@ -5,6 +5,7 @@ const allowedOrigins = [
   "https://api.studio.thegraph.com",
   "https://api.thegraph.com",
   "https://litlistener.onrender.com",
+  "https://api-v2.lens.dev/",
 ];
 
 const nextConfig = {

@@ -39,6 +39,9 @@ module.exports = {
         1: 1,
         5: 5
       },
+      fontSize: {
+        xxs: "0.6rem"
+      },
       screens: {
         tablet: "800px",
         max: "1460px",

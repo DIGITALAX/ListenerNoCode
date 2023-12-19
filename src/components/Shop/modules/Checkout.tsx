@@ -1,30 +1,24 @@
 import { FunctionComponent } from "react";
-import { CartItem, CheckoutProps } from "../types/shop.types";
+import { CheckoutProps } from "../types/shop.types";
 import Image from "next/legacy/image";
 import { ACCEPTED_TOKENS, INFURA_GATEWAY } from "../../../../lib/constants";
 import { AiOutlineLoading } from "react-icons/ai";
 import ShippingInfo from "./ShippingInfo";
 import { ImCross } from "react-icons/im";
-import { setCartItems } from "../../../../redux/reducers/cartItemsSlice";
-import lodash from "lodash";
-import { setModalOpen } from "../../../../redux/reducers/modalOpenSlice";
 import {
   PiArrowCircleUpLeftFill,
   PiArrowCircleDownRightFill,
 } from "react-icons/pi";
 
 const Checkout: FunctionComponent<CheckoutProps> = ({
-  cartItems,
   purchaseLoading,
   purchaseItems,
-  dispatch,
   setCheckoutCurrency,
   checkoutCurrency,
   fulfillmentDetails,
   setFulfillmentDetails,
   approved,
   handleApproveSpend,
-  oracleValue,
   openConnectModal,
   address,
   openChainModal,
@@ -32,13 +26,13 @@ const Checkout: FunctionComponent<CheckoutProps> = ({
   setCheckoutOpen,
   checkOutOpen,
   largeScreen,
+  chosenCartItem,
+  setChosenCartItem,
+  lensConnected,
+  lensSignIn,
+  lensLoading,
+  oracleData,
 }): JSX.Element => {
-  let value =
-    cartItems?.reduce(
-      (accumulator, currentItem) =>
-        accumulator + (currentItem.price * currentItem.amount) / 10 ** 18,
-      0
-    ) / oracleValue;
   return (
     <div
       className={`absolute z-20 right-0 top-0 border-l-2 border-sol bg-aBlack px-4 py-6 h-full ${
@@ -61,7 +55,7 @@ const Checkout: FunctionComponent<CheckoutProps> = ({
         }`}
       >
         <div className="relative w-1 h-full bg-moda"></div>
-        <div className="relative w-full h-full flex flex-col gap-5">
+        <div className="relative w-full h-full flex items-center flex-col gap-5">
           <div className="relative w-full h-fit flex flex-row items-start justify-center">
             <div className="relative h-1 w-10 bg-moda flex items-start justify-center"></div>
             <div
@@ -80,128 +74,92 @@ const Checkout: FunctionComponent<CheckoutProps> = ({
             ></div>
             <div className="relative h-1 w-full bg-moda flex items-center justify-center"></div>
           </div>
-          <div className="relative w-full h-full flex overflow-y-scroll">
+          <div className="relative w-full h-full flex overflow-y-scroll items-start justify-center">
             <div className="relative w-full h-fit flex flex-col gap-10 font-vcr items-center justify-center px-2">
-              <div className="flex flex-col justify-start h-fit items-center gap-3 w-full">
-                {cartItems?.length < 1 ? (
-                  <div className="relative w-full h-full flex text-center items-center justify-center font-vcr text-ballena text-sm">
-                    Add Items to Your Cart.
-                  </div>
-                ) : (
-                  cartItems?.map((item: CartItem, index: number) => {
-                    return (
+              {!chosenCartItem ? (
+                <div className="relative w-fit h-fit flex items-center justify-center font-vcr text-ama break-words text-xs">
+                  Add apparel to your cart.
+                </div>
+              ) : (
+                <div className="flex flex-col justify-start h-fit items-center gap-3 w-full">
+                  <div
+                    className={`relative w-full h-12 flex flex-row gap-5 font-mana text-white text-xs justify-between items-center px-1.5 bg-ama/20 rounded-md`}
+                  >
+                    <div className="relative w-10 h-8 rounded-lg bg-cross flex items-center justify-center">
+                      <Image
+                        src={`${INFURA_GATEWAY}/ipfs/${
+                          chosenCartItem?.item?.collectionMetadata?.images?.[0]?.split(
+                            "ipfs://"
+                          )[1]
+                        }`}
+                        layout="fill"
+                        objectFit="cover"
+                        className="rounded-lg"
+                        draggable={false}
+                      />
+                    </div>
+                    <div className="relative w-fit h-fit text-ama flex">
+                      {"USD "}
+                      {Number(chosenCartItem?.item?.prices?.[0]) *
+                        Number(chosenCartItem?.chosenAmount)}
+                    </div>
+                    <div className="relative w-fit h-fit text-ama flex">
+                      {chosenCartItem?.chosenAmount}
+                    </div>
+                    <div className="relative w-fit h-full flex flex-row items-center justify-center gap-1.5">
                       <div
-                        key={index}
-                        className={`relative w-full h-12 flex flex-row gap-5 font-mana text-white text-xs justify-between items-center px-1.5 bg-ama/20 rounded-md`}
+                        className={`relative w-5 h-5 flex items-center justify-center rotate-90 ${
+                          Number(chosenCartItem?.item?.amount) ==
+                          Number(chosenCartItem?.chosenAmount)
+                            ? "opacity-70"
+                            : "cursor-pointer active:scale-95"
+                        }`}
+                        onClick={() =>
+                          setChosenCartItem((prev) => ({
+                            ...prev!,
+                            chosenAmount:
+                              Number(prev?.chosenAmount!) + 1 >
+                              Number(prev?.item?.amount!)
+                                ? prev?.chosenAmount!
+                                : prev?.chosenAmount! + 1,
+                          }))
+                        }
                       >
-                        <div className="relative w-10 h-8 rounded-lg bg-cross flex items-center justify-center">
-                          <Image
-                            src={`${INFURA_GATEWAY}/ipfs/${
-                              item.uri.images?.[0]?.split("ipfs://")[1]
-                            }`}
-                            layout="fill"
-                            objectFit="cover"
-                            className="rounded-lg"
-                            draggable={false}
-                          />
-                        </div>
-                        <div className="relative w-fit h-fit text-ama flex">
-                          {
-                            ACCEPTED_TOKENS.find(
-                              (subArray) => subArray[1] === checkoutCurrency
-                            )?.[1]
-                          }{" "}
-                          {item.price / 10 ** 18}
-                        </div>
-                        <div className="relative w-fit h-fit text-ama flex">
-                          {item.amount}
-                        </div>
-                        <div className="relative w-fit h-full flex flex-row items-center justify-center gap-1.5">
-                          <div
-                            className="relative w-5 h-5 cursor-pointer active:scale-95 flex items-center justify-center rotate-90"
-                            onClick={() => {
-                              if (
-                                cartItems?.reduce(
-                                  (total, item) => total + Number(item.amount),
-                                  0
-                                ) >= 5
-                              ) {
-                                dispatch(
-                                  setModalOpen({
-                                    actionOpen: true,
-                                    actionMessage:
-                                      "Only 5 items in the cart at a time.",
-                                    actionImage:
-                                      "QmUzzkGb1HKfixUnyKbVDHVb9TG9nYpdYQhL6uZckRETow",
-                                  })
-                                );
-                                return;
-                              }
-
-                              dispatch(
-                                setCartItems([
-                                  ...cartItems.slice(0, index),
-                                  {
-                                    ...cartItems[index],
-                                    amount: cartItems[index].amount + 1,
-                                  },
-                                  ...cartItems.slice(index + 1),
-                                ])
-                              );
-                            }}
-                          >
-                            <Image
-                              src={`${INFURA_GATEWAY}/ipfs/Qma3jm41B4zYQBxag5sJSmfZ45GNykVb8TX9cE3syLafz2`}
-                              layout="fill"
-                              draggable={false}
-                            />
-                          </div>
-                          <div
-                            className="relative w-5 h-5 cursor-pointer active:scale-95 flex items-center justify-center rotate-90"
-                            onClick={() =>
-                              dispatch(
-                                setCartItems(
-                                  cartItems[index].amount > 1
-                                    ? [
-                                        ...cartItems.slice(0, index),
-                                        {
-                                          ...cartItems[index],
-                                          amount: cartItems[index].amount - 1,
-                                        },
-                                        ...cartItems.slice(index + 1),
-                                      ]
-                                    : [
-                                        ...cartItems.slice(0, index),
-                                        ...cartItems.slice(index + 1),
-                                      ]
-                                )
-                              )
-                            }
-                          >
-                            <Image
-                              src={`${INFURA_GATEWAY}/ipfs/QmcBVNVZWGBDcAxF4i564uSNGZrUvzhu5DKkXESvhY45m6`}
-                              layout="fill"
-                              draggable={false}
-                            />
-                          </div>
-                        </div>
-                        <div
-                          className="ml-auto justify-end items-center w-fit h-fit flex cursor-pointer active:scale-95"
-                          onClick={() => {
-                            const newCart = lodash.concat(
-                              lodash.slice([...cartItems], 0, index),
-                              lodash.slice([...cartItems], index + 1)
-                            );
-                            dispatch(setCartItems(newCart));
-                          }}
-                        >
-                          <ImCross color="white" size={10} />
-                        </div>
+                        <Image
+                          src={`${INFURA_GATEWAY}/ipfs/Qma3jm41B4zYQBxag5sJSmfZ45GNykVb8TX9cE3syLafz2`}
+                          layout="fill"
+                          draggable={false}
+                        />
                       </div>
-                    );
-                  })
-                )}
-              </div>
+                      <div
+                        className="relative w-5 h-5 cursor-pointer active:scale-95 flex items-center justify-center rotate-90"
+                        onClick={() => {
+                          if (Number(chosenCartItem?.chosenAmount) - 1 == 0) {
+                            setChosenCartItem(undefined);
+                          } else {
+                            setChosenCartItem((prev) => ({
+                              ...prev!,
+                              chosenAmount: Number(prev?.chosenAmount) - 1,
+                            }));
+                          }
+                        }}
+                      >
+                        <Image
+                          src={`${INFURA_GATEWAY}/ipfs/QmcBVNVZWGBDcAxF4i564uSNGZrUvzhu5DKkXESvhY45m6`}
+                          layout="fill"
+                          draggable={false}
+                        />
+                      </div>
+                    </div>
+                    <div
+                      className="ml-auto justify-end items-center w-fit h-fit flex cursor-pointer active:scale-95"
+                      onClick={() => setChosenCartItem(undefined)}
+                    >
+                      <ImCross color="white" size={10} />
+                    </div>
+                  </div>
+                </div>
+              )}
               <ShippingInfo
                 fulfillmentDetails={fulfillmentDetails}
                 setFulfillmentDetails={setFulfillmentDetails}
@@ -214,9 +172,20 @@ const Checkout: FunctionComponent<CheckoutProps> = ({
                       (subArray) => subArray[1] === checkoutCurrency
                     )?.[1]
                   } `}{" "}
-                  {Math.floor(value) === value
-                    ? value.toFixed(0)
-                    : value.toFixed(3)}
+                  {(
+                    (Number(chosenCartItem?.item?.prices?.[0]) *
+                      Number(chosenCartItem?.chosenAmount) *
+                      10 ** 18) /
+                    Number(
+                      oracleData?.find(
+                        (oracle) =>
+                          oracle.currency?.toLowerCase() ===
+                          ACCEPTED_TOKENS?.find(
+                            (item) => item?.[1] == checkoutCurrency
+                          )?.[2]?.toLowerCase()
+                      )?.rate
+                    )
+                  )?.toFixed(3)}
                 </div>
               </div>
               <div className="relative flex flex-col gap-1.5 items-center justify-center">
@@ -253,35 +222,43 @@ const Checkout: FunctionComponent<CheckoutProps> = ({
                 )}
                 <div
                   className={`relative w-3/4 h-12 border border-moda bg-azul text-ballena font-vcr items-center justify-center flex ${
-                    !purchaseLoading && cartItems?.length > 0 && "cursor-pointer active:scale-95"
+                    !purchaseLoading && "cursor-pointer active:scale-95"
                   }`}
                   onClick={
-                    !address && !purchaseLoading
+                    !address
                       ? openConnectModal
                       : address && switchNeeded
                       ? openChainModal
+                      : address && !lensConnected
+                      ? () => lensSignIn()
                       : approved
-                      ? cartItems?.length > 0
-                        ? () => !purchaseLoading && purchaseItems()
-                        : () => {}
-                      : () => !purchaseLoading && handleApproveSpend()
+                      ? () =>
+                          !purchaseLoading && !lensLoading && purchaseItems()
+                      : () =>
+                          !purchaseLoading &&
+                          !lensLoading &&
+                          handleApproveSpend()
                   }
                 >
                   <div
                     className={`relative w-fit h-fit flex justify-center items-center ${
-                      purchaseLoading && "animate-spin"
+                      (purchaseLoading || lensLoading) && "animate-spin"
                     }`}
                   >
-                    {purchaseLoading ? (
+                    {purchaseLoading || lensLoading ? (
                       <AiOutlineLoading size={15} color={"white"} />
                     ) : !address ? (
                       "CONNECT"
                     ) : address && switchNeeded ? (
                       "SWITCH NETWORK"
-                    ) : !approved ? (
-                      "APPROVE SPEND"
-                    ) : cartItems?.length > 0 ? (
-                      "CHECKOUT"
+                    ) : address && !lensConnected ? (
+                      "CONNECT LENS"
+                    ) : chosenCartItem ? (
+                      !approved ? (
+                        "APPROVE SPEND"
+                      ) : (
+                        "CHECKOUT"
+                      )
                     ) : (
                       "ADD TO CART"
                     )}

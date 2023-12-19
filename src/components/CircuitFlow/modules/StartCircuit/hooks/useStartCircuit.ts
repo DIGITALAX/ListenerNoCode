@@ -9,7 +9,7 @@ import { setNewContractConditionInformation } from "../../../../../../redux/redu
 import { setNewWebhookConditionInformation } from "../../../../../../redux/reducers/newWebhookConditionInformationSlice";
 import { useAccount } from "wagmi";
 import { generateAuthSig } from "../../../../../../lib/helpers/generateAuthSig";
-import { ethers } from "ethers";
+import { Eip1193Provider, ethers } from "ethers";
 import {
   ContractAction,
   LitChainIds,
@@ -65,10 +65,11 @@ const useStartCircuit = () => {
     setCircuitRunLoading(true);
     try {
       if (typeof window !== "undefined" && "ethereum" in window) {
-        const web3Provider = new ethers.providers.Web3Provider(
-          window.ethereum!
+        const web3Provider = new ethers.BrowserProvider(
+          window.ethereum as Eip1193Provider
         );
-        const connectedSigner = web3Provider.getSigner();
+
+        const connectedSigner = await web3Provider.getSigner();
 
         const chainId = circuitInformation.actions?.map((action: any) => {
           if ((action as ContractAction).chainId) {
@@ -97,7 +98,7 @@ const useStartCircuit = () => {
 
         if (res.status === 200) {
           dispatch(setCircuitRunning(true));
-        } else  {
+        } else {
           dispatch(
             setModalOpen({
               actionOpen: true,

@@ -390,7 +390,7 @@ const useSetActions = () => {
               abi: [abi],
               chainId: newContractActionInformation?.chainId || "ethereum",
               args: convertedArgs,
-            } as ContractAction,
+            } as unknown as ContractAction,
           ],
         })
       );
@@ -458,7 +458,7 @@ const useSetActions = () => {
               ? ({
                   ...newFetchActionInformation,
                   type: "fetch",
-                  priority: circuitInformation?.actions?.length ,
+                  priority: circuitInformation?.actions?.length,
                   baseUrl: newBaseURL,
                   endpoint: newEndpoint,
                 } as FetchAction)
@@ -474,7 +474,7 @@ const useSetActions = () => {
               : ({
                   ...newFetchActionInformation,
                   type: "fetch",
-                  priority: circuitInformation?.actions?.length ,
+                  priority: circuitInformation?.actions?.length,
                   baseUrl: newBaseURL,
                   endpoint: newEndpoint,
                   toSign: new Uint8Array(
@@ -519,7 +519,7 @@ const useSetActions = () => {
                     chainId:
                       newContractActionInformation?.chainId || "ethereum",
                     args: convertedArgs,
-                  } as ContractAction),
+                  } as unknown as ContractAction),
                 }
               : obj
           ) as any,
