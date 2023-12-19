@@ -172,20 +172,22 @@ const Checkout: FunctionComponent<CheckoutProps> = ({
                       (subArray) => subArray[1] === checkoutCurrency
                     )?.[1]
                   } `}{" "}
-                  {(
-                    (Number(chosenCartItem?.item?.prices?.[0]) *
-                      Number(chosenCartItem?.chosenAmount) *
-                      10 ** 18) /
-                    Number(
-                      oracleData?.find(
-                        (oracle) =>
-                          oracle.currency?.toLowerCase() ===
-                          ACCEPTED_TOKENS?.find(
-                            (item) => item?.[1] == checkoutCurrency
-                          )?.[2]?.toLowerCase()
-                      )?.rate
-                    )
-                  )?.toFixed(3)}
+                  {chosenCartItem
+                    ? (
+                        (Number(chosenCartItem?.item?.prices?.[0]) *
+                          Number(chosenCartItem?.chosenAmount) *
+                          10 ** 18) /
+                        Number(
+                          oracleData?.find(
+                            (oracle) =>
+                              oracle.currency?.toLowerCase() ===
+                              ACCEPTED_TOKENS?.find(
+                                (item) => item?.[1] == checkoutCurrency
+                              )?.[2]?.toLowerCase()
+                          )?.rate
+                        )
+                      )?.toFixed(3)
+                    : 0}
                 </div>
               </div>
               <div className="relative flex flex-col gap-1.5 items-center justify-center">
