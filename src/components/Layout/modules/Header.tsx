@@ -10,6 +10,7 @@ import {
 import { useAccount, useNetwork } from "wagmi";
 import { setWalletConnected } from "../../../../redux/reducers/walletConnectedSlice";
 import AllLinks from "./AllLinks";
+import useSignIn from "@/components/Shop/hooks/useSignIn";
 
 const Header: FunctionComponent = (): JSX.Element => {
   const walletConnected = useSelector(
@@ -22,6 +23,8 @@ const Header: FunctionComponent = (): JSX.Element => {
   const dispatch = useDispatch();
   const { isConnected } = useAccount();
   const { chain } = useNetwork();
+
+  const { handleLogout } = useSignIn();
 
   useEffect(() => {
     dispatch(setWalletConnected(isConnected));
@@ -45,7 +48,7 @@ const Header: FunctionComponent = (): JSX.Element => {
               ? openChainModal
               : !walletConnected
               ? openConnectModal
-              : openAccountModal
+              : () => handleLogout()
           }
         >
           <div

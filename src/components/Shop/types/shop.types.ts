@@ -1,34 +1,73 @@
+import { SetStateAction } from "react";
 import { AnyAction, Dispatch } from "redux";
+import { Profile } from "../../../../graphql/generated";
+import { Details } from "@/components/Account/types/account.types";
 
 export interface AllShop {
-  name: string;
-  prices: string[];
-  uri: {
-    images: string[];
-    description: string;
-    name: string;
-  };
   amount: string;
-  soldTokens: string[];
-  noLimit: boolean;
+  pubId: string;
+  uri: string;
+  profileId: string;
+  printType: string;
+  prices: string[];
+  acceptedTokens: string[];
+  owner: string;
+  soldTokens: string;
+  fulfillerPercent: string;
+  fulfillerBase: string;
+  fulfiller: string;
+  designerPercent: string;
+  dropId: string;
+  dropCollectionIds: string[];
   collectionId: string;
-  tokenIds: string[];
-  chosenSize: string;
-  sizes: string[];
-  fulfillerAddress: string;
-  fulfillerId: string;
+  unlimited: boolean;
+  origin: string;
+  blockTimestamp: string;
+  dropMetadata: {
+    dropTitle: string;
+    dropCover: string;
+  };
+  collectionMetadata: {
+    access: string[];
+    visibility: string;
+    colors: string[];
+    sizes: string[];
+    mediaCover: string;
+    description: string;
+    communities: string[];
+    title: string;
+    tags: string[];
+    prompt: string;
+    mediaTypes: string[];
+    profileHandle: string;
+    microbrandCover: string;
+    microbrand: string;
+    images: string[];
+    video: string;
+    audio: string;
+    onChromadin: string;
+    sex: string;
+    style: string;
+  };
+}
+
+export interface AuthSig {
+  sig: any;
+  derivedVia: string;
+  signedMessage: string;
+  address: string;
+}
+
+export interface OracleData {
+  currency: string;
+  rate: string;
+  wei: string;
 }
 
 export interface CartItem {
-  collectionId: string;
-  uri: {
-    images: string[];
-    description: string;
-  };
-  price: number;
+  item: AllShop;
   chosenSize: string;
-  amount: number;
-  name: string;
+  chosenAmount: number;
 }
 
 export type AllShopProps = {
@@ -36,10 +75,11 @@ export type AllShopProps = {
   dispatch: Dispatch<AnyAction>;
   currentIndex: number;
   setCurrentIndex: (index: number) => void;
-  allCartItems: CartItem[];
   currentIndexItem: number[];
   checkOutOpen: boolean;
   largeScreen: boolean;
+  chosenItem: CartItem | undefined;
+  setChosenItem: (e: SetStateAction<CartItem | undefined>) => void;
 };
 
 export type ShopItemProps = {
@@ -47,65 +87,37 @@ export type ShopItemProps = {
   item: AllShop;
   largeScreen: boolean;
   allShopItems: AllShop[];
-  allCartItems: CartItem[];
+  chosenItem: CartItem | undefined;
+  setChosenItem: (e: SetStateAction<CartItem | undefined>) => void;
   dispatch: Dispatch<AnyAction>;
   currentIndexItem: number[];
 };
 
 export type CheckoutProps = {
-  cartItems: CartItem[];
   purchaseLoading: boolean;
   purchaseItems: () => Promise<void>;
-  dispatch: Dispatch<AnyAction>;
   setCheckoutCurrency: (e: string) => void;
   checkoutCurrency: string;
-  fulfillmentDetails: {
-    name: string;
-    contact: string;
-    address: string;
-    zip: string;
-    city: string;
-    state: string;
-    country: string;
-  };
+  fulfillmentDetails: Details;
   largeScreen: boolean;
   setCheckoutOpen: (e: boolean) => void;
   checkOutOpen: boolean;
-  setFulfillmentDetails: (e: {
-    name: string;
-    contact: string;
-    address: string;
-    zip: string;
-    city: string;
-    state: string;
-    country: string;
-  }) => void;
+  chosenCartItem: CartItem | undefined;
+  setChosenCartItem: (e: SetStateAction<CartItem | undefined>) => void;
+  setFulfillmentDetails: (e: Details) => void;
   approved: boolean;
   handleApproveSpend: () => Promise<void>;
-  oracleValue: number;
   openConnectModal: (() => void) | undefined;
   address: boolean;
   openChainModal: (() => void) | undefined;
   switchNeeded: boolean;
+  lensConnected: Profile | undefined;
+  lensSignIn: () => Promise<void>;
+  lensLoading: boolean;
+  oracleData: OracleData[];
 };
 
 export type ShippingInfoProps = {
-  fulfillmentDetails: {
-    name: string;
-    contact: string;
-    address: string;
-    zip: string;
-    city: string;
-    state: string;
-    country: string;
-  };
-  setFulfillmentDetails: (e: {
-    name: string;
-    contact: string;
-    address: string;
-    zip: string;
-    city: string;
-    state: string;
-    country: string;
-  }) => void;
+  fulfillmentDetails: Details;
+  setFulfillmentDetails: (e: Details) => void;
 };

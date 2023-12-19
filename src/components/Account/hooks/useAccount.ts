@@ -2,7 +2,7 @@ import { useAccount } from "wagmi";
 import {
   getUserCircuitsUser,
   getUserCircuitsUserById,
-} from "../../../../graphql/queries/getUserCircuits";
+} from "../../../../graphql/subgraph/queries/getUserCircuits";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
@@ -10,14 +10,14 @@ import { setAllUserCircuits } from "../../../../redux/reducers/allUserCircuits";
 import {
   getUserCircuitsCompleted,
   getUserCircuitsCompletedById,
-} from "../../../../graphql/queries/getUserCircuitsCompleted";
+} from "../../../../graphql/subgraph/queries/getUserCircuitsCompleted";
 import { AllCircuits } from "../types/account.types";
 import {
   getUserCircuitsInterrupted,
   getUserCircuitsInterruptedById,
-} from "../../../../graphql/queries/getUserCircuitsInterrupted";
+} from "../../../../graphql/subgraph/queries/getUserCircuitsInterrupted";
 import { setSelectedUserCircuit } from "../../../../redux/reducers/selectedCircuitSlice";
-import { getUserLogs } from "../../../../graphql/queries/getUserLogs";
+import { getUserLogs } from "../../../../graphql/subgraph/queries/getUserLogs";
 import { fetchIpfsJson } from "../../../../lib/helpers/fetchIpfsJson";
 import { setModalOpen } from "../../../../redux/reducers/modalOpenSlice";
 import { ILogEntry } from "@/components/CircuitFlow/types/litlistener.types";

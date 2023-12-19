@@ -25,17 +25,6 @@ const ShippingInfo: FunctionComponent<ShippingInfoProps> = ({
               }
             />
             <input
-              placeholder="email, lens, tumblr"
-              className="bg-black border border-moda p-1.5 font-vcr text-white h-8 text-xs"
-              value={fulfillmentDetails.contact}
-              onChange={(e) =>
-                setFulfillmentDetails({
-                  ...fulfillmentDetails,
-                  contact: e.target.value,
-                })
-              }
-            />
-            <input
               placeholder="address"
               className="bg-black border border-moda p-1.5 font-vcr text-white w-full h-8 text-xs"
               value={fulfillmentDetails.address}
@@ -48,7 +37,7 @@ const ShippingInfo: FunctionComponent<ShippingInfoProps> = ({
             />
             <input
               placeholder="zip"
-              className="bg-black border border-moda p-1.5 font-vcr w-16 text-white text-xs h-full"
+              className="bg-black border border-moda p-1.5 font-vcr w-16 text-white text-xs h-8"
               value={fulfillmentDetails.zip}
               onChange={(e) =>
                 setFulfillmentDetails({
@@ -59,7 +48,7 @@ const ShippingInfo: FunctionComponent<ShippingInfoProps> = ({
             />
             <input
               placeholder="city"
-              className="bg-black border border-moda p-1.5 font-vcr w-20 text-white text-xs  h-full"
+              className="bg-black border border-moda p-1.5 font-vcr w-20 text-white text-xs h-8"
               value={fulfillmentDetails.city}
               onChange={(e) =>
                 setFulfillmentDetails({
@@ -70,7 +59,7 @@ const ShippingInfo: FunctionComponent<ShippingInfoProps> = ({
             />
             <input
               placeholder="state"
-              className="bg-black border border-moda p-1.5 font-vcr w-16 text-white text-xs  h-full"
+              className="bg-black border border-moda p-1.5 font-vcr w-16 text-white text-xs h-8"
               value={fulfillmentDetails.state}
               onChange={(e) =>
                 setFulfillmentDetails({
@@ -81,7 +70,7 @@ const ShippingInfo: FunctionComponent<ShippingInfoProps> = ({
             />
             <input
               placeholder="country"
-              className="bg-black border border-moda p-1.5 font-vcr w-full text-white text-xs  h-full"
+              className="bg-black border border-moda p-1.5 font-vcr w-full text-white text-xs h-8"
               value={fulfillmentDetails.country}
               onChange={(e) =>
                 setFulfillmentDetails({

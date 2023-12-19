@@ -2,19 +2,18 @@ import { FunctionComponent } from "react";
 import { AllShop, CartItem, ShopItemProps } from "../types/shop.types";
 import Image from "next/legacy/image";
 import { INFURA_GATEWAY } from "../../../../lib/constants";
-import { setCartItems } from "../../../../redux/reducers/cartItemsSlice";
 import { setAllShop } from "../../../../redux/reducers/allShopSlice";
-import { setModalOpen } from "../../../../redux/reducers/modalOpenSlice";
 import { setCurrentIndexItem } from "../../../../redux/reducers/currentIndexItemSlice";
 
 const ShopItem: FunctionComponent<ShopItemProps> = ({
   item,
   dispatch,
-  allCartItems,
   currentIndexItem,
+  chosenItem,
   keyIndex,
   allShopItems,
   largeScreen,
+  setChosenItem,
 }): JSX.Element => {
   return (
     <div
@@ -23,18 +22,24 @@ const ShopItem: FunctionComponent<ShopItemProps> = ({
       }`}
     >
       <div className="relative w-full h-full">
-        {item?.uri?.images?.[currentIndexItem[keyIndex || 0]] && (
+        {item?.collectionMetadata?.images?.[
+          currentIndexItem[keyIndex || 0]
+        ] && (
           <Image
             layout="fill"
             objectFit="cover"
             src={`${INFURA_GATEWAY}/ipfs/${
-              item?.uri?.images?.[currentIndexItem[keyIndex || 0]]?.split(
-                "ipfs://"
-              )?.[1]
+              item?.collectionMetadata?.images?.[
+                currentIndexItem[keyIndex || 0]
+              ]?.split("ipfs://")?.[1]
             }`}
             className="rounded-md"
             draggable={false}
-            key={item?.uri?.images?.[currentIndexItem[keyIndex || 0]]}
+            key={
+              item?.collectionMetadata?.images?.[
+                currentIndexItem[keyIndex || 0]
+              ]
+            }
           />
         )}
       </div>
@@ -44,8 +49,10 @@ const ShopItem: FunctionComponent<ShopItemProps> = ({
           onClick={() => {
             const newItems = [...currentIndexItem];
             newItems[keyIndex] =
-              (currentIndexItem[keyIndex] - 1 + item?.uri?.images?.length) %
-              item?.uri?.images?.length;
+              (currentIndexItem[keyIndex] -
+                1 +
+                item?.collectionMetadata?.images?.length) %
+              item?.collectionMetadata?.images?.length;
             dispatch(setCurrentIndexItem(newItems));
           }}
         >
@@ -60,7 +67,8 @@ const ShopItem: FunctionComponent<ShopItemProps> = ({
           onClick={() => {
             const newItems = [...currentIndexItem];
             newItems[keyIndex] =
-              (currentIndexItem[keyIndex] + 1) % item?.uri?.images?.length;
+              (currentIndexItem[keyIndex] + 1) %
+              item?.collectionMetadata?.images?.length;
 
             dispatch(setCurrentIndexItem(newItems));
           }}
@@ -74,82 +82,62 @@ const ShopItem: FunctionComponent<ShopItemProps> = ({
       </div>
       <div className="absolute bottom-0 left-0 h-20 bg-black/70 w-full flex flex-col rounded-b-md border-t border-white px-2 py-1 justify-between items-center">
         <div className="relative w-full h-fit flex flex-col cursor-pointer text-xs text-white font-vcr">
-          {item?.uri?.name}
+          {item?.collectionMetadata?.title}
         </div>
         <div className="relative flex flex-row gap-2 w-full h-fit items-center">
           <div className="relative flex flex-row gap-2 w-full h-fit">
-            {item?.sizes?.map((size: string, index: number) => {
-              return (
-                <div
-                  key={index}
-                  className={`relative rounded-full text-xs w-5 h-5 font-vcr flex items-center justify-center cursor-pointer active:scale-95 ${
-                    item?.chosenSize === size
-                      ? "border border-ballena bg-white text-black"
-                      : "border border-moda bg-black text-white"
-                  }`}
-                  onClick={() => {
-                    const updated = allShopItems.map((obj: AllShop) =>
-                      obj.uri.name === item?.uri?.name
-                        ? { ...obj, chosenSize: size }
-                        : obj
-                    );
+            {item?.collectionMetadata?.sizes?.map(
+              (size: string, index: number) => {
+                return (
+                  <div
+                    key={index}
+                    className={`relative rounded-full text-xxs w-5 h-5 font-vcr flex items-center justify-center cursor-pointer active:scale-95 ${
+                      chosenItem?.chosenSize === size &&
+                      chosenItem?.item?.collectionMetadata?.title ==
+                        item?.collectionMetadata?.title
+                        ? "border border-ballena bg-white text-black"
+                        : "border border-moda bg-black text-white"
+                    }`}
+                    onClick={() => {
+                      const updated = allShopItems.map((obj: AllShop) =>
+                        obj?.collectionMetadata?.title ===
+                        item?.collectionMetadata?.title
+                          ? { ...obj, chosenSize: size }
+                          : obj
+                      );
 
-                    dispatch(setAllShop(updated));
-                  }}
-                >
-                  {size}
-                </div>
-              );
-            })}
-          </div>
-          <div
-            className="relative text-xl text-white font-vcr flex justify-end ml-auto w-5 items-center h-4 cursor-pointer active:scale-95"
-            onClick={() => {
-              if (
-                allCartItems?.reduce(
-                  (total, item) => total + Number(item.amount),
-                  0
-                ) >= 5
-              ) {
-                dispatch(
-                  setModalOpen({
-                    actionOpen: true,
-                    actionMessage: "Only 5 items in the cart at a time.",
-                    actionImage:
-                      "QmUzzkGb1HKfixUnyKbVDHVb9TG9nYpdYQhL6uZckRETow",
-                  })
+                      setChosenItem((prev) => {
+                        let current = { ...prev };
+
+                        if (
+                          prev?.item?.collectionMetadata?.title ==
+                          item?.collectionMetadata?.title
+                        ) {
+                          current = {
+                            ...prev,
+                            chosenSize: size,
+                          };
+                        } else {
+                          current = {
+                            item,
+                            chosenAmount: 1,
+                            chosenSize: size,
+                          };
+                        }
+
+                        return current as CartItem;
+                      });
+
+                      dispatch(setAllShop(updated));
+                    }}
+                  >
+                    {size}
+                  </div>
                 );
-                return;
               }
-
-              let { sizes, prices, ...newObj } = item;
-              const existing = [...allCartItems].findIndex(
-                (item) => item?.name === newObj?.uri?.name
-              );
-
-              let newCartItems: CartItem[] = [...allCartItems];
-
-              if (existing !== -1) {
-                newCartItems = [
-                  ...newCartItems.slice(0, existing),
-                  {
-                    ...newCartItems[existing],
-                    amount: newCartItems[existing].amount + 1,
-                    price: Number(item?.prices?.[0]),
-                  },
-                  ...newCartItems.slice(existing + 1),
-                ];
-              } else {
-                newCartItems.push({
-                  ...newObj,
-                  amount: 1,
-                  price: Number(item?.prices?.[0]),
-                });
-              }
-
-              dispatch(setCartItems(newCartItems));
-            }}
-          >
+            )}
+          </div>
+          <div className="relative text-xl text-white font-vcr flex justify-end ml-auto w-5 items-center h-4 cursor-pointer active:scale-95">
             <Image
               src={`${INFURA_GATEWAY}/ipfs/QmcDmX2FmwjrhVDLpNii6NdZ4KisoPLMjpRUheB6icqZcV`}
               layout="fill"
@@ -161,7 +149,7 @@ const ShopItem: FunctionComponent<ShopItemProps> = ({
         </div>
         <div className="relative flex flex-row gap-2 w-full h-fit items-center">
           <div className="relative font-vcr flex justify-start items-start w-fit h-fit text-ballena">
-            ${Number(item?.prices?.[0]) / 10 ** 18}
+            ${Number(item?.prices?.[0])}
           </div>
           <div className="relative font-vcr flex justify-start items-start w-fit h-fit text-ballena text-xs ml-auto">
             {item?.soldTokens?.length || 0} / {item?.amount}

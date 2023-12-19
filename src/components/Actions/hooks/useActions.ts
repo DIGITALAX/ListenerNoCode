@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getDBEntriesAdded } from "../../../../graphql/queries/getDBEntriesAdded";
+import { getDBEntriesAdded } from "../../../../graphql/subgraph/queries/getDBEntriesAdded";
 import { useDispatch } from "react-redux";
 import { setAllEntries } from "../../../../redux/reducers/allEntriesSlice";
 import { fetchIpfsJson } from "../../../../lib/helpers/fetchIpfsJson";

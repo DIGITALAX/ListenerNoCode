@@ -8,6 +8,7 @@ import AllShop from "@/components/Shop/modules/AllShop";
 import Checkout from "@/components/Shop/modules/Checkout";
 import { useChainModal, useConnectModal } from "@rainbow-me/rainbowkit";
 import { useEffect, useState } from "react";
+import useSignIn from "@/components/Shop/hooks/useSignIn";
 
 export default function Shop() {
   const dispatch = useDispatch();
@@ -16,11 +17,8 @@ export default function Shop() {
   const {
     shopLoading,
     purchaseLoading,
-    purchaseItems,
     address,
-    handleApproveSpend,
     approved,
-    oracleValue,
     setFulfillmentDetails,
     fulfillmentDetails,
     checkoutCurrency,
@@ -30,16 +28,24 @@ export default function Shop() {
     currentIndex,
     checkOutOpen,
     setCheckoutOpen,
+    setChosenItem,
+    chosenItem,
+    collectItem,
+    approveSpend,
   } = useShop();
   const allShopItems = useSelector(
     (state: RootState) => state.app.allShopReducer.value
   );
+  const lensConnected = useSelector(
+    (state: RootState) => state.app.lensConnectedReducer.profile
+  );
   const currentIndexItem = useSelector(
     (state: RootState) => state.app.currentIndexItemReducer.value
   );
-  const cartItems = useSelector(
-    (state: RootState) => state.app.cartItemsReducer.value
+  const oracleData = useSelector(
+    (state: RootState) => state.app.oracleDataReducer.data
   );
+  const { handleLensConnect, signInLoading } = useSignIn();
   const [largeScreen, setLargeScreen] = useState<boolean>(true);
 
   useEffect(() => {
@@ -101,31 +107,35 @@ export default function Shop() {
             setCurrentIndex={setCurrentIndex}
             allShopItems={allShopItems}
             dispatch={dispatch}
-            allCartItems={cartItems}
             currentIndexItem={currentIndexItem}
             largeScreen={largeScreen}
+            chosenItem={chosenItem}
+            setChosenItem={setChosenItem}
           />
         )}
       </div>
       <Checkout
+        chosenCartItem={chosenItem}
+        setChosenCartItem={setChosenItem}
         largeScreen={largeScreen}
         purchaseLoading={purchaseLoading}
-        purchaseItems={purchaseItems}
-        cartItems={cartItems}
+        purchaseItems={collectItem}
         fulfillmentDetails={fulfillmentDetails}
         setCheckoutCurrency={setCheckoutCurrency}
         setFulfillmentDetails={setFulfillmentDetails}
-        address={address}
+        address={address ? true : false}
         approved={approved}
         openConnectModal={openConnectModal}
-        dispatch={dispatch}
         checkoutCurrency={checkoutCurrency}
-        oracleValue={oracleValue}
-        handleApproveSpend={handleApproveSpend}
+        handleApproveSpend={approveSpend}
         switchNeeded={switchNeeded}
         openChainModal={openChainModal}
         checkOutOpen={checkOutOpen}
         setCheckoutOpen={setCheckoutOpen}
+        lensConnected={lensConnected}
+        lensSignIn={handleLensConnect}
+        lensLoading={signInLoading}
+        oracleData={oracleData}
       />
     </div>
   );

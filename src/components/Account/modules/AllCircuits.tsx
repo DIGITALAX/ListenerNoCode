@@ -129,11 +129,8 @@ const AllCircuits: FunctionComponent<AllCircuitsProps> = ({
                                   : completed!
                                   ? "text-comp"
                                   : "text-run"
-                                : (value as Order).isFulfilled
+                                : (value as Order).subOrders?.[0]?.isFulfilled
                                 ? "text-comp"
-                                : (value as Order).orderStatus?.[0] ===
-                                  "ordered"
-                                ? "text-costa"
                                 : "text-run"
                             }`}
                           >
@@ -143,11 +140,9 @@ const AllCircuits: FunctionComponent<AllCircuitsProps> = ({
                                 : completed!
                                 ? `(completed)`
                                 : `(running)`
-                              : (value as Order).isFulfilled
+                              : (value as Order).subOrders?.[0]?.isFulfilled
                               ? "(fulfilled)"
-                              : (value as Order).orderStatus?.[0] === "ordered"
-                              ? "(ordered)"
-                              : "(shipping)"}
+                              : "(ordered)"}
                           </div>
                         </div>
                         <div

@@ -11,10 +11,11 @@ const AllShop: FunctionComponent<AllShopProps> = ({
   dispatch,
   currentIndex,
   setCurrentIndex,
-  allCartItems,
   currentIndexItem,
   checkOutOpen,
   largeScreen,
+  setChosenItem,
+  chosenItem,
 }): JSX.Element => {
   return (
     <div className="relative h-fit w-full items-center justify-center flex flex-col gap-5 pt-4 overflow-x-hidden overflow-y-scroll">
@@ -28,13 +29,14 @@ const AllShop: FunctionComponent<AllShopProps> = ({
               return (
                 <ShopItem
                   allShopItems={allShopItems}
-                  allCartItems={allCartItems}
                   key={index}
                   item={item}
                   dispatch={dispatch}
                   keyIndex={index}
                   currentIndexItem={currentIndexItem}
                   largeScreen={largeScreen}
+                  chosenItem={chosenItem}
+                  setChosenItem={setChosenItem}
                 />
               );
             })}

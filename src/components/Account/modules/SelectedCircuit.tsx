@@ -1,5 +1,5 @@
 import { FunctionComponent } from "react";
-import { Order, SelectedCircuitProps } from "../types/account.types";
+import { Details, SelectedCircuitProps } from "../types/account.types";
 import { convertDate } from "../../../../lib/helpers/convertDate";
 import { AiOutlineLoading } from "react-icons/ai";
 import moment from "moment";
@@ -8,7 +8,6 @@ import { BiCopy } from "react-icons/bi";
 import Link from "next/link";
 import { ACCEPTED_TOKENS, INFURA_GATEWAY } from "../../../../lib/constants";
 import Image from "next/legacy/image";
-import { AllShop } from "@/components/Shop/types/shop.types";
 
 const SelectedCircuit: FunctionComponent<SelectedCircuitProps> = ({
   selectedCircuit,
@@ -18,7 +17,6 @@ const SelectedCircuit: FunctionComponent<SelectedCircuitProps> = ({
   switchAccount,
   decryptFulfillment,
   decryptLoading,
-  allOrders,
 }): JSX.Element => {
   switch (switchAccount) {
     case true:
@@ -41,18 +39,12 @@ const SelectedCircuit: FunctionComponent<SelectedCircuitProps> = ({
               <div className="relative flex flex-row h-fit w-fit">
                 <div
                   className={`relative flex items-center justify-center border border-white p-2 text-white h-8 w-40 ${
-                    !selectedOrder?.fulfillmentInformation
-                      .decryptedFulfillment &&
+                    !selectedOrder?.decrypted &&
                     !decryptLoading &&
                     "cursor-pointer"
-                  } ${
-                    !selectedOrder?.fulfillmentInformation.decryptedFulfillment
-                      ? "bg-rojo"
-                      : "bg-comp"
-                  }`}
+                  } ${!selectedOrder?.decrypted ? "bg-rojo" : "bg-comp"}`}
                   onClick={() =>
-                    !selectedOrder?.fulfillmentInformation
-                      .decryptedFulfillment && decryptFulfillment()
+                    !selectedOrder?.decrypted && decryptFulfillment()
                   }
                 >
                   <div
@@ -62,8 +54,7 @@ const SelectedCircuit: FunctionComponent<SelectedCircuitProps> = ({
                   >
                     {decryptLoading ? (
                       <AiOutlineLoading size={15} color="white" />
-                    ) : !selectedOrder?.fulfillmentInformation
-                        .decryptedFulfillment ? (
+                    ) : !selectedOrder?.decrypted ? (
                       "Decrypt Fulfillment"
                     ) : (
                       "Decrypted"
@@ -73,59 +64,57 @@ const SelectedCircuit: FunctionComponent<SelectedCircuitProps> = ({
               </div>
             </div>
             <div className="relative bg-white h-px w-full"></div>
-            <div className="relative w-full h-44 flex flex-col overflow-y-scroll">
+            <div className="relative w-full h-full flex flex-col overflow-y-scroll px-2 gap-4">
               <div className="relative w-full h-fit inline-flex flex-wrap gap-3 justify-between items-center font-vcr pt-3">
                 <div className="relative flex flex-col gap-1 w-fit h-fit justify-center items-start text-xs">
                   <div className="relative w-fit h-fit text-white">Name</div>
                   <div className="relative w-fit h-fit text-sol">
-                    {selectedOrder?.fulfillmentInformation.decryptedFulfillment
-                      ?.name || "@#$13l33t"}
-                  </div>
-                </div>
-                <div className="relative flex flex-col gap-1 w-fit h-fit justify-center items-start text-xs">
-                  <div className="relative w-fit h-fit text-white">Contact</div>
-                  <div className="relative w-fit h-fit text-sol">
-                    {selectedOrder?.fulfillmentInformation.decryptedFulfillment
-                      ?.contact || "@#$13l33t"}
+                    {selectedOrder?.decrypted
+                      ? (selectedOrder?.details as Details)?.name
+                      : "@#$13l33t"}
                   </div>
                 </div>
                 <div className="relative flex flex-col gap-1 w-fit h-fit justify-center items-start text-xs">
                   <div className="relative w-fit h-fit text-white">Address</div>
                   <div className="relative w-fit h-fit text-sol">
-                    {selectedOrder?.fulfillmentInformation.decryptedFulfillment
-                      ?.address || "@#$13l33t"}
+                    {selectedOrder?.decrypted
+                      ? (selectedOrder?.details as Details)?.address
+                      : "@#$13l33t"}
                   </div>
                 </div>
                 <div className="relative flex flex-col gap-1 w-fit h-fit justify-center items-start text-xs">
                   <div className="relative w-fit h-fit text-white">City</div>
                   <div className="relative w-fit h-fit text-sol">
-                    {selectedOrder?.fulfillmentInformation.decryptedFulfillment
-                      ?.city || "@#$13l33t"}
+                    {selectedOrder?.decrypted
+                      ? (selectedOrder?.details as Details)?.city
+                      : "@#$13l33t"}
                   </div>
                 </div>
                 <div className="relative flex flex-col gap-1 w-fit h-fit justify-center items-start text-xs">
                   <div className="relative w-fit h-fit text-white">State</div>
                   <div className="relative w-fit h-fit text-sol">
-                    {selectedOrder?.fulfillmentInformation.decryptedFulfillment
-                      ?.state || "@#$13l33t"}
+                    {selectedOrder?.decrypted
+                      ? (selectedOrder?.details as Details)?.state
+                      : "@#$13l33t"}
                   </div>
                 </div>
                 <div className="relative flex flex-col gap-1 w-fit h-fit justify-center items-start text-xs">
                   <div className="relative w-fit h-fit text-white">Zip</div>
                   <div className="relative w-fit h-fit text-sol">
-                    {selectedOrder?.fulfillmentInformation.decryptedFulfillment
-                      ?.zip || "@#$13l33t"}
+                    {selectedOrder?.decrypted
+                      ? (selectedOrder?.details as Details)?.zip
+                      : "@#$13l33t"}
                   </div>
                 </div>
                 <div className="relative flex flex-col gap-1 w-fit h-fit justify-center items-start text-xs">
                   <div className="relative w-fit h-fit text-white">Country</div>
                   <div className="relative w-fit h-fit text-sol">
-                    {selectedOrder?.fulfillmentInformation.decryptedFulfillment
-                      ?.country || "@#$13l33t"}
+                    {selectedOrder?.decrypted
+                      ? (selectedOrder?.details as Details)?.country
+                      : "@#$13l33t"}
                   </div>
                 </div>
               </div>
-
               <div className="relative w-full h-fit inline-flex flex-wrap  justify-between items-center font-vcr pt-3 gap-3">
                 <div className="relative flex flex-col gap-1 w-fit h-fit justify-center items-start text-xs">
                   <div className="relative w-fit h-fit text-white">
@@ -134,22 +123,6 @@ const SelectedCircuit: FunctionComponent<SelectedCircuitProps> = ({
                   <div className="relative w-fit h-fit text-sol">
                     {selectedOrder?.blockTimestamp &&
                       convertDate(selectedOrder?.blockTimestamp)}
-                  </div>
-                </div>
-                <div className="relative flex flex-col gap-1 w-fit h-fit justify-center items-start text-xs">
-                  <div className="relative w-fit h-fit text-white">
-                    Fulfiller Id
-                  </div>
-                  <div className="relative w-fit h-fit text-sol">
-                    {selectedOrder?.fulfillerId}
-                  </div>
-                </div>
-                <div className="relative flex flex-col gap-1 w-fit h-fit justify-center items-start text-xs">
-                  <div className="relative w-fit h-fit text-white">
-                    Order Fulfilled
-                  </div>
-                  <div className="relative w-fit h-fit text-sol">
-                    {String(selectedOrder?.isFulfilled)}
                   </div>
                 </div>
                 <div className="relative flex flex-col gap-1 w-fit h-fit justify-center items-start text-xs">
@@ -165,15 +138,11 @@ const SelectedCircuit: FunctionComponent<SelectedCircuitProps> = ({
                     Total Order Price:
                   </div>
                   <div className="relative w-fit h-fit text-sol">
-                    {Number(selectedOrder?.totalPrice) /
-                      (selectedOrder?.chosenAddress?.toLowerCase() ===
-                      "0xc2132d05d31c914a87c6611c10748aeb04b58e8f"
-                        ? 10 ** 6
-                        : 10 ** 18)}{" "}
+                    {Number(selectedOrder?.totalPrice)}{" "}
                     {
                       ACCEPTED_TOKENS.find(
                         ([_, __, token]) =>
-                          token === selectedOrder?.chosenAddress?.toLowerCase()
+                          token === selectedOrder?.currency?.toLowerCase()
                       )?.[1] as `0x${string}`
                     }
                   </div>
@@ -196,128 +165,84 @@ const SelectedCircuit: FunctionComponent<SelectedCircuitProps> = ({
               </div>
             </div>
             <div className="relative bg-white h-px w-full"></div>
-            <div className="relative w-full h-fit flex flex-col">
-              <div className="relative w-full h-fit flex flex-row justify-between items-center font-vcr pt-3">
-                <div className="relative w-fit h-fit text-white text-sm">
-                  Item Details
-                </div>
+            <div className="relative w-full h-full flex flex-col gap-2 overflow-y-scroll px-2">
+              <div className="relative w-fit h-fit text-white font-vcr text-sm">
+                Item Details
               </div>
-              <div className="relative w-full h-24 flex overflow-y-scroll">
-                <div className="relative flex flex-col gap-2 h-fit w-full">
-                  {selectedOrder?.collectionDetails?.map(
-                    (coll: AllShop, index: number) => {
-                      return (
-                        <div
-                          key={index}
-                          className={`relative w-full h-12 flex flex-row gap-5 text-white text-xs justify-between items-center px-1.5 bg-ama/20 rounded-md font-vcr`}
-                        >
-                          <div className="relative w-10 h-8 rounded-lg bg-cross flex items-center justify-center">
-                            <Image
-                              src={`${INFURA_GATEWAY}/ipfs/${
-                                coll.uri.images?.[0]?.split("ipfs://")[1]
-                              }`}
-                              layout="fill"
-                              objectFit="cover"
-                              className="rounded-lg"
-                              draggable={false}
-                            />
-                          </div>
-                          <div className="relative w-fit h-fit text-ama flex break-words">
-                            {coll.uri?.name}
-                          </div>
-                          <div className="relative w-fit h-fit text-ama flex break-words">
-                            size:{" "}
-                            {selectedOrder?.fulfillmentInformation
-                              ?.decryptedFulfillment?.sizes?.[index] || "#$%"}
-                          </div>
-                          <div className="relative w-fit h-fit text-ama flex break-words">
-                            amt:{" "}
-                            {selectedOrder?.fulfillmentInformation
-                              ?.decryptedFulfillment?.collectionAmounts?.[
-                              index
-                            ] || "#$%"}
-                          </div>
-                        </div>
-                      );
-                    }
-                  )}
+              <div className="relative w-full h-fit flex">
+                <div className="relative w-full h-fit flex md:flex-nowrap flex-wrap flex-row items-center justify-between gap-3">
+                  <div className="relative w-fit h-fit flex items-center justify-center">
+                    <div
+                      className="relative flex w-20 h-20 rounded-sm border border-white cursor-pointer"
+                      onClick={() =>
+                        window.open(
+                          `https://cypher.digitalax.xyz/item/listener/${selectedOrder?.subOrders?.[0]?.collection?.name?.replaceAll(
+                            " ",
+                            "_"
+                          )}`
+                        )
+                      }
+                    >
+                      <Image
+                        layout="fill"
+                        src={`${INFURA_GATEWAY}/ipfs/${
+                          selectedOrder?.images?.[0]?.split("ipfs://")?.[1]
+                        }`}
+                        className="rounded-sm"
+                        objectFit="cover"
+                        draggable={false}
+                      />
+                    </div>
+                  </div>
+                  <div className="relative w-full h-fit flex items-center justify-between gap-3 flex-wrap md:flex-nowrap">
+                    <div className="relative flex w-fit h-fit items-center justify-center text-sm font-vcr text-white">
+                      $
+                      {Number(selectedOrder?.subOrders?.[0]?.price) /
+                        Number(selectedOrder?.subOrders?.[0]?.amount)}
+                    </div>
+                    <div className="relative flex w-fit h-fit items-center justify-center text-sm font-vcr text-white">
+                      {selectedOrder?.subOrders?.[0]?.isFulfilled
+                        ? "Fulfilled"
+                        : "Processing for Fulfillment"}
+                    </div>
+                    <div className="relative flex w-fit h-fit items-center justify-center text-sm font-vcr text-white">
+                      Qty.{selectedOrder?.subOrders?.[0]?.amount}
+                    </div>
+
+                    <div
+                      className={`relative flex h-7 border border-white p-px items-center justify-center font-vcr text-white ${
+                        ["xs", "s", "m", "l", "xl", "2xl"].includes(
+                          selectedOrder?.subOrders?.[0]?.size?.toLowerCase() ||
+                            ""
+                        ) || !selectedOrder?.decrypted
+                          ? "rounded-full w-7 text-sm"
+                          : "w-fit px-1 rounded-sm text-xxs"
+                      }`}
+                    >
+                      {selectedOrder?.subOrders?.[0]?.size &&
+                      selectedOrder?.decrypted
+                        ? selectedOrder?.subOrders?.[0]?.size
+                        : "??"}
+                    </div>
+                    <div
+                      className={`relative flex w-7 h-7 border border-white p-px rounded-full items-center justify-center text-sm font-vcr text-white`}
+                      style={{
+                        backgroundColor:
+                          selectedOrder?.subOrders?.[0]?.color &&
+                          selectedOrder?.decrypted
+                            ? `${selectedOrder?.subOrders?.[0]?.color}`
+                            : "#131313",
+                      }}
+                    >
+                      {(!selectedOrder?.subOrders?.[0]?.color ||
+                        !selectedOrder?.decrypted) &&
+                        "?"}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
             <div className="relative bg-white h-px w-full"></div>
-            <div className="relative w-full h-fit flex flex-row justify-between items-center font-vcr pt-3">
-              <div className="relative w-fit h-fit text-white text-sm">
-                Order History
-              </div>
-            </div>
-            <div className="relative w-full h-full flex overflow-y-scroll">
-              <div className="relative w-full h-fit flex flex-col gap-3">
-                {selectedOrder?.isFulfilled && (
-                  <div className="relative flex flex-col sm:flex-row justify-start items-start sm:items-center gap-2 font-vcr text-xs px-1.5 p-2 border border-white bg-black/60">
-                    <div
-                      className={`relative uppercase flex w-36 h-fit text-comp`}
-                    >
-                      {`FULFILLED >>>`}
-                    </div>
-                    <div className="relative w-full h-fit flex flex-col gap-1.5 text-white items-start justify-center">
-                      <div className="relative w-fit h-fit text-ballena items-end">
-                        Message
-                      </div>
-                      <div className="relative w-fit h-fit flex break-words">
-                        Order fulfilled.
-                      </div>
-                    </div>
-                  </div>
-                )}
-                {selectedOrder?.orderStatus?.map((log, index: number) => {
-                  let data: string;
-                  if (log === "ordered") {
-                    data = "Order registered. In process at The Manufactory.";
-                  } else if (log === "shipped") {
-                    data = "Order shipped from The Manufactory.";
-                  } else {
-                    data = "Order complete and fulfilled.";
-                  }
-                  return (
-                    <div
-                      key={index}
-                      className="relative flex flex-col sm:flex-row justify-start items-start sm:items-center gap-2 font-vcr text-xs px-1.5 p-2 border border-white bg-black/60"
-                    >
-                      <div
-                        className={`relative uppercase flex w-36 h-fit ${
-                          log === "ordered"
-                            ? "text-rio"
-                            : log === "shipped"
-                            ? "text-run"
-                            : "text-comp"
-                        }`}
-                      >
-                        {`${log} >>>`}
-                      </div>
-
-                      <div className="relative w-full h-fit flex flex-col gap-1.5 text-white items-start justify-center">
-                        <div className="relative w-fit h-fit text-ballena items-end">
-                          Message
-                        </div>
-                        <div className="relative w-fit h-fit flex break-words">
-                          {data}
-                        </div>
-                      </div>
-                      <div className="relative w-fit h-fit flex flex-col gap-1.5 text-white sm:ml-auto sm:items-end justify-center">
-                        <div className="relative w-fit h-fit text-ballena items-end">
-                          Timestamp
-                        </div>
-                        <div className="relative w-fit h-fit flex break-words whitespace-nowrap">
-                          {convertDate(
-                            selectedOrder.orderStatusTimestamps[index]
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
           </div>
         </div>
       );

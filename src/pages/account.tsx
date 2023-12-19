@@ -35,9 +35,6 @@ export default function Account() {
   const selectedCircuit = useSelector(
     (state: RootState) => state.app.selectedCircuitReducer.value
   );
-  const selectedOrder = useSelector(
-    (state: RootState) => state.app.selectedOrderReducer.value
-  );
   const {
     allCircuitsLoading,
     circuitLogsLoading,
@@ -97,7 +94,7 @@ export default function Account() {
           draggable={false}
         />
       </div>
-      <div className="relative w-full min-h-100 flex flex-col items-center justify-center grow xl:order-first order-last">
+      <div className="relative w-full min-h-100 flex flex-col items-center justify-center z-1 grow xl:order-first order-last">
         {!globalLoader &&
           !allCircuitsLoading &&
           !circuitLogsLoading &&
@@ -171,7 +168,7 @@ export default function Account() {
               selectedCircuit={selectedCircuit}
               handleInterruptCircuit={handleInterruptCircuit}
               interruptLoading={interruptLoading}
-              selectedOrder={selectedOrder}
+              selectedOrder={selectedOrderSideBar}
               switchAccount={switchAccount}
               decryptFulfillment={decryptFulfillment}
               decryptLoading={decryptLoading}

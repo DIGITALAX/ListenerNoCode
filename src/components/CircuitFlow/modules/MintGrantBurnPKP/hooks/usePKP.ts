@@ -74,7 +74,7 @@ const usePKP = () => {
         setSignedPKP({
           tokenId: tokenId,
           publicKey: data as string,
-          address: ethers.utils.computeAddress(data as string),
+          address: ethers.computeAddress(data as string),
         })
       );
     }

@@ -25,12 +25,12 @@ import selectedCircuitReducer from "./reducers/selectedCircuitSlice";
 import selectedCircuitSideBarReudcer from "./reducers/selectedCircuitSideBarSlice";
 import allEntriesReducer from "./reducers/allEntriesSlice";
 import allShopReducer from "./reducers/allShopSlice";
-import cartItemsReducer from "./reducers/cartItemsSlice";
 import purchaseModalReducer from "./reducers/purchaseModalSlice";
 import allOrdersReducer from "./reducers/allOrdersSlice";
 import switchAccountReducer from "./reducers/switchAccountSlice";
-import selectedOrderReducer from "./reducers/selectedOrderSlice";
 import selectedOrderSideBarReducer from "./reducers/selectedOrderSideBarSlice";
+import oracleDataReducer from "./reducers/oracleDataSlice";
+import lensConnectedReducer from "./reducers/lensConnectedSlice";
 
 const reducer = combineReducers({
   walletConnectedReducer,
@@ -57,13 +57,13 @@ const reducer = combineReducers({
   selectedCircuitSideBarReudcer,
   allEntriesReducer,
   allShopReducer,
-  cartItemsReducer,
   currentIndexItemReducer,
   purchaseModalReducer,
   allOrdersReducer,
   switchAccountReducer,
-  selectedOrderReducer,
-  selectedOrderSideBarReducer
+  selectedOrderSideBarReducer,
+  oracleDataReducer,
+  lensConnectedReducer,
 });
 
 export const store = configureStore({
