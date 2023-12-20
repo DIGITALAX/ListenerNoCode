@@ -147,6 +147,7 @@ export interface Order {
   subOrders: Sub[];
   decrypted: boolean;
 }
+
 export interface EncryptedDetails {
   ciphertext: string;
   dataToEncryptHash: string;

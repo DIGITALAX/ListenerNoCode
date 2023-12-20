@@ -2,8 +2,8 @@ import { FetchResult, gql } from "@apollo/client";
 import { graphPrintClient } from "../../../lib/subgraph/client";
 
 const ORDERS = `
-query($buyer: String!, $origin: String!) {
-  orderCreateds(where: {buyer: $buyer, origin: $origin}) {
+query($buyer: String!) {
+  orderCreateds(where: {buyer: $buyer}) {
       orderId
       totalPrice
       currency
@@ -69,7 +69,6 @@ export const getOrders = async (buyer: string): Promise<any> => {
     query: gql(ORDERS),
     variables: {
       buyer,
-      origin: "3",
     },
     fetchPolicy: "no-cache",
     errorPolicy: "all",
