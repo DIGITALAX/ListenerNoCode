@@ -174,7 +174,7 @@ export interface Sub {
   };
   isFulfilled: boolean;
   fulfillerAddress: string;
-  amount: string;
+  amount?: string;
   color?: string;
   size?: string;
 }
