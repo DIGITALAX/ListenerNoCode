@@ -115,6 +115,7 @@ export type CheckoutProps = {
   lensSignIn: () => Promise<void>;
   lensLoading: boolean;
   oracleData: OracleData[];
+  dispatch: Dispatch<AnyAction>;
 };
 
 export type ShippingInfoProps = {
