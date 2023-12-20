@@ -1,5 +1,5 @@
 import { FunctionComponent } from "react";
-import { Details, SelectedCircuitProps } from "../types/account.types";
+import { Details, SelectedCircuitProps, Sub } from "../types/account.types";
 import { convertDate } from "../../../../lib/helpers/convertDate";
 import { AiOutlineLoading } from "react-icons/ai";
 import moment from "moment";
@@ -169,77 +169,77 @@ const SelectedCircuit: FunctionComponent<SelectedCircuitProps> = ({
               <div className="relative w-fit h-fit text-white font-vcr text-sm">
                 Item Details
               </div>
-              <div className="relative w-full h-fit flex">
-                <div className="relative w-full h-fit flex md:flex-nowrap flex-wrap flex-row items-center justify-between gap-3">
-                  <div className="relative w-fit h-fit flex items-center justify-center">
+              <div className="relative w-full h-fit flex flex-col gap-4">
+                {selectedOrder?.subOrders?.map((sub: Sub, index: number) => {
+                  return (
                     <div
-                      className="relative flex w-20 h-20 rounded-sm border border-white cursor-pointer"
-                      onClick={() =>
-                        window.open(
-                          `https://cypher.digitalax.xyz/item/listener/${selectedOrder?.subOrders?.[0]?.collection?.name?.replaceAll(
-                            " ",
-                            "_"
-                          )}`
-                        )
-                      }
+                      className="relative w-full h-fit flex md:flex-nowrap flex-wrap flex-row items-center justify-between gap-3"
+                      key={index}
                     >
-                      <Image
-                        layout="fill"
-                        src={`${INFURA_GATEWAY}/ipfs/${
-                          selectedOrder?.images?.[0]?.split("ipfs://")?.[1]
-                        }`}
-                        className="rounded-sm"
-                        objectFit="cover"
-                        draggable={false}
-                      />
-                    </div>
-                  </div>
-                  <div className="relative w-full h-fit flex items-center justify-between gap-3 flex-wrap md:flex-nowrap">
-                    <div className="relative flex w-fit h-fit items-center justify-center text-sm font-vcr text-white">
-                      $
-                      {Number(selectedOrder?.subOrders?.[0]?.price) /
-                        Number(selectedOrder?.subOrders?.[0]?.amount)}
-                    </div>
-                    <div className="relative flex w-fit h-fit items-center justify-center text-sm font-vcr text-white">
-                      {selectedOrder?.subOrders?.[0]?.isFulfilled
-                        ? "Fulfilled"
-                        : "Processing for Fulfillment"}
-                    </div>
-                    <div className="relative flex w-fit h-fit items-center justify-center text-sm font-vcr text-white">
-                      Qty.{selectedOrder?.subOrders?.[0]?.amount}
-                    </div>
+                      <div className="relative w-fit h-fit flex items-center justify-center">
+                        <div
+                          className="relative flex w-20 h-20 rounded-sm border border-white cursor-pointer"
+                          onClick={() =>
+                            window.open(
+                              `https://cypher.digitalax.xyz/item/listener/${sub?.collection?.name?.replaceAll(
+                                " ",
+                                "_"
+                              )}`
+                            )
+                          }
+                        >
+                          <Image
+                            layout="fill"
+                            src={`${INFURA_GATEWAY}/ipfs/${
+                              selectedOrder?.images?.[0]?.split("ipfs://")?.[1]
+                            }`}
+                            className="rounded-sm"
+                            objectFit="cover"
+                            draggable={false}
+                          />
+                        </div>
+                      </div>
+                      <div className="relative w-full h-fit flex items-center justify-between gap-3 flex-wrap md:flex-nowrap">
+                        <div className="relative flex w-fit h-fit items-center justify-center text-sm font-vcr text-white">
+                          ${Number(sub?.price) / Number(sub?.amount)}
+                        </div>
+                        <div className="relative flex w-fit h-fit items-center justify-center text-sm font-vcr text-white">
+                          {sub?.isFulfilled
+                            ? "Fulfilled"
+                            : "Processing for Fulfillment"}
+                        </div>
+                        <div className="relative flex w-fit h-fit items-center justify-center text-sm font-vcr text-white">
+                          Qty.{sub?.amount}
+                        </div>
 
-                    <div
-                      className={`relative flex h-7 border border-white p-px items-center justify-center font-vcr text-white ${
-                        ["xs", "s", "m", "l", "xl", "2xl"].includes(
-                          selectedOrder?.subOrders?.[0]?.size?.toLowerCase() ||
-                            ""
-                        ) || !selectedOrder?.decrypted
-                          ? "rounded-full w-7 text-sm"
-                          : "w-fit px-1 rounded-sm text-xxs"
-                      }`}
-                    >
-                      {selectedOrder?.subOrders?.[0]?.size &&
-                      selectedOrder?.decrypted
-                        ? selectedOrder?.subOrders?.[0]?.size
-                        : "??"}
+                        <div
+                          className={`relative flex h-7 border border-white p-px items-center justify-center font-vcr text-white ${
+                            ["xs", "s", "m", "l", "xl", "2xl"].includes(
+                              sub?.size?.toLowerCase() || ""
+                            ) || !selectedOrder?.decrypted
+                              ? "rounded-full w-7 text-sm"
+                              : "w-fit px-1 rounded-sm text-xxs"
+                          }`}
+                        >
+                          {sub?.size && selectedOrder?.decrypted
+                            ? sub?.size
+                            : "??"}
+                        </div>
+                        <div
+                          className={`relative flex w-7 h-7 border border-white p-px rounded-full items-center justify-center text-sm font-vcr text-white`}
+                          style={{
+                            backgroundColor:
+                              sub?.color && selectedOrder?.decrypted
+                                ? `${sub?.color}`
+                                : "#131313",
+                          }}
+                        >
+                          {(!sub?.color || !selectedOrder?.decrypted) && "?"}
+                        </div>
+                      </div>
                     </div>
-                    <div
-                      className={`relative flex w-7 h-7 border border-white p-px rounded-full items-center justify-center text-sm font-vcr text-white`}
-                      style={{
-                        backgroundColor:
-                          selectedOrder?.subOrders?.[0]?.color &&
-                          selectedOrder?.decrypted
-                            ? `${selectedOrder?.subOrders?.[0]?.color}`
-                            : "#131313",
-                      }}
-                    >
-                      {(!selectedOrder?.subOrders?.[0]?.color ||
-                        !selectedOrder?.decrypted) &&
-                        "?"}
-                    </div>
-                  </div>
-                </div>
+                  );
+                })}
               </div>
             </div>
             <div className="relative bg-white h-px w-full"></div>

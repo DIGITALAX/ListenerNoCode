@@ -115,6 +115,7 @@ export default function Shop() {
         )}
       </div>
       <Checkout
+        dispatch={dispatch}
         chosenCartItem={chosenItem}
         setChosenCartItem={setChosenItem}
         largeScreen={largeScreen}

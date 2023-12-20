@@ -9,6 +9,7 @@ import {
   PiArrowCircleUpLeftFill,
   PiArrowCircleDownRightFill,
 } from "react-icons/pi";
+import { setModalOpen } from "../../../../redux/reducers/modalOpenSlice";
 
 const Checkout: FunctionComponent<CheckoutProps> = ({
   purchaseLoading,
@@ -32,6 +33,7 @@ const Checkout: FunctionComponent<CheckoutProps> = ({
   lensSignIn,
   lensLoading,
   oracleData,
+  dispatch,
 }): JSX.Element => {
   return (
     <div
@@ -114,7 +116,23 @@ const Checkout: FunctionComponent<CheckoutProps> = ({
                             ? "opacity-70"
                             : "cursor-pointer active:scale-95"
                         }`}
-                        onClick={() =>
+                        onClick={() => {
+                          if (
+                            Number(chosenCartItem?.chosenAmount) + 1 >
+                            Number(chosenCartItem?.item?.amount)
+                          ) {
+                            dispatch(
+                              setModalOpen({
+                                actionOpen: true,
+                                actionMessage:
+                                  "We know you're eager. You've reached this prints' collect limit.",
+                                actionImage:
+                                  "QmSUH38BqmfPci9NEvmC2KRQEJeoyxdebHiZi1FABbtueg",
+                              })
+                            );
+                            return;
+                          }
+
                           setChosenCartItem((prev) => ({
                             ...prev!,
                             chosenAmount:
@@ -122,8 +140,8 @@ const Checkout: FunctionComponent<CheckoutProps> = ({
                               Number(prev?.item?.amount!)
                                 ? prev?.chosenAmount!
                                 : prev?.chosenAmount! + 1,
-                          }))
-                        }
+                          }));
+                        }}
                       >
                         <Image
                           src={`${INFURA_GATEWAY}/ipfs/Qma3jm41B4zYQBxag5sJSmfZ45GNykVb8TX9cE3syLafz2`}
