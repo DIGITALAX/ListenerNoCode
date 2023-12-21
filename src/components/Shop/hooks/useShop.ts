@@ -155,20 +155,25 @@ const useShop = () => {
                   )?.[2]?.toLowerCase()
               )?.wei
             ) >=
-          Number(
+          (Number(
             Number(chosenItem?.item?.prices?.[0]) *
-              Number(chosenItem?.chosenAmount || 1) *
+              Number(chosenItem?.chosenAmount) *
               10 ** 18
           ) /
             Number(
               oracleData?.find(
                 (oracle) =>
                   oracle.currency ===
-                  ACCEPTED_TOKENS?.find(
-                    (item) => item?.[1] == checkoutCurrency
-                  )?.[2]?.toLowerCase()
+                  ACCEPTED_TOKENS.find(
+                    (item) =>
+                      item[2] ===
+                      ACCEPTED_TOKENS?.find(
+                        (item) => item?.[1] == checkoutCurrency
+                      )?.[2]?.toLowerCase()
+                  )?.[2]
               )?.rate
-            )
+            )) *
+            10 ** 18
         ) {
           setApproved(true);
         } else {
@@ -456,6 +461,12 @@ const useShop = () => {
   useEffect(() => {
     setSwitchNeeded(chain?.id !== 137 ? true : false);
   }, [isConnected, walletConnected, chain?.id]);
+
+  useEffect(() => {
+    if (address && checkoutCurrency) {
+      checkApproved();
+    }
+  }, [checkoutCurrency, lensConnected?.id, address]);
 
   return {
     shopLoading,
