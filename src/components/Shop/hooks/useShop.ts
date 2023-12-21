@@ -76,14 +76,17 @@ const useShop = () => {
     )
       return;
     try {
+      let nonce = client.getLatestBlockhash();
+
       const authSig = await checkAndSignAuthMessage({
         chain: "polygon",
+        nonce: nonce!,
       });
 
       await client.connect();
 
       const encryptedItems = await encryptItems(
-        client,
+        client as any,
         {
           ...fulfillmentDetails,
           contact: lensConnected?.handle?.suggestedFormatted?.localName!,
