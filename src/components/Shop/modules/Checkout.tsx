@@ -105,12 +105,15 @@ const Checkout: FunctionComponent<CheckoutProps> = ({
                       {Number(chosenCartItem?.item?.prices?.[0]) *
                         Number(chosenCartItem?.chosenAmount)}
                     </div>
-                    <div className="relative w-fit h-fit text-ama flex">
+                    <div className="relative w-fit text-xxs h-fit text-ama flex">
+                      {chosenCartItem?.chosenSize}
+                    </div>
+                    <div className="relative w-fit text-xxs h-fit text-ama flex">
                       {chosenCartItem?.chosenAmount}
                     </div>
                     <div className="relative w-fit h-full flex flex-row items-center justify-center gap-1.5">
                       <div
-                        className={`relative w-5 h-5 flex items-center justify-center rotate-90 ${
+                        className={`relative w-4 h-4 flex items-center justify-center rotate-90 ${
                           Number(chosenCartItem?.item?.amount) ==
                           Number(chosenCartItem?.chosenAmount)
                             ? "opacity-70"
@@ -150,7 +153,7 @@ const Checkout: FunctionComponent<CheckoutProps> = ({
                         />
                       </div>
                       <div
-                        className="relative w-5 h-5 cursor-pointer active:scale-95 flex items-center justify-center rotate-90"
+                        className="relative w-4 h-4 cursor-pointer active:scale-95 flex items-center justify-center rotate-90"
                         onClick={() => {
                           if (Number(chosenCartItem?.chosenAmount) - 1 == 0) {
                             setChosenCartItem(undefined);
@@ -173,7 +176,7 @@ const Checkout: FunctionComponent<CheckoutProps> = ({
                       className="ml-auto justify-end items-center w-fit h-fit flex cursor-pointer active:scale-95"
                       onClick={() => setChosenCartItem(undefined)}
                     >
-                      <ImCross color="white" size={10} />
+                      <ImCross color="white" size={8} />
                     </div>
                   </div>
                 </div>

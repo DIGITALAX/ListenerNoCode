@@ -137,7 +137,7 @@ const ShopItem: FunctionComponent<ShopItemProps> = ({
               }
             )}
           </div>
-          <div className="relative text-xl text-white font-vcr flex justify-end ml-auto w-5 items-center h-4 cursor-pointer active:scale-95">
+          {/* <div className="relative text-xl text-white font-vcr flex justify-end ml-auto w-5 items-center h-4 cursor-pointer active:scale-95">
             <Image
               src={`${INFURA_GATEWAY}/ipfs/QmcDmX2FmwjrhVDLpNii6NdZ4KisoPLMjpRUheB6icqZcV`}
               layout="fill"
@@ -145,7 +145,7 @@ const ShopItem: FunctionComponent<ShopItemProps> = ({
               draggable={false}
               alt="preRoll"
             />
-          </div>
+          </div> */}
         </div>
         <div className="relative flex flex-row gap-2 w-full h-fit items-center">
           <div className="relative font-vcr flex justify-start items-start w-fit h-fit text-ballena">
