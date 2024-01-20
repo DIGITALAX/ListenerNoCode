@@ -330,6 +330,10 @@ export default function Home() {
       <Head>
         <title>No-Code Lit Listener</title>
         <link rel="icon" href="/favicon.ico" />
+        <meta
+          name="og:image"
+          content="https://listener.irrevocable.dev/card.png/"
+        />
       </Head>
       <div
         className="absolute w-full h-full flex mix-blend-overlay"

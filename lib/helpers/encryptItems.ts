@@ -1,6 +1,6 @@
 import { encryptString } from "@lit-protocol/lit-node-client";
 import { ILitNodeClient } from "@lit-protocol/types";
-import { ACCEPTED_TOKENS, DIGITALAX_ADDRESS } from "../constants";
+import {  DIGITALAX_ADDRESS } from "../constants";
 import { CartItem, AuthSig } from "@/components/Shop/types/shop.types";
 
 export const encryptItems = async (
