@@ -70,6 +70,10 @@ export default function Shop() {
       <Head>
         <title>No-Code Lit Listener | Shop</title>
         <link rel="icon" href="/favicon.ico" />
+        <meta
+          name="og:image"
+          content="https://listener.irrevocable.dev/card.png/"
+        />
       </Head>
       <div className="absolute w-full h-full flex mix-blend-overlay">
         <Image

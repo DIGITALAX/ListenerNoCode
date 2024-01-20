@@ -31,11 +31,15 @@ export default function Actions() {
     <div
       className="relative w-full flex flex-row border-t-2 border-sol grow"
       id={largeScreen ? "heightCheckout" : ""}
-      style={largeScreen ? {} : {height: "45rem"}}
+      style={largeScreen ? {} : { height: "45rem" }}
     >
       <Head>
         <title>No-Code Lit Listener | Actions</title>
         <link rel="icon" href="/favicon.ico" />
+        <meta
+          name="og:image"
+          content="https://listener.irrevocable.dev/card.png/"
+        />
       </Head>
       <div className="absolute w-full h-full flex mix-blend-overlay">
         <Image

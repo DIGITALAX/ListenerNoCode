@@ -75,6 +75,10 @@ export default function Account() {
       <Head>
         <title>No-Code Lit Listener | Account</title>
         <link rel="icon" href="/favicon.ico" />
+        <meta
+          name="og:image"
+          content="https://listener.irrevocable.dev/card.png/"
+        />
       </Head>
       <div className="absolute w-full h-full flex mix-blend-overlay">
         <Image

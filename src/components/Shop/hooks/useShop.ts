@@ -363,7 +363,7 @@ const useShop = () => {
         )?.[2]?.toLowerCase() as `0x${string}`
       );
 
-      const success = await actPost(
+      await actPost(
         `${toHexWithLeadingZero(
           Number(chosenItem?.item?.profileId)
         )}-${toHexWithLeadingZero(Number(chosenItem?.item?.pubId))}`,
