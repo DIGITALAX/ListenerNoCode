@@ -2,8 +2,7 @@
 
 const allowedOrigins = [
   "https://chromadin.infura-ipfs.io",
-  "https://api.studio.thegraph.com",
-  "https://api.thegraph.com",
+  "https://gateway-arbitrum.network.thegraph.com",
   "https://litlistener.onrender.com",
   "https://api-v2.lens.dev/",
 ];
