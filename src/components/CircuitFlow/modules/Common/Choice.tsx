@@ -1,5 +1,5 @@
-import { ChoiceProps } from "@/components/CircuitFlow/types/circuitflow.types";
 import { FunctionComponent } from "react";
+import { ChoiceProps } from "../../types/circuitflow.types";
 
 const Choice: FunctionComponent<ChoiceProps> = ({
   setChoiceType,

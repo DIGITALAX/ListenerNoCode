@@ -3,31 +3,28 @@ import {
   ContractCondition,
   WebhookCondition,
 } from "@/components/CircuitFlow/types/litlistener.types";
-import { FunctionComponent } from "react";
-import { setConditionFlow } from "../../../../../../redux/reducers/conditionFlowSlice";
+import { ModalContext } from "@/pages/_app";
+import { FunctionComponent, useContext } from "react";
 
 const FinalCondition: FunctionComponent<FinalConditionProps> = ({
-  conditionInformation,
   conditionType,
   editingState,
-  conditionFlowIndex,
   handleUpdateCondition,
   handleAddConditionAndReset,
-  dispatch,
   apiPassword,
   setApiPassword,
   expectedValues,
   eventArgs,
   inputs,
-  circuitInformation,
 }) => {
+  const context = useContext(ModalContext);
   switch (conditionType) {
     case "web":
-      const webHookInfo = conditionInformation as WebhookCondition;
+      const webHookInfo = context?.newWebhookConditionInfo as WebhookCondition;
       return (
         <div
           className={`relative w-full overflow-y-scroll flex flex-col gap-10 items-start justify-start h-60 grow p-2.5 ${
-            circuitInformation.conditions.length > 0 && "pb-20"
+            Number(context?.circuitInformation.conditions.length) > 0 && "pb-20"
           } `}
         >
           <div className="relative w-full h-full flex items-center justify-center text-center">
@@ -103,14 +100,11 @@ const FinalCondition: FunctionComponent<FinalConditionProps> = ({
               <div
                 className="relative w-fit h-fit px-2 py-1.5 flex items-center justify-center cursor-pointer hover:opacity-50 active:scale-95 border border-ballena bg-white"
                 onClick={() =>
-                  conditionFlowIndex.index === 0
-                    ? dispatch(
-                        setConditionFlow({
-                          index: conditionFlowIndex.index + 1,
-                          contractCount: conditionFlowIndex.contractCount,
-                          webhookCount: conditionFlowIndex.webhookCount,
-                        })
-                      )
+                  context?.conditionFlow.index === 0
+                    ? context?.setConditionFlow((prev) => ({
+                        ...prev,
+                        index: prev.index + 1,
+                      }))
                     : editingState
                     ? handleUpdateCondition()
                     : handleAddConditionAndReset()
@@ -126,11 +120,12 @@ const FinalCondition: FunctionComponent<FinalConditionProps> = ({
       );
 
     default:
-      const contractInfo = conditionInformation as ContractCondition;
+      const contractInfo =
+        context?.newContractConditionInfo as ContractCondition;
       return (
         <div
           className={`relative w-full overflow-y-scroll flex flex-col gap-10 items-start justify-start h-60 ${
-            circuitInformation.conditions.length > 0 && "pb-20"
+            Number(context?.circuitInformation.conditions.length) > 0 && "pb-20"
           } grow p-2.5`}
         >
           <div className="relative w-full h-full flex items-center justify-center text-center">
@@ -318,14 +313,11 @@ const FinalCondition: FunctionComponent<FinalConditionProps> = ({
               <div
                 className="relative w-fit h-fit px-2 py-1.5 flex items-center justify-center cursor-pointer hover:opacity-50 active:scale-95 border border-ballena bg-white"
                 onClick={() =>
-                  conditionFlowIndex.index === 0
-                    ? dispatch(
-                        setConditionFlow({
-                          index: conditionFlowIndex.index + 1,
-                          contractCount: conditionFlowIndex.contractCount,
-                          webhookCount: conditionFlowIndex.webhookCount,
-                        })
-                      )
+                  context?.conditionFlow.index === 0
+                    ? context?.setConditionFlow((prev) => ({
+                        ...prev,
+                        index: prev.index + 1,
+                      }))
                     : editingState
                     ? handleUpdateCondition()
                     : handleAddConditionAndReset()

@@ -1,8 +1,8 @@
-import { SignConditionProps } from "@/components/CircuitFlow/types/circuitflow.types";
 import { FunctionComponent } from "react";
 import { IoMdAddCircleOutline } from "react-icons/io";
 import Input from "../../Common/Input";
 import DropDown from "../../Common/DropDown";
+import { SignConditionProps } from "@/components/CircuitFlow/types/circuitflow.types";
 
 const SignCondition: FunctionComponent<SignConditionProps> = ({
   signConditions,

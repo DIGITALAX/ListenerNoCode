@@ -1,14 +1,8 @@
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../../../../../redux/store";
-import { useState } from "react";
-import { setModalOpen } from "../../../../../../redux/reducers/modalOpenSlice";
-import { setCircuitInformation } from "../../../../../../redux/reducers/circuitInformationSlice";
+import { ModalContext } from "@/pages/_app";
+import { useContext, useState } from "react";
 
 const useExecutionConstraints = () => {
-  const dispatch = useDispatch();
-  const circuitInformation = useSelector(
-    (state: RootState) => state.app.circuitInformationReducer.value
-  );
+  const context = useContext(ModalContext);
   const [time, setTime] = useState<{
     startDate: string | undefined;
     endDate: string | undefined;
@@ -27,13 +21,12 @@ const useExecutionConstraints = () => {
 
   const handleAddExecutionConstraints = () => {
     if (time?.endDate && time?.startDate && time?.endDate < time?.startDate) {
-      dispatch(
-        setModalOpen({
-          actionOpen: true,
-          actionMessage: "End Date Must Follow Start Date. Try Again.",
-          actionImage: "QmV1pHXj1E6DCp8nfKfPGC9Th7goGyGDgemr5crbY9Gj2p",
-        })
-      );
+      context?.setGeneralModal({
+        open: true,
+        message: "End Date Must Follow Start Date. Try Again.",
+        image: "QmV1pHXj1E6DCp8nfKfPGC9Th7goGyGDgemr5crbY9Gj2p",
+      });
+
       return;
     } else if (
       maxLitActionCompletions !== undefined &&
@@ -41,14 +34,12 @@ const useExecutionConstraints = () => {
         (typeof maxLitActionCompletions === "number" &&
           maxLitActionCompletions < 0))
     ) {
-      dispatch(
-        setModalOpen({
-          actionOpen: true,
-          actionMessage:
-            "Invalid Conditions Monitor Execution Amount. Try Again.",
-          actionImage: "QmSmfvfzuoV8ekTxnCaPVkqNkQ6TUSCtkoVk2ATTQiScTd",
-        })
-      );
+      context?.setGeneralModal({
+        open: true,
+        message: "Invalid Conditions Monitor Execution Amount. Try Again.",
+        image: "QmSmfvfzuoV8ekTxnCaPVkqNkQ6TUSCtkoVk2ATTQiScTd",
+      });
+
       return;
     } else if (
       conditionMonitorExecutions !== undefined &&
@@ -56,31 +47,28 @@ const useExecutionConstraints = () => {
         (typeof conditionMonitorExecutions === "number" &&
           conditionMonitorExecutions < 0))
     ) {
-      dispatch(
-        setModalOpen({
-          actionOpen: true,
-          actionMessage: "Invalid Full Circuit Runs Amount. Try Again.",
-          actionImage: "QmeyUWjZ2Saa3gQanUYfFhSpGNNCdoZaaXoceB5SjewNe4",
-        })
-      );
+      context?.setGeneralModal({
+        open: true,
+        message: "Invalid Full Circuit Runs Amount. Try Again.",
+        image: "QmeyUWjZ2Saa3gQanUYfFhSpGNNCdoZaaXoceB5SjewNe4",
+      });
+
       return;
     }
 
-    dispatch(
-      setCircuitInformation({
-        ...circuitInformation,
-        executionConstraints: {
-          maxLitActionCompletions: maxLitActionCompletions
-            ? maxLitActionCompletions
-            : undefined,
-          conditionMonitorExecutions: conditionMonitorExecutions
-            ? conditionMonitorExecutions
-            : undefined,
-          startDate: time?.startDate ? (time?.startDate as any) : undefined,
-          endDate: time?.endDate ? (time?.endDate as any) : undefined,
-        },
-      })
-    );
+    context?.setCircuitInformation((prev) => ({
+      ...prev,
+      executionConstraints: {
+        maxLitActionCompletions: maxLitActionCompletions
+          ? maxLitActionCompletions
+          : undefined,
+        conditionMonitorExecutions: conditionMonitorExecutions
+          ? conditionMonitorExecutions
+          : undefined,
+        startDate: time?.startDate ? (time?.startDate as any) : undefined,
+        endDate: time?.endDate ? (time?.endDate as any) : undefined,
+      },
+    }));
   };
 
   return {

@@ -1,28 +1,23 @@
-import { FunctionComponent } from "react";
-import { SetConditionsProps } from "@/components/CircuitFlow/types/circuitflow.types";
+import { FunctionComponent, useContext } from "react";
 import Choice from "../../Common/Choice";
 import Input from "../../Common/Input";
-import { setNewWebhookConditionInformation } from "../../../../../../redux/reducers/newWebhookConditionInformationSlice";
 import FinalCondition from "./FinalCondition";
-import { setNewContractConditionInformation } from "../../../../../../redux/reducers/newContractConditionInformationSlice";
 import Abi from "../../Common/Abi";
 import Args from "../../Common/Args";
 import DropDown from "../../Common/DropDown";
+import { ModalContext } from "@/pages/_app";
+import { SetConditionsProps } from "@/components/CircuitFlow/types/circuitflow.types";
 
 const SetConditions: FunctionComponent<SetConditionsProps> = ({
-  dispatch,
   conditionType,
   setConditionType,
-  newContractConditionInformation,
   handleAddConditionAndReset,
   eventArgs,
   setEventArgs,
   expectedValues,
   setExpectedValues,
-  newWebhookConditionInformation,
   editingState,
   handleUpdateCondition,
-  conditionFlowIndex,
   setDropDownChainContract,
   dropDownChainContract,
   inputs,
@@ -31,25 +26,21 @@ const SetConditions: FunctionComponent<SetConditionsProps> = ({
   setDropDownsOpenContract,
   apiPassword,
   setApiPassword,
-  circuitInformation,
 }): JSX.Element => {
+  const context = useContext(ModalContext);
   switch (conditionType) {
     case "contract":
-      switch (conditionFlowIndex.index) {
+      switch (context?.conditionFlow?.index) {
         case 6:
           return (
             <FinalCondition
-              conditionInformation={newContractConditionInformation}
               conditionType={conditionType}
               editingState={editingState}
-              conditionFlowIndex={conditionFlowIndex}
               handleAddConditionAndReset={handleAddConditionAndReset}
               handleUpdateCondition={handleUpdateCondition}
-              dispatch={dispatch}
               inputs={inputs}
               eventArgs={eventArgs}
               expectedValues={expectedValues}
-              circuitInformation={circuitInformation}
             />
           );
 
@@ -59,16 +50,17 @@ const SetConditions: FunctionComponent<SetConditionsProps> = ({
               <div className="relative w-full h-fit flex flex-col renewed:flex-row gap-3 galaxy:items-center galaxy:justify-center">
                 <Args
                   args={
-                    newContractConditionInformation?.eventArgName &&
-                    newContractConditionInformation?.eventArgName?.length > 0
-                      ? newContractConditionInformation?.eventArgName
+                    context?.newContractConditionInfo?.eventArgName &&
+                    context?.newContractConditionInfo?.eventArgName?.length > 0
+                      ? context?.newContractConditionInfo?.eventArgName
                       : eventArgs
                   }
                   setOnChangeArgs={(value: string, index: number) => {
                     const updatedEventArgs =
-                      newContractConditionInformation?.eventArgName &&
-                      newContractConditionInformation?.eventArgName?.length > 0
-                        ? [...newContractConditionInformation?.eventArgName]
+                      context?.newContractConditionInfo?.eventArgName &&
+                      context?.newContractConditionInfo?.eventArgName?.length >
+                        0
+                        ? [...context?.newContractConditionInfo?.eventArgName]
                         : [...eventArgs];
                     updatedEventArgs[index] = value;
                     setEventArgs(updatedEventArgs);
@@ -79,21 +71,21 @@ const SetConditions: FunctionComponent<SetConditionsProps> = ({
                 />
                 <Args
                   args={
-                    newContractConditionInformation?.expectedValue
-                      ? newContractConditionInformation?.expectedValue?.map(
+                    context?.newContractConditionInfo?.expectedValue
+                      ? context?.newContractConditionInfo?.expectedValue?.map(
                           String
                         )
                       : expectedValues
                   }
                   setOnChangeArgs={(value: string, index: number) => {
-                    const updatedExpectedValues =
-                      newContractConditionInformation?.expectedValue
-                        ? [
-                            ...newContractConditionInformation?.expectedValue?.map(
-                              String
-                            ),
-                          ]
-                        : [...expectedValues];
+                    const updatedExpectedValues = context
+                      ?.newContractConditionInfo?.expectedValue
+                      ? [
+                          ...context?.newContractConditionInfo?.expectedValue?.map(
+                            String
+                          ),
+                        ]
+                      : [...expectedValues];
                     updatedExpectedValues[index] = value;
                     setExpectedValues(updatedExpectedValues);
                   }}
@@ -109,14 +101,14 @@ const SetConditions: FunctionComponent<SetConditionsProps> = ({
               <Input
                 onChangeFunction={[
                   (value: string) =>
-                    dispatch(
-                      setNewContractConditionInformation({
-                        ...newContractConditionInformation!,
-                        matchOperator: value as any,
-                      })
-                    ),
+                    context?.setNewContractConditionInfo((prev) => ({
+                      ...prev!,
+                      matchOperator: value as any,
+                    })),
                 ]}
-                changedValue={[newContractConditionInformation?.matchOperator]}
+                changedValue={[
+                  context?.newContractConditionInfo?.matchOperator,
+                ]}
                 text={["Match Operator"]}
                 count={1}
                 placeholderText={["=== <= >= == != !== > <"]}
@@ -128,8 +120,9 @@ const SetConditions: FunctionComponent<SetConditionsProps> = ({
           return (
             <Abi
               inputs={
-                (newContractConditionInformation?.abi as any)?.[0]?.inputs?.length > 0
-                  ? (newContractConditionInformation?.abi as any)?.[0]?.inputs
+                (context?.newContractConditionInfo?.abi as any)?.[0]?.inputs
+                  ?.length > 0
+                  ? (context?.newContractConditionInfo?.abi as any)?.[0]?.inputs
                   : inputs
               }
               setInputs={setInputs}
@@ -145,14 +138,12 @@ const SetConditions: FunctionComponent<SetConditionsProps> = ({
             <Input
               onChangeFunction={[
                 (value: string) =>
-                  dispatch(
-                    setNewContractConditionInformation({
-                      ...newContractConditionInformation!,
-                      eventName: value,
-                    })
-                  ),
+                  context?.setNewContractConditionInfo((prev) =>({
+                    ...prev!,
+                    eventName: value,
+                  })),
               ]}
-              changedValue={[newContractConditionInformation?.eventName]}
+              changedValue={[context?.newContractConditionInfo?.eventName]}
               text={["Event Name"]}
               count={1}
               placeholderText={["enter event name"]}
@@ -165,17 +156,16 @@ const SetConditions: FunctionComponent<SetConditionsProps> = ({
               setDropDownOpen={() => setDropDownChainContract(true)}
               setDropDownOpenIndex={(type: string) => {
                 setDropDownChainContract(false);
-                dispatch(
-                  setNewContractConditionInformation({
-                    ...newContractConditionInformation!,
-                    chainId: type as any,
-                  })
-                );
+
+                context?.setNewContractConditionInfo((prev) => ({
+                  ...prev!,
+                  chainId: type as any,
+                }));
               }}
               dropDownOpen={dropDownChainContract}
               inputChosen={
-                newContractConditionInformation?.chainId
-                  ? String(newContractConditionInformation?.chainId)
+                context?.newContractConditionInfo?.chainId
+                  ? String(context?.newContractConditionInfo?.chainId)
                   : "ethereum"
               }
               title={"Chain Name"}
@@ -188,14 +178,14 @@ const SetConditions: FunctionComponent<SetConditionsProps> = ({
             <Input
               onChangeFunction={[
                 (value: string) =>
-                  dispatch(
-                    setNewContractConditionInformation({
-                      ...newContractConditionInformation!,
-                      contractAddress: value as `0x${string}`,
-                    })
-                  ),
+                  context?.setNewContractConditionInfo((prev) => ({
+                    ...prev!,
+                    contractAddress: value as `0x${string}`,
+                  })),
               ]}
-              changedValue={[newContractConditionInformation?.contractAddress]}
+              changedValue={[
+                context?.newContractConditionInfo?.contractAddress,
+              ]}
               text={["Contract Address"]}
               count={1}
               placeholderText={["enter contract address"]}
@@ -214,18 +204,14 @@ const SetConditions: FunctionComponent<SetConditionsProps> = ({
           );
       }
     default:
-      switch (conditionFlowIndex.index) {
+      switch (context?.conditionFlow?.index) {
         case 6:
           return (
             <FinalCondition
-              circuitInformation={circuitInformation}
-              conditionInformation={newWebhookConditionInformation}
               conditionType={conditionType}
               editingState={editingState}
-              conditionFlowIndex={conditionFlowIndex}
               handleAddConditionAndReset={handleAddConditionAndReset}
               handleUpdateCondition={handleUpdateCondition}
-              dispatch={dispatch}
               apiPassword={apiPassword}
               setApiPassword={setApiPassword}
             />
@@ -236,23 +222,19 @@ const SetConditions: FunctionComponent<SetConditionsProps> = ({
             <Input
               onChangeFunction={[
                 (value: string) =>
-                  dispatch(
-                    setNewWebhookConditionInformation({
-                      ...newWebhookConditionInformation!,
-                      expectedValue: value,
-                    })
-                  ),
+                  context?.setNewWebhookConditionInfo((prev) => ({
+                    ...prev!,
+                    expectedValue: value,
+                  })),
                 (value: string) =>
-                  dispatch(
-                    setNewWebhookConditionInformation({
-                      ...newWebhookConditionInformation!,
-                      matchOperator: value as any,
-                    })
-                  ),
+                  context?.setNewWebhookConditionInfo((prev) => ({
+                    ...prev!,
+                    matchOperator: value as any,
+                  })),
               ]}
               changedValue={[
-                String(newWebhookConditionInformation?.expectedValue || ""),
-                newWebhookConditionInformation?.matchOperator,
+                String(context?.newWebhookConditionInfo?.expectedValue || ""),
+                context?.newWebhookConditionInfo?.matchOperator,
               ]}
               text={["Expected Value", "Match Operator"]}
               count={2}
@@ -268,14 +250,12 @@ const SetConditions: FunctionComponent<SetConditionsProps> = ({
             <Input
               onChangeFunction={[
                 (value: string) =>
-                  dispatch(
-                    setNewWebhookConditionInformation({
-                      ...newWebhookConditionInformation!,
-                      apiKey: value,
-                    })
-                  ),
+                  context?.setNewWebhookConditionInfo((prev) => ({
+                    ...prev!,
+                    apiKey: value,
+                  })),
               ]}
-              changedValue={[newWebhookConditionInformation?.apiKey]}
+              changedValue={[context?.newWebhookConditionInfo?.apiKey]}
               text={["API Key"]}
               placeholderText={["enter api key"]}
               count={1}
@@ -288,14 +268,12 @@ const SetConditions: FunctionComponent<SetConditionsProps> = ({
             <Input
               onChangeFunction={[
                 (value: string) =>
-                  dispatch(
-                    setNewWebhookConditionInformation({
-                      ...newWebhookConditionInformation!,
-                      responsePath: value,
-                    })
-                  ),
+                  context?.setNewWebhookConditionInfo((prev) => ({
+                    ...prev!,
+                    responsePath: value,
+                  })),
               ]}
-              changedValue={[newWebhookConditionInformation?.responsePath]}
+              changedValue={[context?.newWebhookConditionInfo?.responsePath]}
               text={["Response Path"]}
               count={1}
               placeholderText={["enter.response.path"]}
@@ -306,14 +284,12 @@ const SetConditions: FunctionComponent<SetConditionsProps> = ({
             <Input
               onChangeFunction={[
                 (value: string) =>
-                  dispatch(
-                    setNewWebhookConditionInformation({
-                      ...newWebhookConditionInformation!,
-                      endpoint: value,
-                    })
-                  ),
+                  context?.setNewWebhookConditionInfo((prev) => ({
+                    ...prev!,
+                    endpoint: value,
+                  })),
               ]}
-              changedValue={[newWebhookConditionInformation?.endpoint]}
+              changedValue={[context?.newWebhookConditionInfo?.endpoint]}
               text={["Endpoint"]}
               count={1}
               placeholderText={["enter endpoint"]}
@@ -324,14 +300,12 @@ const SetConditions: FunctionComponent<SetConditionsProps> = ({
             <Input
               onChangeFunction={[
                 (value: string) =>
-                  dispatch(
-                    setNewWebhookConditionInformation({
-                      ...newWebhookConditionInformation!,
-                      baseUrl: value,
-                    })
-                  ),
+                  context?.setNewWebhookConditionInfo((prev) => ({
+                    ...prev!,
+                    baseUrl: value,
+                  })),
               ]}
-              changedValue={[newWebhookConditionInformation?.baseUrl]}
+              changedValue={[context?.newWebhookConditionInfo?.baseUrl]}
               text={["Base URL"]}
               count={1}
               placeholderText={["enter base url"]}

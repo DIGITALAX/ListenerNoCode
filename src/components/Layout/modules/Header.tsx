@@ -1,35 +1,11 @@
-import { FunctionComponent, useEffect, useState } from "react";
-import Link from "next/link";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../../../redux/store";
-import {
-  useAccountModal,
-  useChainModal,
-  useConnectModal,
-} from "@rainbow-me/rainbowkit";
-import { useAccount, useNetwork } from "wagmi";
-import { setWalletConnected } from "../../../../redux/reducers/walletConnectedSlice";
+import { FunctionComponent } from "react";
+import { useAccount } from "wagmi";
 import AllLinks from "./AllLinks";
-import useSignIn from "@/components/Shop/hooks/useSignIn";
+import { useModal } from "connectkit";
 
 const Header: FunctionComponent = (): JSX.Element => {
-  const walletConnected = useSelector(
-    (state: RootState) => state.app.walletConnectedReducer.value
-  );
-  const [switchState, setSwitchState] = useState<boolean>(false);
-  const { openConnectModal } = useConnectModal();
-  const { openAccountModal } = useAccountModal();
-  const { openChainModal } = useChainModal();
-  const dispatch = useDispatch();
-  const { isConnected } = useAccount();
-  const { chain } = useNetwork();
-
-  const { handleLogout } = useSignIn();
-
-  useEffect(() => {
-    dispatch(setWalletConnected(isConnected));
-    setSwitchState(chain?.id !== 175177 && chain?.id !== 137 ? true : false);
-  }, [isConnected, walletConnected, chain?.id]);
+  const { isConnected, chainId } = useAccount();
+  const { openOnboarding, openSwitchNetworks, openProfile } = useModal();
 
   return (
     <div className="relative w-full flex flex-col gap-3 pt-2 pb-[4.5rem]">
@@ -44,20 +20,20 @@ const Header: FunctionComponent = (): JSX.Element => {
           className="relative flex justify-end w-fit h-fit items-center ml-auto whitespace-nowrap break-words cursor-pointer active:scale-95 px-3 py-1.5"
           id="borderYellow"
           onClick={
-            switchState && walletConnected
-              ? openChainModal
-              : !walletConnected
-              ? openConnectModal
-              : () => handleLogout()
+            !isConnected
+              ? () => openOnboarding()
+              : isConnected && chainId !== 175177
+              ? () => openSwitchNetworks()
+              : () => openProfile()
           }
         >
           <div
             className="relative flex items-center justify-start font-vcr"
             id="blurText"
           >
-            {switchState && walletConnected
+            {isConnected && chainId !== 175177
               ? "switch"
-              : walletConnected
+              : isConnected
               ? "connected"
               : "connect"}
           </div>

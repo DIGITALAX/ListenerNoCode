@@ -1,5 +1,5 @@
-import { DropDownProps } from "@/components/CircuitFlow/types/circuitflow.types";
 import { FunctionComponent } from "react";
+import { DropDownProps } from "../../types/circuitflow.types";
 
 const DropDown: FunctionComponent<DropDownProps> = ({
   setDropDownOpenIndex,

@@ -1,12 +1,14 @@
+import { Status } from "@/components/Account/types/account.types";
+
 export const INFURA_GATEWAY: string = "https://chromadin.infura-ipfs.io";
 export const DIGITALAX_ADDRESS: `0x${string}` =
   "0xAA3e5ee4fdC831e5274FE7836c95D670dC2502e6";
 export const LISTENER_OPEN_ACTION: `0x${string}` =
-  "0xF1e111fD643954234d6C8482fFa5f4dE778e7aD6";
+  "0xFA80e7EC17819A1724c32e49C760Ca0Ab0ceAb2a";
 export const BASE_URL: string = "https://api-v2.lens.dev/";
 export const LENS_HUB_PROXY_ADDRESS_MATIC: `0x${string}` =
   "0xDb46d1Dc155634FbC732f92E853b10B288AD5a1d";
-  
+
 export const CHRONICLE_PROVIDER: string =
   "https://chain-rpc.litprotocol.com/http";
 
@@ -98,23 +100,20 @@ export const RUN_CIRCUIT_TEXT: string[] = [
 
 export const ACCEPTED_TOKENS: string[][] = [
   [
-    "QmYYUQ8nGDnyuk8jQSung1WmTksvLEQBXjnCctdRrKtsNk",
-    "WMATIC",
-    "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270",
-  ],
-  [
-    "QmZRhUgjK6bJM8fC7uV145yf66q2e7vGeT7CLosw1SdMdN",
-    "WETH",
-    "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
-  ],
-  [
-    "QmSbpsDRwxSCPBWPkwWvcb49jViSxzmNHjYy3AcGF3qM2x",
-    "USDT",
-    "0xc2132d05d31c914a87c6611c10748aeb04b58e8f",
+    "QmZRqza7VxetyQh2JWvxC6PsnXVUPVV7vU3RS1XUhuqmNA",
+    "WGHO",
+    "0x6bDc36E20D267Ff0dd6097799f82e78907105e2F",
   ],
   [
     "QmS6f8vrNZok9j4pJttUuWpNrjsf4vP9RD5mRL36z6UdaL",
     "MONA",
-    "0x6968105460f67c3bf751be7c15f92f5286fd0ce5",
+    "0x28547B5b6B405A1444A17694AC84aa2d6A03b3Bd",
   ],
 ];
+
+export const orderStatus: { [key in number]: Status } = {
+  [0]: Status.Fulfilled,
+  [1]: Status.Shipped,
+  [2]: Status.Shipping,
+  [3]: Status.Designing,
+};

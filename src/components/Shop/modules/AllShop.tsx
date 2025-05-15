@@ -1,42 +1,40 @@
-import { FunctionComponent } from "react";
-import { AllShop, AllShopProps } from "../types/shop.types";
+import { FunctionComponent, useContext } from "react";
+import { AllShop as AllShopType, AllShopProps } from "../types/shop.types";
 import ShopItem from "./ShopItem";
 import Image from "next/legacy/image";
 import { INFURA_GATEWAY } from "../../../../lib/constants";
 import Link from "next/link";
-import { setCurrentIndexItem } from "../../../../redux/reducers/currentIndexItemSlice";
+import { ModalContext } from "@/pages/_app";
 
 const AllShop: FunctionComponent<AllShopProps> = ({
-  allShopItems,
-  dispatch,
   currentIndex,
   setCurrentIndex,
-  currentIndexItem,
   checkOutOpen,
+  setCartItems,
   largeScreen,
-  setChosenItem,
-  chosenItem,
+  cartItems
 }): JSX.Element => {
+  const context = useContext(ModalContext);
   return (
     <div className="relative h-fit w-full items-center justify-center flex flex-col gap-5 pt-4 overflow-x-hidden overflow-y-scroll">
       <div className="relative w-fit h-full flex flex-row gap-4">
-        {allShopItems?.length > 0 &&
+        {Number(context?.allShop?.length) > 0 &&
           [...Array(largeScreen ? 6 : 1)]
             .map(
-              (_, i) => allShopItems[(currentIndex + i) % allShopItems.length]
+              (_, i) =>
+                context?.allShop?.[
+                  (currentIndex + i) % context?.allShop?.length
+                ]!
             )
-            ?.map((item: AllShop, index: number) => {
+            ?.map((item: AllShopType, index: number) => {
               return (
                 <ShopItem
-                  allShopItems={allShopItems}
                   key={index}
+                  setCartItems={setCartItems}
                   item={item}
-                  dispatch={dispatch}
                   keyIndex={index}
-                  currentIndexItem={currentIndexItem}
                   largeScreen={largeScreen}
-                  chosenItem={chosenItem}
-                  setChosenItem={setChosenItem}
+                  cartItems={cartItems}
                 />
               );
             })}
@@ -50,12 +48,13 @@ const AllShop: FunctionComponent<AllShopProps> = ({
           className="relative w-10 h-10 flex items-center justify-center cursor-pointer active:scale-95 rotate-180 border border-ballena"
           onClick={() => {
             setCurrentIndex(
-              (currentIndex - 1 + allShopItems.length) % allShopItems.length
+              (currentIndex - 1 + Number(context?.allShop?.length)) %
+                Number(context?.allShop?.length)
             );
-            const newItems = [...currentIndexItem];
+            const newItems = [...context?.currentIndexItem!];
             const last = newItems.pop()!;
             newItems.unshift(last);
-            dispatch(setCurrentIndexItem(newItems));
+            context?.setCurrentIndexItem(newItems);
           }}
         >
           <Image
@@ -67,11 +66,13 @@ const AllShop: FunctionComponent<AllShopProps> = ({
         <div
           className="relative w-10 h-10 flex items-center justify-center cursor-pointer active:scale-95 border border-ballena"
           onClick={() => {
-            setCurrentIndex((currentIndex + 1) % allShopItems.length);
-            const newItems = [...currentIndexItem];
+            setCurrentIndex(
+              (currentIndex + 1) % Number(context?.allShop?.length)
+            );
+            const newItems = [...context?.currentIndexItem!];
             const first = newItems.shift();
             newItems.push(first!);
-            dispatch(setCurrentIndexItem(newItems));
+            context?.setCurrentIndexItem(newItems);
           }}
         >
           <Image

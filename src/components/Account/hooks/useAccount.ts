@@ -3,10 +3,7 @@ import {
   getUserCircuitsUser,
   getUserCircuitsUserById,
 } from "../../../../graphql/subgraph/queries/getUserCircuits";
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../../../redux/store";
-import { setAllUserCircuits } from "../../../../redux/reducers/allUserCircuits";
+import { useContext, useEffect, useState } from "react";
 import {
   getUserCircuitsCompleted,
   getUserCircuitsCompletedById,
@@ -16,33 +13,19 @@ import {
   getUserCircuitsInterrupted,
   getUserCircuitsInterruptedById,
 } from "../../../../graphql/subgraph/queries/getUserCircuitsInterrupted";
-import { setSelectedUserCircuit } from "../../../../redux/reducers/selectedCircuitSlice";
 import { getUserLogs } from "../../../../graphql/subgraph/queries/getUserLogs";
 import { fetchIpfsJson } from "../../../../lib/helpers/fetchIpfsJson";
-import { setModalOpen } from "../../../../redux/reducers/modalOpenSlice";
 import { ILogEntry } from "@/components/CircuitFlow/types/litlistener.types";
-import { setSelectedUserCircuitSideBar } from "../../../../redux/reducers/selectedCircuitSideBarSlice";
+import { ModalContext } from "@/pages/_app";
 
 const useAccountPage = () => {
-  const { address } = useAccount();
-  const dispatch = useDispatch();
+  const { address, chainId } = useAccount();
+  const context = useContext(ModalContext);
   const [addressExists, setAddressExists] = useState<boolean>(false);
   const [allCircuitsLoading, setAllCircuitsLoading] = useState<boolean>(false);
   const [circuitsOpen, setCircuitsOpen] = useState<boolean>(true);
   const [circuitLogsLoading, setCircuitLogsLoading] = useState<boolean>(false);
   const [interruptLoading, setInterruptLoading] = useState<boolean>(false);
-  const circuitRunning = useSelector(
-    (state: RootState) => state.app.circuitRunningReducer.value
-  );
-  const selectedCircuit = useSelector(
-    (state: RootState) => state.app.selectedCircuitReducer.value
-  );
-  const selectedCircuitSideBar = useSelector(
-    (state: RootState) => state.app.selectedCircuitSideBarReudcer.value
-  );
-  const switchAccount = useSelector(
-    (state: RootState) => state.app.switchAccountReducer.value
-  );
 
   const getAllCircuits = async () => {
     setAllCircuitsLoading(true);
@@ -146,11 +129,11 @@ const useAccountPage = () => {
         }
       }
 
-      dispatch(
-        setSelectedUserCircuitSideBar(newAllCircuits[0]?.circuitInformation?.id)
+      context?.setSelectedUserCircuit(
+        newAllCircuits[0]?.circuitInformation?.id
       );
 
-      dispatch(setAllUserCircuits(newAllCircuits));
+      context?.setAllUserCircuits(newAllCircuits);
     } catch (err: any) {
       console.error(err.message);
     }
@@ -300,7 +283,7 @@ const useAccountPage = () => {
         interrupted: newInterrupted,
       };
 
-      dispatch(setSelectedUserCircuit(combinedObject as any));
+      context?.setSelectedUserCircuit(combinedObject as any);
     } catch (err: any) {
       console.error(err.message);
     }
@@ -308,16 +291,16 @@ const useAccountPage = () => {
   };
 
   useEffect(() => {
-    if (address && !switchAccount) {
+    if (address && chainId == 137) {
       getAllCircuits();
     }
-  }, [circuitRunning, address, switchAccount]);
+  }, [context?.circuitRunning, address, chainId]);
 
   useEffect(() => {
-    if (selectedCircuitSideBar !== "" && address && !switchAccount) {
-      getSelectedCircuitLogs(selectedCircuitSideBar);
+    if (context?.circuitSideBar !== "" && address) {
+      getSelectedCircuitLogs(context?.circuitSideBar!);
     }
-  }, [selectedCircuitSideBar, switchAccount, address]);
+  }, [context?.circuitSideBar, address]);
 
   useEffect(() => {
     setAddressExists(Boolean(address));
@@ -330,7 +313,8 @@ const useAccountPage = () => {
         method: "POST",
         body: JSON.stringify({
           id,
-          instantiatorAddress: selectedCircuit?.instantiatorAddress,
+          instantiatorAddress:
+            context?.selectedUserCircuit?.instantiatorAddress,
         }),
       });
       if (res.status === 200) {
@@ -340,25 +324,20 @@ const useAccountPage = () => {
           setInterruptLoading(false);
         }, 6000);
       } else if (res.status === 500) {
-        dispatch(
-          setModalOpen({
-            actionOpen: true,
-            actionMessage:
-              "There was an error interrupting your circuit. Try Again.",
-            actionImage: "QmSUH38BqmfPci9NEvmC2KRQEJeoyxdebHiZi1FABbtueg",
-          })
-        );
+        context?.setGeneralModal({
+          open: true,
+          message: "There was an error interrupting your circuit. Try Again.",
+          image: "QmSUH38BqmfPci9NEvmC2KRQEJeoyxdebHiZi1FABbtueg",
+        });
       }
     } catch (err: any) {
       console.error(err.message);
-      dispatch(
-        setModalOpen({
-          actionOpen: true,
-          actionMessage:
-            "There was an error interrupting your circuit. Try Again.",
-          actionImage: "QmSUH38BqmfPci9NEvmC2KRQEJeoyxdebHiZi1FABbtueg",
-        })
-      );
+
+      context?.setGeneralModal({
+        open: true,
+        message: "There was an error interrupting your circuit. Try Again.",
+        image: "QmSUH38BqmfPci9NEvmC2KRQEJeoyxdebHiZi1FABbtueg",
+      });
     }
     setInterruptLoading(false);
   };

@@ -2,39 +2,20 @@ import Image from "next/legacy/image";
 import { INFURA_GATEWAY } from "../../lib/constants";
 import Head from "next/head";
 import AllCircuits from "@/components/Account/modules/AllCircuits";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../redux/store";
 import useAccountPage from "@/components/Account/hooks/useAccount";
 import SelectedCircuit from "@/components/Account/modules/SelectedCircuit";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Link from "next/link";
 import useOrder from "@/components/Account/hooks/useOrder";
 import { IoShirtOutline } from "react-icons/io5";
 import { TbSwitchHorizontal, TbCircuitSwitchOpen } from "react-icons/tb";
-import { setSwitchAccount } from "../../redux/reducers/switchAccountSlice";
+import { ModalContext } from "./_app";
 
 export default function Account() {
-  const dispatch = useDispatch();
+  const context = useContext(ModalContext);
   const [globalLoader, setGlobalLoader] = useState<boolean>(true);
   const [largeScreen, setLargeScreen] = useState<boolean>(true);
-  const allCircuits = useSelector(
-    (state: RootState) => state.app.allUserCircuitsReducer.value
-  );
-  const allOrders = useSelector(
-    (state: RootState) => state.app.allOrdersReducer.value
-  );
-  const switchAccount = useSelector(
-    (state: RootState) => state.app.switchAccountReducer.value
-  );
-  const selectedCircuitSideBar = useSelector(
-    (state: RootState) => state.app.selectedCircuitSideBarReudcer.value
-  );
-  const selectedOrderSideBar = useSelector(
-    (state: RootState) => state.app.selectedOrderSideBarReducer.value
-  );
-  const selectedCircuit = useSelector(
-    (state: RootState) => state.app.selectedCircuitReducer.value
-  );
+
   const {
     allCircuitsLoading,
     circuitLogsLoading,
@@ -106,11 +87,13 @@ export default function Account() {
             <div className="relative w-5/6 h-fit flex">
               <div
                 className="relative top-4 left-0 flex flex-row w-fit px-3 py-1.5 h-fit border border-white bg-black/40 gap-3 cursor-pointer active:scale-95 z-1 items-center justify-center"
-                onClick={() => dispatch(setSwitchAccount(!switchAccount))}
+                onClick={() =>
+                  context?.setSwitchAccount(!context?.switchAccount)
+                }
               >
                 <div className="relative w-fit h-fit flex items-center justify-center">
                   <IoShirtOutline
-                    color={switchAccount ? "#F6D39B" : "white"}
+                    color={context?.switchAccount ? "#F6D39B" : "white"}
                     size={15}
                   />
                 </div>
@@ -119,7 +102,7 @@ export default function Account() {
                 </div>
                 <div className="relative w-fit h-fit flex items-center justify-center">
                   <TbCircuitSwitchOpen
-                    color={!switchAccount ? "#F6D39B" : "white"}
+                    color={!context?.switchAccount ? "#F6D39B" : "white"}
                     size={18}
                   />
                 </div>
@@ -133,21 +116,22 @@ export default function Account() {
         !ordersLoading ? (
           <div className="relative w-full h-full flex items-center justify-center">
             <div className="relative w-fit h-fit text-center font-vcr text-white flex items-center justify-center">
-              {!switchAccount
+              {!context?.switchAccount
                 ? "Connect Account to View Your Active Circuits."
                 : "Connect Account to View Your Active Orders."}
             </div>
           </div>
         ) : addressExists &&
           !globalLoader &&
-          ((!switchAccount && allCircuits?.length < 1) ||
-            (switchAccount && allOrders?.length < 1)) ? (
+          ((!context?.switchAccount &&
+            Number(context?.allUserCircuits?.length) < 1) ||
+            (context?.switchAccount && context?.allOrders?.length < 1)) ? (
           <div className="relative w-full h-full flex items-center justify-center">
             <Link
               className="relative w-fit h-fit text-center font-vcr text-white flex items-center justify-center cursor-pointer"
-              href={!switchAccount ? `/` : "/shop"}
+              href={!context?.switchAccount ? `/` : "/shop"}
             >
-              {!switchAccount
+              {!context?.switchAccount
                 ? "No Circuits Yet. Start one?"
                 : "No Orders Yet. Go to Shop?"}
             </Link>
@@ -168,12 +152,8 @@ export default function Account() {
         ) : (
           <div className="relative flex flex-col w-full h-full justify-center items-center gap-3">
             <SelectedCircuit
-              allOrders={allOrders}
-              selectedCircuit={selectedCircuit}
               handleInterruptCircuit={handleInterruptCircuit}
               interruptLoading={interruptLoading}
-              selectedOrder={selectedOrderSideBar}
-              switchAccount={switchAccount}
               decryptFulfillment={decryptFulfillment}
               decryptLoading={decryptLoading}
             />
@@ -182,14 +162,8 @@ export default function Account() {
       </div>
       <AllCircuits
         largeScreen={largeScreen}
-        allUserCircuits={allCircuits}
-        selectedCircuitSideBar={selectedCircuitSideBar}
-        dispatch={dispatch}
         circuitsOpen={circuitsOpen}
         setCircuitsOpen={setCircuitsOpen}
-        allOrders={allOrders}
-        switchAccount={switchAccount}
-        selectedOrderSideBar={selectedOrderSideBar}
       />
     </div>
   );

@@ -5,7 +5,6 @@ import {
   IExecutionConstraints,
 } from "@/components/CircuitFlow/types/litlistener.types";
 import { AccessControlConditions } from "@lit-protocol/types";
-import { AnyAction, Dispatch } from "redux";
 
 export interface AllCircuits {
   circuitId: string;
@@ -108,52 +107,66 @@ export interface Completed {
 }
 
 export type AllCircuitsProps = {
-  allUserCircuits: AllCircuits[];
-  selectedCircuitSideBar: string;
-  dispatch: Dispatch<AnyAction>;
   circuitsOpen: boolean;
   setCircuitsOpen: (e: boolean) => void;
   largeScreen: boolean;
-  switchAccount: boolean;
-  allOrders: Order[];
-  selectedOrderSideBar: Order | undefined;
 };
 
 export type SelectedCircuitProps = {
-  selectedCircuit: SelectedCircuit | undefined;
   interruptLoading: boolean;
   handleInterruptCircuit: (id: string) => Promise<void>;
-  selectedOrder: Order | undefined;
-  switchAccount: boolean;
   decryptFulfillment: () => Promise<void>;
   decryptLoading: boolean;
-  allOrders: Order[];
 };
 
 export interface Order {
   orderId: string;
   totalPrice: string;
   currency: string;
-  pubId: string;
-  profileId: string;
+  postId: string;
   buyer: string;
   blockNumber: string;
   blockTimestamp: string;
   transactionHash: string;
-  images: string[];
-  orderMetadata: {
-    names: string[];
-    messages: string[];
+  collection: {
+    collectionId: string;
+    price: string;
+    amount: string;
+    metadata: {
+      images: string[];
+      title: string;
+    };
   };
-  details?: Details | EncryptedDetails | string;
-  subOrders: Sub[];
+  isFulfilled: boolean;
+  status: Status;
+  amount: string;
+  details?: DecryptedDetails | EncryptedDetails | string;
   decrypted: boolean;
+}
+
+export enum Status {
+  Fulfilled = "Fulfilled",
+  Shipped = "Shipped",
+  Shipping = "Shipping",
+  Designing = "Designing",
 }
 
 export interface EncryptedDetails {
   ciphertext: string;
   dataToEncryptHash: string;
   accessControlConditions: AccessControlConditions | undefined;
+  chainId: string;
+}
+
+export interface DecryptedDetails {
+  name: string;
+  address: string;
+  zip: string;
+  city: string;
+  state: string;
+  country: string;
+  color: string;
+  size: string;
 }
 
 export interface Details {
@@ -163,20 +176,4 @@ export interface Details {
   city: string;
   state: string;
   country: string;
-}
-
-export interface Sub {
-  price: string;
-  status: string;
-  collection: {
-    name: string;
-    image: string;
-    origin: string;
-    pubId: string;
-  };
-  isFulfilled: boolean;
-  fulfillerAddress: string;
-  amount?: string;
-  color?: string;
-  size?: string;
 }

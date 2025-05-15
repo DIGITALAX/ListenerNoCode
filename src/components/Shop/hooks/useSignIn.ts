@@ -1,145 +1,181 @@
-import { useEffect, useState } from "react";
-import { useAccount, useSignMessage } from "wagmi";
-import { setOracleData } from "../../../../redux/reducers/oracleDataSlice";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../../../redux/store";
-import { setWalletConnected } from "../../../../redux/reducers/walletConnectedSlice";
-import { setLensConnected } from "../../../../redux/reducers/lensConnectedSlice";
-import { getOracle } from "../../../../graphql/subgraph/queries/getOracle";
-import getDefaultProfile from "../../../../graphql/lens/queries/default";
+import { ModalContext } from "@/pages/_app";
+import { chains } from "@lens-chain/sdk/viem";
+import { Account, evmAddress } from "@lens-protocol/client";
 import {
-  getAuthenticationToken,
-  isAuthExpired,
-  refreshAuth,
-  removeAuthenticationToken,
-  setAuthenticationToken,
-} from "../../../../lib/utils";
-import { Profile } from "../../../../graphql/generated";
-import generateChallenge from "../../../../graphql/lens/queries/challenge";
-import authenticate from "../../../../graphql/lens/mutations/authenticate";
-import { useAccountModal } from "@rainbow-me/rainbowkit";
+  fetchAccountsAvailable,
+  revokeAuthentication,
+} from "@lens-protocol/client/actions";
+import { useContext, useEffect, useState } from "react";
+import { createWalletClient, custom } from "viem";
+import { getOracle } from "../../../../graphql/subgraph/queries/getOracle";
+import { useAccount } from "wagmi";
 
 const useSignIn = () => {
-  const dispatch = useDispatch();
-  const lensConnected = useSelector(
-    (state: RootState) => state.app.lensConnectedReducer?.profile
-  );
-  const oracleData = useSelector(
-    (state: RootState) => state.app.oracleDataReducer?.data
-  );
-  const { openAccountModal } = useAccountModal();
-  const { signMessageAsync } = useSignMessage();
-  const { address, isConnected } = useAccount();
-  const [signInLoading, setSignInLoading] = useState<boolean>(false);
+  const context = useContext(ModalContext);
+  const { address } = useAccount();
+  const [lensLoading, setLensLoading] = useState<boolean>(false);
 
   const handleLensConnect = async () => {
-    setSignInLoading(true);
+    if (!address || !context?.lensClient) return;
+    setLensLoading(true);
     try {
-      // await createProfile({
-      //   handle: "anotherp",
-      //   to: address,
-      // });
+      const signer = createWalletClient({
+        chain: chains.mainnet,
+        transport: custom(window.ethereum!),
+        account: address,
+      });
+      const accounts = await fetchAccountsAvailable(context?.lensClient!, {
+        managedBy: evmAddress(signer.account.address),
+        includeOwned: true,
+      });
 
-      const profile = await getDefaultProfile(
-        {
-          for: address,
-        },
-        lensConnected?.id
-      );
-      const challengeResponse = await generateChallenge({
-        for: profile?.data?.defaultProfile?.id,
-        signedBy: address,
-      });
-      const signature = await signMessageAsync({
-        message: challengeResponse.data?.challenge.text!,
-      });
-      const accessTokens = await authenticate({
-        id: challengeResponse.data?.challenge.id,
-        signature: signature,
-      });
-      if (accessTokens) {
-        setAuthenticationToken({ token: accessTokens.data?.authenticate! });
-        dispatch(setLensConnected(profile?.data?.defaultProfile as Profile));
+      if (accounts.isErr()) {
+        setLensLoading(false);
+        return;
       }
-    } catch (err: any) {
-      console.error(err.message);
-    }
-    setSignInLoading(false);
-  };
 
-  const handleRefreshProfile = async (): Promise<void> => {
-    try {
-      const profile = await getDefaultProfile(
-        {
-          for: address,
-        },
-        lensConnected?.id
-      );
-      if (profile?.data?.defaultProfile) {
-        dispatch(setLensConnected(profile?.data?.defaultProfile as Profile));
-      } else {
-        removeAuthenticationToken();
-      }
-    } catch (err: any) {
-      console.error(err.message);
-    }
-  };
+      if (accounts.value.items?.[0]?.account?.address) {
+        const authenticated = await context?.lensClient?.login({
+          accountOwner: {
+            account: evmAddress(accounts.value.items?.[0]?.account?.address),
+            owner: signer.account.address?.toLowerCase(),
+          },
+          signMessage: (message) => signer.signMessage({ message }),
+        });
 
-  useEffect(() => {
-    const handleAuthentication = async () => {
-      const token = getAuthenticationToken();
-      if (isConnected && !token) {
-        dispatch(setLensConnected(undefined));
-        removeAuthenticationToken();
-      } else if (isConnected && token) {
-        if (isAuthExpired(token?.exp)) {
-          const refreshedAccessToken = await refreshAuth();
-          if (!refreshedAccessToken) {
-            removeAuthenticationToken();
-          }
+        if (!authenticated?.isOk()) {
+          console.error((authenticated as any)?.error);
+
+          context?.setGeneralModal({
+            open: true,
+            message: "There was an error signing into Lens. Try Again.",
+            image: "QmSUH38BqmfPci9NEvmC2KRQEJeoyxdebHiZi1FABbtueg",
+          });
+          setLensLoading(false);
+          return;
         }
-        await handleRefreshProfile();
-      }
-    };
 
-    handleAuthentication();
-    dispatch(setWalletConnected(isConnected));
-  }, [isConnected, address]);
+        const sessionClient = authenticated.value;
+        context?.setLensConectado?.({
+          sessionClient,
+          profile: accounts.value.items?.[0]?.account as Account,
+        });
+      } else {
+        const authenticatedOnboarding = await context?.lensClient?.login({
+          onboardingUser: {
+            wallet: signer.account.address,
+          },
+          signMessage: (message) => signer.signMessage({ message }),
+        });
+
+        if (!authenticatedOnboarding?.isOk()) {
+          console.error((authenticatedOnboarding as any).error);
+          context?.setGeneralModal({
+            open: true,
+            message: "There was an error signing into Lens. Try Again.",
+            image: "QmSUH38BqmfPci9NEvmC2KRQEJeoyxdebHiZi1FABbtueg",
+          });
+
+          setLensLoading(false);
+          return;
+        }
+
+        const sessionClient = authenticatedOnboarding.value;
+
+        context?.setLensConectado?.({
+          sessionClient,
+        });
+
+        context?.setGeneralModal({
+          open: true,
+          message: "Looks like you don't have a Lens Account? Try Again.",
+          image: "QmSUH38BqmfPci9NEvmC2KRQEJeoyxdebHiZi1FABbtueg",
+        });
+      }
+    } catch (err: any) {
+      console.error(err.message);
+    }
+
+    setLensLoading(false);
+  };
+
+  const resumeLensSession = async () => {
+    try {
+      const resumed = await context?.lensClient?.resumeSession();
+
+      if (resumed?.isOk()) {
+        const accounts = await fetchAccountsAvailable(context?.lensClient!, {
+          managedBy: evmAddress(address!),
+          includeOwned: true,
+        });
+
+        if (accounts.isErr()) {
+          return;
+        }
+
+        context?.setLensConectado?.({
+          profile: accounts.value.items?.[0]?.account as Account,
+          sessionClient: resumed?.value,
+        });
+      }
+    } catch (err) {
+      console.error("Error al reanudar la sesión:", err);
+      return null;
+    }
+  };
+
+  const logout = async () => {
+    setLensLoading(true);
+    try {
+      const auth =
+        context?.lensConectado?.sessionClient?.getAuthenticatedUser();
+
+      if (auth?.isOk()) {
+        await revokeAuthentication(context?.lensConectado?.sessionClient!, {
+          authenticationId: auth.value?.authenticationId,
+        });
+
+        context?.setLensConectado?.(undefined);
+        window.localStorage.removeItem("lens.mainnet.credentials");
+      }
+    } catch (err: any) {
+      console.error(err.message);
+    }
+    setLensLoading(false);
+  };
 
   const handleOracles = async (): Promise<void> => {
     try {
       const data = await getOracle();
 
-      dispatch(setOracleData(data?.data?.currencyAddeds));
+      context?.setOracleData(data?.data?.currencyAddeds);
     } catch (err: any) {
       console.error(err.message);
     }
   };
 
-  const handleLogout = () => {
-    if (openAccountModal) {
-      openAccountModal();
+  useEffect(() => {
+    if (address && context?.lensClient && !context?.lensConectado?.profile) {
+      resumeLensSession();
     }
-    dispatch(setLensConnected(undefined));
-    removeAuthenticationToken();
-  };
+  }, [address, context?.lensClient]);
 
   useEffect(() => {
-    if (!oracleData || oracleData?.length < 1) {
+    if (!address && context?.lensConectado?.profile && context?.lensClient) {
+      logout();
+    }
+  }, [address]);
+
+  useEffect(() => {
+    if (!context?.oracleData || context?.oracleData?.length < 1) {
       handleOracles();
     }
   }, []);
 
-  useEffect(() => {
-    if (!isConnected) {
-      dispatch(setLensConnected(undefined));
-    }
-  }, [isConnected]);
-
   return {
     handleLensConnect,
-    signInLoading,
-    handleLogout,
+    lensLoading,
+    logout,
   };
 };
 

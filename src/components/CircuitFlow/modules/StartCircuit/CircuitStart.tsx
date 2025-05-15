@@ -1,6 +1,6 @@
 import { FunctionComponent } from "react";
-import { CircuitStartProps } from "../../types/circuitflow.types";
 import { AiOutlineLoading } from "react-icons/ai";
+import { CircuitStartProps } from "../../types/circuitflow.types";
 
 const CircuitStart: FunctionComponent<CircuitStartProps> = ({
   handleRunCircuit,
@@ -22,7 +22,7 @@ const CircuitStart: FunctionComponent<CircuitStartProps> = ({
         >
           {circuitRunLoading ? (
             <AiOutlineLoading size={15} color="white" opacity={80} />
-          )  : (
+          ) : (
             "run circuit"
           )}
         </div>

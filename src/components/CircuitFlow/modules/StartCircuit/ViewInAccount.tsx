@@ -1,17 +1,19 @@
-import { FunctionComponent } from "react";
-import { ViewInAccountProps } from "../../types/circuitflow.types";
+import { FunctionComponent, useContext } from "react";
 import Link from "next/link";
+import { ModalContext } from "@/pages/_app";
+import { ViewInAccountProps } from "../../types/circuitflow.types";
 
 const ViewInAccount: FunctionComponent<ViewInAccountProps> = ({
-  circuitRunning,
   handleClearCircuit,
 }): JSX.Element => {
+  const context = useContext(ModalContext);
+
   return (
     <div
       className="relative w-60 h-40 flex flex-col p-2 gap-3 items-center justify-center"
       id="outputBorder"
     >
-      {circuitRunning && (
+      {context?.circuitRunning && (
         <div
           className={`flex flex-col w-full h-full p-1 gap-4 items-center justify-center font-vcr text-white`}
         >

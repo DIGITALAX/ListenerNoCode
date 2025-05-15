@@ -1,5 +1,5 @@
 import { FunctionComponent } from "react";
-import { LogicOptionsProps } from "@/components/CircuitFlow/types/circuitflow.types";
+import { LogicOptionsProps } from "../../types/circuitflow.types";
 
 const LogicOptions: FunctionComponent<LogicOptionsProps> = ({
   logicType,

@@ -1,6 +1,6 @@
-import { AbiProps } from "@/components/CircuitFlow/types/circuitflow.types";
 import { FunctionComponent } from "react";
 import { IoMdAddCircleOutline } from "react-icons/io";
+import { AbiProps } from "../../types/circuitflow.types";
 
 const Abi: FunctionComponent<AbiProps> = ({
   inputs,

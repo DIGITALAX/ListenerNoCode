@@ -1,30 +1,25 @@
-import { FunctionComponent } from "react";
+import { FunctionComponent, useContext } from "react";
 import ResultIPFS from "./ResultIPFS";
 import HashIPFS from "./HashIPFS";
+import { ModalContext } from "@/pages/_app";
 import { IPFSProps } from "../../types/circuitflow.types";
 
 const IPFS: FunctionComponent<IPFSProps> = ({
-  ipfsHash,
   handleInstantiateCircuit,
   ipfsLoading,
   handleSaveToIPFSDB,
   dbLoading,
   dbAdded,
-  litActionCode,
-  ipfsFlowIndex,
   switchNeeded,
-  openChainModal,
-  address,
-  openConnectModal,
   serverLoaded,
 }): JSX.Element => {
-  switch (ipfsFlowIndex.index) {
+  const context = useContext(ModalContext);
+  switch (context?.ipfsFlow?.index) {
     case 1:
       return (
         <ResultIPFS
           dbAdded={dbAdded}
           switchNeeded={switchNeeded}
-          openChainModal={openChainModal}
           dbLoading={dbLoading}
           handleSaveToIPFSDB={handleSaveToIPFSDB}
         />
@@ -36,10 +31,6 @@ const IPFS: FunctionComponent<IPFSProps> = ({
           serverLoaded={serverLoaded}
           handleInstantiateCircuit={handleInstantiateCircuit}
           ipfsLoading={ipfsLoading}
-          ipfsHash={ipfsHash || ""}
-          litActionCode={litActionCode}
-          address={address}
-          openConnectModal={openConnectModal}
         />
       );
   }

@@ -1,11 +1,10 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { getDBEntriesAdded } from "../../../../graphql/subgraph/queries/getDBEntriesAdded";
-import { useDispatch } from "react-redux";
-import { setAllEntries } from "../../../../redux/reducers/allEntriesSlice";
 import { fetchIpfsJson } from "../../../../lib/helpers/fetchIpfsJson";
+import { ModalContext } from "@/pages/_app";
 
 const useActions = () => {
-  const dispatch = useDispatch();
+  const context = useContext(ModalContext);
   const [entriesLoading, setEntriesLoading] = useState<boolean>(false);
 
   const getDBEntries = async () => {
@@ -14,15 +13,13 @@ const useActions = () => {
       const data = await getDBEntriesAdded();
       const newEntries = [];
       for (let i = 0; i < data?.data?.dbentryAddeds?.length; i++) {
-        const res = await fetchIpfsJson(
-          data?.data?.dbentryAddeds[i].ipfsHash
-        );
+        const res = await fetchIpfsJson(data?.data?.dbentryAddeds[i].ipfsHash);
         newEntries.push({
           ...data?.data?.dbentryAddeds[i],
           litAction: res,
         });
       }
-      dispatch(setAllEntries(newEntries));
+      context?.setAllEntries(newEntries);
     } catch (err: any) {
       console.error(err.message);
     }

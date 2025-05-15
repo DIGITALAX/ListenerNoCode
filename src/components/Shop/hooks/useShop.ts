@@ -1,60 +1,48 @@
-import { useEffect, useState } from "react";
-import { RootState } from "../../../../redux/store";
-import { useDispatch, useSelector } from "react-redux";
-import { setAllShop } from "../../../../redux/reducers/allShopSlice";
-import { checkAndSignAuthMessage } from "@lit-protocol/lit-node-client";
-import { useAccount, useNetwork } from "wagmi";
+import { useContext, useEffect, useState } from "react";
+import { LIT_NETWORK } from "@lit-protocol/constants";
+import {
+  LitNodeClient,
+  checkAndSignAuthMessage,
+  uint8arrayFromString,
+} from "@lit-protocol/lit-node-client";
+import { useAccount } from "wagmi";
 import {
   ACCEPTED_TOKENS,
+  DIGITALAX_ADDRESS,
   LISTENER_OPEN_ACTION,
 } from "../../../../lib/constants";
 import { getAllCollections } from "../../../../graphql/subgraph/queries/getCollections";
 import { createPublicClient, createWalletClient, custom, http } from "viem";
 import { polygon } from "viem/chains";
-import { setCurrentIndexItem } from "../../../../redux/reducers/currentIndexItemSlice";
 import { CartItem } from "../types/shop.types";
-import { encryptItems } from "../../../../lib/helpers/encryptItems";
-import * as LitJsSdk from "@lit-protocol/lit-node-client";
 import findBalance from "../../../../lib/helpers/findBalance";
-import toHexWithLeadingZero from "../../../../lib/helpers/toHexWithLeadingZero";
-import actPost from "../../../../lib/helpers/actPost";
-import encodeActData from "../../../../lib/helpers/encodeActData";
-import { setModalOpen } from "../../../../redux/reducers/modalOpenSlice";
 import { Details } from "@/components/Account/types/account.types";
+import { ModalContext } from "@/pages/_app";
+import { executePostAction } from "@lens-protocol/client/actions";
+import { ethers } from "ethers";
+import { blockchainData } from "@lens-protocol/client";
+import { AccessControlConditions } from "@lit-protocol/types";
+import { chains } from "@lens-chain/sdk/viem";
 
 const useShop = () => {
+  const context = useContext(ModalContext);
   const publicClient = createPublicClient({
-    chain: polygon,
-    transport: http(),
+    chain: chains.mainnet,
+    transport: http("https://rpc.lens.xyz"),
   });
-  const client = new LitJsSdk.LitNodeClient({
-    litNetwork: "cayenne",
+  const coder = new ethers.AbiCoder();
+  const client = new LitNodeClient({
+    litNetwork: LIT_NETWORK.Datil,
     debug: false,
   });
-
-  const dispatch = useDispatch();
-  const { address, isConnected } = useAccount();
-  const { chain } = useNetwork();
-  const allShopItems = useSelector(
-    (state: RootState) => state.app.allShopReducer.value
-  );
-  const lensConnected = useSelector(
-    (state: RootState) => state.app.lensConnectedReducer?.profile
-  );
-  const oracleData = useSelector(
-    (state: RootState) => state.app.oracleDataReducer?.data
-  );
-  const walletConnected = useSelector(
-    (state: RootState) => state.app.walletConnectedReducer.value
-  );
+  const { address } = useAccount();
   const [checkOutOpen, setCheckoutOpen] = useState<boolean>(true);
   const [shopLoading, setShopLoading] = useState<boolean>(false);
   const [purchaseLoading, setPurchaseLoading] = useState<boolean>(false);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
-  const [switchNeeded, setSwitchNeeded] = useState<boolean>(false);
   const [approved, setApproved] = useState<boolean>(false);
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [checkoutCurrency, setCheckoutCurrency] = useState<string>("USDT");
-  const [chosenItem, setChosenItem] = useState<CartItem | undefined>();
   const [fulfillmentDetails, setFulfillmentDetails] = useState<Details>({
     name: "",
     address: "",
@@ -69,35 +57,79 @@ const useShop = () => {
       !address ||
       fulfillmentDetails?.address?.trim() === "" ||
       fulfillmentDetails?.city?.trim() === "" ||
-      fulfillmentDetails?.name?.trim() === "" ||
       fulfillmentDetails?.state?.trim() === "" ||
       fulfillmentDetails?.zip?.trim() === "" ||
       fulfillmentDetails?.country?.trim() === ""
     )
       return;
     try {
-      let nonce = client.getLatestBlockhash();
-
-      const authSig = await checkAndSignAuthMessage({
+      let nonce = await client.getLatestBlockhash();
+      await checkAndSignAuthMessage({
         chain: "polygon",
         nonce: nonce!,
       });
-
       await client.connect();
 
-      const encryptedItems = await encryptItems(
-        client as any,
+      let encryptedItems: string[] = [];
+
+      const accessControlConditions = [
         {
-          ...fulfillmentDetails,
-          contact: lensConnected?.handle?.suggestedFormatted?.localName!,
-          checkoutCurrency: ACCEPTED_TOKENS?.find(
-            (item) => item?.[1] == checkoutCurrency
-          )?.[2]?.toLowerCase() as string,
-          chosenAmount: chosenItem?.chosenAmount!,
+          contractAddress: "",
+          standardContractType: "",
+          chain: "polygon",
+          method: "",
+          parameters: [":userAddress"],
+          returnValueTest: {
+            comparator: "=",
+            value: address.toLowerCase(),
+          },
         },
-        address as `0x${string}`,
-        authSig,
-        chosenItem!
+        {
+          operator: "or",
+        },
+        {
+          contractAddress: "",
+          standardContractType: "",
+          chain: "polygon",
+          method: "",
+          parameters: [":userAddress"],
+          returnValueTest: {
+            comparator: "=",
+            value: address?.toLowerCase() as string,
+          },
+        },
+      ] as AccessControlConditions;
+
+      await Promise.all(
+        cartItems?.map(async (item) => {
+          const { ciphertext, dataToEncryptHash } = await client.encrypt({
+            accessControlConditions,
+            dataToEncrypt: uint8arrayFromString(
+              JSON.stringify({
+                ...fulfillmentDetails,
+                size: item?.chosenSize,
+                origin: "2",
+                fulfillerAddress: [DIGITALAX_ADDRESS],
+              })
+            ),
+          });
+
+          const ipfsRes = await fetch("/api/ipfs", {
+            method: "POST",
+            headers: {
+              contentType: "application/json",
+            },
+            body: JSON.stringify({
+              ciphertext,
+              dataToEncryptHash,
+              accessControlConditions,
+              chain: "polygon",
+            }),
+          });
+          const json = await ipfsRes.json();
+
+          encryptedItems.push("ipfs://" + json?.cid);
+        })
       );
 
       return encryptedItems;
@@ -147,7 +179,7 @@ const useShop = () => {
         if (
           Number((data as any)?.toString()) /
             Number(
-              oracleData?.find(
+              context?.oracleData?.find(
                 (oracle) =>
                   oracle.currency ===
                   ACCEPTED_TOKENS?.find(
@@ -155,13 +187,15 @@ const useShop = () => {
                   )?.[2]?.toLowerCase()
               )?.wei
             ) >=
-          (Number(
-            Number(chosenItem?.item?.prices?.[0]) *
-              Number(chosenItem?.chosenAmount) *
-              10 ** 18
+          Number(
+            cartItems?.reduce(
+              (accumulator, item) =>
+                accumulator + item?.chosenAmount * Number(item?.item?.price),
+              0
+            )
           ) /
             Number(
-              oracleData?.find(
+              context?.oracleData?.find(
                 (oracle) =>
                   oracle.currency ===
                   ACCEPTED_TOKENS.find(
@@ -172,8 +206,7 @@ const useShop = () => {
                       )?.[2]?.toLowerCase()
                   )?.[2]
               )?.rate
-            )) *
-            10 ** 18
+            )
         ) {
           setApproved(true);
         } else {
@@ -189,90 +222,53 @@ const useShop = () => {
     setPurchaseLoading(true);
     try {
       const clientWallet = createWalletClient({
-        chain: polygon,
+        chain: chains.mainnet,
         transport: custom((window as any).ethereum),
       });
 
       const { request } = await publicClient.simulateContract({
         address: ACCEPTED_TOKENS?.find(
-          (item) => item?.[1] == checkoutCurrency
+          (item) => item?.[1]?.toLowerCase() == checkoutCurrency?.toLowerCase()
         )?.[2]?.toLowerCase() as `0x${string}`,
         abi: [
-          ACCEPTED_TOKENS?.find(
-            (item) => item?.[1] == checkoutCurrency
-          )?.[2]?.toLowerCase() === "0x6968105460f67c3bf751be7c15f92f5286fd0ce5"
-            ? {
-                inputs: [
-                  {
-                    internalType: "address",
-                    name: "spender",
-                    type: "address",
-                  },
-                  {
-                    internalType: "uint256",
-                    name: "tokens",
-                    type: "uint256",
-                  },
-                ],
-                name: "approve",
-                outputs: [
-                  { internalType: "bool", name: "success", type: "bool" },
-                ],
-                stateMutability: "nonpayable",
-                type: "function",
-              }
-            : ACCEPTED_TOKENS?.find(
-                (item) => item?.[1] == checkoutCurrency
-              )?.[2]?.toLowerCase() ===
-              "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270"
-            ? {
-                constant: false,
-                inputs: [
-                  { name: "guy", type: "address" },
-                  { name: "wad", type: "uint256" },
-                ],
-                name: "approve",
-                outputs: [{ name: "", type: "bool" }],
-                payable: false,
-                stateMutability: "nonpayable",
-                type: "function",
-              }
-            : {
-                inputs: [
-                  {
-                    internalType: "address",
-                    name: "spender",
-                    type: "address",
-                  },
-                  {
-                    internalType: "uint256",
-                    name: "amount",
-                    type: "uint256",
-                  },
-                ],
-                name: "approve",
-                outputs: [
-                  {
-                    internalType: "bool",
-                    name: "",
-                    type: "bool",
-                  },
-                ],
-                stateMutability: "nonpayable",
-                type: "function",
+          {
+            inputs: [
+              {
+                internalType: "address",
+                name: "spender",
+                type: "address",
               },
+              {
+                internalType: "uint256",
+                name: "amount",
+                type: "uint256",
+              },
+            ],
+            name: "approve",
+            outputs: [
+              {
+                internalType: "bool",
+                name: "",
+                type: "bool",
+              },
+            ],
+            stateMutability: "nonpayable",
+            type: "function",
+          },
         ],
         functionName: "approve",
-        chain: polygon,
+        chain: chains.mainnet,
         args: [
           LISTENER_OPEN_ACTION,
           ((Number(
-            Number(chosenItem?.item?.prices?.[0]) *
-              Number(chosenItem?.chosenAmount) *
-              10 ** 18
+            cartItems?.reduce(
+              (accumulator, item) =>
+                accumulator + item?.chosenAmount * Number(item?.item?.price),
+              0
+            )
           ) /
             Number(
-              oracleData?.find(
+              context?.oracleData?.find(
                 (oracle) =>
                   oracle.currency ===
                   ACCEPTED_TOKENS.find(
@@ -299,9 +295,17 @@ const useShop = () => {
   };
 
   const collectItem = async () => {
-    const encryptedFulfillment = await encryptFulfillment();
+    if (!context?.lensConectado?.sessionClient) return;
 
     setPurchaseLoading(true);
+
+    const encryptedFulfillment = await encryptFulfillment();
+
+    if (!encryptFulfillment) {
+      setPurchaseLoading(false);
+      return;
+    }
+
     try {
       const balance = await findBalance(
         publicClient,
@@ -314,12 +318,14 @@ const useShop = () => {
       if (
         Number(balance) <
         (Number(
-          Number(chosenItem?.item?.prices?.[0]) *
-            Number(chosenItem?.chosenAmount) *
-            10 ** 18
+          cartItems?.reduce(
+            (accumulator, item) =>
+              accumulator + item?.chosenAmount * Number(item?.item?.price),
+            0
+          )
         ) /
           Number(
-            oracleData?.find(
+            context?.oracleData?.find(
               (oracle) =>
                 oracle.currency?.toLowerCase() ===
                 ACCEPTED_TOKENS?.find(
@@ -328,7 +334,7 @@ const useShop = () => {
             )?.rate
           )) *
           Number(
-            oracleData?.find(
+            context?.oracleData?.find(
               (oracle) =>
                 oracle.currency?.toLowerCase() ===
                 ACCEPTED_TOKENS?.find(
@@ -337,44 +343,78 @@ const useShop = () => {
             )?.wei
           )
       ) {
-        dispatch(
-          setModalOpen({
-            actionOpen: true,
-            actionMessage: "Pockets Empty. Need to top up?",
-            actionImage: "QmSUH38BqmfPci9NEvmC2KRQEJeoyxdebHiZi1FABbtueg",
-          })
-        );
+        context?.setGeneralModal({
+          open: true,
+          message: "Pockets Empty. Need to top up?",
+          image: "QmSUH38BqmfPci9NEvmC2KRQEJeoyxdebHiZi1FABbtueg",
+        });
 
         setPurchaseLoading(false);
         return;
       }
 
-      const clientWallet = createWalletClient({
-        chain: polygon,
-        transport: custom((window as any).ethereum),
-      });
-
-      const unknownOpenAction = encodeActData(
-        [0],
-        [Number(chosenItem?.chosenAmount || 1)],
-        encryptedFulfillment?.[0]?.data!,
-        ACCEPTED_TOKENS?.find(
-          (item) => item?.[1] == checkoutCurrency
-        )?.[2]?.toLowerCase() as `0x${string}`
-      );
-
-      await actPost(
-        `${toHexWithLeadingZero(
-          Number(chosenItem?.item?.profileId)
-        )}-${toHexWithLeadingZero(Number(chosenItem?.item?.pubId))}`,
+      const res = await executePostAction(
+        context?.lensConectado?.sessionClient,
         {
-          unknownOpenAction,
-        },
-        dispatch,
-        address as `0x${string}`,
-        clientWallet,
-        publicClient
+          post: cartItems?.[0]?.item?.postId,
+          action: {
+            unknown: {
+              address: LISTENER_OPEN_ACTION,
+              params: [
+                {
+                  key: ethers.keccak256(
+                    ethers.toUtf8Bytes("lens.param.buyListener")
+                  ),
+                  data: blockchainData(
+                    coder.encode(
+                      ["string[]", "address[]", "uint256[]", "uint8[]"],
+                      [
+                        encryptedFulfillment,
+                        Array.from({ length: cartItems?.length }, () =>
+                          Number(checkoutCurrency)
+                        ),
+                        cartItems?.map((item) =>
+                          Number(item?.item?.collectionId)
+                        ),
+                        cartItems?.map((item) => item?.chosenAmount),
+                      ]
+                    )
+                  ),
+                },
+              ],
+            },
+          },
+        }
       );
+
+      if (res.isErr() || !(res.value as any)?.raw) {
+        context?.setGeneralModal({
+          open: true,
+          message: "Something went wrong :/ Try again?",
+          image: "Qmam45hAbVeeq4RaJ2Dz4kTw7iea42rmvrgJySJBdSJuFS",
+        });
+        setPurchaseLoading(false);
+        return;
+      }
+
+      const provider = new ethers.BrowserProvider(window.ethereum);
+
+      const signer = await provider.getSigner();
+
+      const tx = {
+        chainId: (res.value as any)?.raw?.chainId,
+        from: (res.value as any)?.raw?.from,
+        to: (res.value as any)?.raw?.to,
+        nonce: (res.value as any)?.raw?.nonce,
+        gasLimit: (res.value as any)?.raw?.gasLimit,
+        maxFeePerGas: (res.value as any)?.raw?.maxFeePerGas,
+        maxPriorityFeePerGas: (res.value as any)?.raw?.maxPriorityFeePerGas,
+        value: (res.value as any)?.raw?.value,
+        data: (res.value as any)?.raw?.data,
+      };
+      const txResponse = await signer.sendTransaction(tx);
+      await txResponse.wait();
+
       setFulfillmentDetails({
         name: "",
         address: "",
@@ -383,14 +423,13 @@ const useShop = () => {
         state: "",
         country: "",
       });
-      dispatch(
-        setModalOpen({
-          actionOpen: true,
-          actionMessage:
-            "Checkout success! Stay up to date with fulfillment progress on your Account page.",
-          actionImage: "Qmam45hAbVeeq4RaJ2Dz4kTw7iea42rmvrgJySJBdSJuFS",
-        })
-      );
+
+      context?.setGeneralModal({
+        open: true,
+        message:
+          "Checkout success! Stay up to date with fulfillment progress on your Account page.",
+        image: "Qmam45hAbVeeq4RaJ2Dz4kTw7iea42rmvrgJySJBdSJuFS",
+      });
     } catch (err: any) {
       console.error(err.message);
     }
@@ -402,7 +441,6 @@ const useShop = () => {
     setShopLoading(true);
     try {
       const data = await getAllCollections();
-
       if (
         !data?.data?.collectionCreateds ||
         data?.data?.collectionCreateds?.length < 1
@@ -410,42 +448,32 @@ const useShop = () => {
         setShopLoading(false);
         return;
       }
-      const allShopValues = await Promise.all(
-        data?.data?.collectionCreateds?.map(async (obj: any) => {
-          const modifiedObj = {
-            ...obj,
-            prices: obj?.prices?.map((price: string) =>
-              String(Number(price) / 10 ** 18)
-            ),
-            collectionMetadata: {
-              ...obj.collectionMetadata,
-              sizes:
-                typeof obj?.collectionMetadata?.sizes === "string"
-                  ? (obj?.collectionMetadata?.sizes as any)
-                      ?.split(",")
-                      ?.map((word: string) => word.trim())
-                      ?.filter((word: string) => word.length > 0)
-                  : obj?.collectionMetadata?.sizes,
-              colors:
-                typeof obj?.collectionMetadata?.colors === "string"
-                  ? (obj?.collectionMetadata?.colors as any)
-                      ?.split(",")
-                      ?.map((word: string) => word.trim())
-                      ?.filter((word: string) => word.length > 0)
-                  : obj?.collectionMetadata?.colors,
-            },
-          };
+      const allShopValues = data?.data?.collectionCreateds?.map((obj: any) => ({
+        ...obj,
+        metadata: {
+          ...obj.metadata,
+          sizes:
+            typeof obj?.metadata?.sizes === "string"
+              ? (obj?.metadata?.sizes as any)
+                  ?.split(",")
+                  ?.map((word: string) => word.trim())
+                  ?.filter((word: string) => word.length > 0)
+              : obj?.metadata?.sizes,
+          colors:
+            typeof obj?.metadata?.colors === "string"
+              ? (obj?.metadata?.colors as any)
+                  ?.split(",")
+                  ?.map((word: string) => word.trim())
+                  ?.filter((word: string) => word.length > 0)
+              : obj?.metadata?.colors,
+        },
+      }));
 
-          return modifiedObj;
-        })
-      );
-      dispatch(
-        setCurrentIndexItem(
-          Array.from({ length: allShopValues.length }, () => 0)
-        )
+      context?.setCurrentIndexItem(
+        Array.from({ length: allShopValues.length }, () => 0)
       );
 
-      dispatch(setAllShop(allShopValues));
+      context?.setAllShop(allShopValues);
     } catch (err: any) {
       console.error(err.message);
     }
@@ -453,20 +481,16 @@ const useShop = () => {
   };
 
   useEffect(() => {
-    if (allShopItems?.length < 1 || !allShopItems) {
+    if (Number(context?.allShop?.length) < 1 || !context?.allShop) {
       getAllShop();
     }
   }, []);
 
   useEffect(() => {
-    setSwitchNeeded(chain?.id !== 137 ? true : false);
-  }, [isConnected, walletConnected, chain?.id]);
-
-  useEffect(() => {
     if (address && checkoutCurrency) {
       checkApproved();
     }
-  }, [checkoutCurrency, lensConnected?.id, address]);
+  }, [checkoutCurrency, address]);
 
   return {
     shopLoading,
@@ -479,13 +503,12 @@ const useShop = () => {
     fulfillmentDetails,
     checkoutCurrency,
     setCheckoutCurrency,
-    switchNeeded,
     currentIndex,
     setCurrentIndex,
     checkOutOpen,
     setCheckoutOpen,
-    chosenItem,
-    setChosenItem,
+    cartItems,
+    setCartItems,
   };
 };
 

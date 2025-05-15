@@ -1,24 +1,23 @@
-import { FunctionComponent } from "react";
-import { AllCircuits, AllCircuitsProps, Order } from "../types/account.types";
+import { FunctionComponent, useContext } from "react";
+import {
+  AllCircuits as AllCircuitsType,
+  AllCircuitsProps,
+  Order,
+} from "../types/account.types";
 import { convertDate } from "../../../../lib/helpers/convertDate";
-import { setSelectedUserCircuitSideBar } from "../../../../redux/reducers/selectedCircuitSideBarSlice";
+
 import {
   PiArrowCircleUpLeftFill,
   PiArrowCircleDownRightFill,
 } from "react-icons/pi";
-import { setSelectedOrderSideBar } from "../../../../redux/reducers/selectedOrderSideBarSlice";
+import { ModalContext } from "@/pages/_app";
 
 const AllCircuits: FunctionComponent<AllCircuitsProps> = ({
-  allUserCircuits,
-  selectedCircuitSideBar,
-  dispatch,
   circuitsOpen,
   setCircuitsOpen,
   largeScreen,
-  switchAccount,
-  allOrders,
-  selectedOrderSideBar,
 }): JSX.Element => {
+  const context = useContext(ModalContext);
   return (
     <div
       className={`absolute z-20 right-0 top-0 grow border-l-2 border-sol bg-aBlack px-3 xl:px-4 py-6 items-center justify-center h-full ${
@@ -51,7 +50,7 @@ const AllCircuits: FunctionComponent<AllCircuitsProps> = ({
               className="uppercase text-xl font-vcr text-moda px-1 flex items-start whitespace-nowrap justify-center w-fit h-fit -top-2"
               id="blur"
             >
-              {!switchAccount ? "All Circuits" : "All Orders"}
+              {!context?.switchAccount ? "All Circuits" : "All Orders"}
             </div>
             <div
               className="relative h-3 w-4 flex items-center justify-center -top-0.5"
@@ -61,101 +60,100 @@ const AllCircuits: FunctionComponent<AllCircuitsProps> = ({
           </div>
           <div className="relative w-full h-full gap-3 font-vcr px-2 items-center overflow-y-scroll">
             <div className="justify-start h-fit items-center gap-3 w-full flex flex-col break-words">
-              {(!switchAccount ? allUserCircuits : allOrders)?.map(
-                (value: AllCircuits | Order, index: number) => {
-                  let completed: boolean;
-                  if (!switchAccount) {
-                    completed =
-                      (value as AllCircuits)?.completed ||
-                      (value as AllCircuits).monitorExecutions ===
+              {(!context?.switchAccount
+                ? context?.allUserCircuits
+                : context?.allOrders
+              )?.map((value: AllCircuitsType | Order, index: number) => {
+                let completed: boolean;
+                if (!context?.switchAccount) {
+                  completed =
+                    (value as AllCircuitsType)?.completed ||
+                    (value as AllCircuitsType).monitorExecutions ===
+                      JSON.parse(
                         JSON.parse(
-                          JSON.parse(
-                            (value as AllCircuits).circuitInformation
-                              ?.information as any
-                          )?.executionConstraints
-                        )?.conditionMonitorExecutions ||
-                      (value as AllCircuits).circuitExecutions ===
+                          (value as AllCircuitsType).circuitInformation
+                            ?.information as any
+                        )?.executionConstraints
+                      )?.conditionMonitorExecutions ||
+                    (value as AllCircuitsType).circuitExecutions ===
+                      JSON.parse(
                         JSON.parse(
-                          JSON.parse(
-                            (value as AllCircuits).circuitInformation
-                              ?.information as any
-                          )?.executionConstraints
-                        )?.maxLitActionCompletions;
-                  }
+                          (value as AllCircuitsType).circuitInformation
+                            ?.information as any
+                        )?.executionConstraints
+                      )?.maxLitActionCompletions;
+                }
 
-                  const reverseIndex = !switchAccount
-                    ? allUserCircuits.length - index
-                    : allOrders.length - index;
+                const reverseIndex = !context?.switchAccount
+                  ? Number(context?.allUserCircuits?.length) - index
+                  : Number(context?.allOrders?.length) - index;
 
-                  return (
-                    <div
-                      key={index}
-                      className={`relative w-fit xl:w-full h-fit flex flex-row justify-center items-center gap-3 cursor-pointer active:scale-95 hover:text-sol active:text-sol grow text-center 
+                return (
+                  <div
+                    key={index}
+                    className={`relative w-fit xl:w-full h-fit flex flex-row justify-center items-center gap-3 cursor-pointer active:scale-95 hover:text-sol active:text-sol grow text-center 
                   ${
                     (
-                      !switchAccount
-                        ? (value as AllCircuits)?.circuitInformation?.id ===
-                          selectedCircuitSideBar
+                      !context?.switchAccount
+                        ? (value as AllCircuitsType)?.circuitInformation?.id ===
+                          context?.circuitSideBar
                         : (value as Order)?.orderId ===
-                          selectedOrderSideBar?.orderId
+                          context?.selectedOrderSidebar?.orderId
                     )
                       ? "text-sol"
                       : "text-white"
                   }  `}
-                      onClick={() =>
-                        !switchAccount
-                          ? dispatch(
-                              setSelectedUserCircuitSideBar(
-                                (value as AllCircuits)?.circuitInformation?.id
-                              )
-                            )
-                          : dispatch(setSelectedOrderSideBar(value as Order))
-                      }
-                    >
-                      <div className="relative flex flex-col relative w-full h-fit justify-start items-center">
+                    onClick={() =>
+                      !context?.switchAccount
+                        ? context?.setCircuitSideBar(
+                            (value as AllCircuitsType)?.circuitInformation?.id
+                          )
+                        : context?.setSelectedOrderSidebar(value as Order)
+                    }
+                  >
+                    <div className="relative flex flex-col relative w-full h-fit justify-start items-center">
+                      <div
+                        className="flex relative w-full h-fit uppercase items-center justify-center text-sm flex-row gap-1"
+                        id="blur"
+                      >
+                        <div className="relative w-fit h-fit flex items-center justify-start">
+                          {!context?.switchAccount ? "Circuit" : "Order"}{" "}
+                          {reverseIndex}:
+                        </div>
                         <div
-                          className="flex relative w-full h-fit uppercase items-center justify-center text-sm flex-row gap-1"
-                          id="blur"
-                        >
-                          <div className="relative w-fit h-fit flex items-center justify-start">
-                            {!switchAccount ? "Circuit" : "Order"}{" "}
-                            {reverseIndex}:
-                          </div>
-                          <div
-                            className={`relative w-fit h-fit flex items-center justify-start ${
-                              !switchAccount
-                                ? (value as AllCircuits)?.interrupted
-                                  ? "text-costa"
-                                  : completed!
-                                  ? "text-comp"
-                                  : "text-run"
-                                : (value as Order).subOrders?.[0]?.isFulfilled
+                          className={`relative w-fit h-fit flex items-center justify-start ${
+                            !context?.switchAccount
+                              ? (value as AllCircuitsType)?.interrupted
+                                ? "text-costa"
+                                : completed!
                                 ? "text-comp"
                                 : "text-run"
-                            }`}
-                          >
-                            {!switchAccount
-                              ? (value as AllCircuits)?.interrupted
-                                ? `(interrupted)`
-                                : completed!
-                                ? `(completed)`
-                                : `(running)`
-                              : (value as Order).subOrders?.[0]?.isFulfilled
-                              ? "(fulfilled)"
-                              : "(ordered)"}
-                          </div>
-                        </div>
-                        <div
-                          className="flex relative w-full h-fit uppercase items-center justify-center text-xs"
-                          id="blur"
+                              : (value as Order)?.isFulfilled
+                              ? "text-comp"
+                              : "text-run"
+                          }`}
                         >
-                          {convertDate(value?.blockTimestamp)}
+                          {!context?.switchAccount
+                            ? (value as AllCircuitsType)?.interrupted
+                              ? `(interrupted)`
+                              : completed!
+                              ? `(completed)`
+                              : `(running)`
+                            : (value as Order)?.isFulfilled
+                            ? "(fulfilled)"
+                            : "(ordered)"}
                         </div>
                       </div>
+                      <div
+                        className="flex relative w-full h-fit uppercase items-center justify-center text-xs"
+                        id="blur"
+                      >
+                        {convertDate(value?.blockTimestamp)}
+                      </div>
                     </div>
-                  );
-                }
-              )}
+                  </div>
+                );
+              })}
             </div>
           </div>
           <div className="relative h-1 w-full bg-moda flex items-start justify-center"></div>

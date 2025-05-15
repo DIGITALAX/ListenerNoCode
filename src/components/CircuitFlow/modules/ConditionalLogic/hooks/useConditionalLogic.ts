@@ -1,14 +1,8 @@
-import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../../../../../redux/store";
-import { setCircuitInformation } from "../../../../../../redux/reducers/circuitInformationSlice";
-import { setModalOpen } from "../../../../../../redux/reducers/modalOpenSlice";
+import { ModalContext } from "@/pages/_app";
+import { useContext, useState } from "react";
 
 const useConditionalLogic = () => {
-  const dispatch = useDispatch();
-  const circuitInformation = useSelector(
-    (state: RootState) => state.app.circuitInformationReducer.value
-  );
+  const context = useContext(ModalContext);
   const [logicType, setLogicType] = useState<string>("EVERY");
   const [targetConditionOpen, setTargetConditionOpen] =
     useState<boolean>(false);
@@ -20,26 +14,24 @@ const useConditionalLogic = () => {
     let logicCorrect = true;
 
     if (!Number(interval) || (typeof interval === "number" && interval <= 0)) {
-      dispatch(
-        setModalOpen({
-          actionOpen: true,
-          actionMessage: "Interval Invalid. Try Again.",
-          actionImage: "QmcrvQW8jQLNqGzBsmTnZooQdiqhRXGUsJyiMUR5EMdoZA",
-        })
-      );
+      context?.setGeneralModal({
+        open: true,
+        message: "Interval Invalid. Try Again.",
+        image: "QmcrvQW8jQLNqGzBsmTnZooQdiqhRXGUsJyiMUR5EMdoZA",
+      });
+
       return (logicCorrect = false);
     } else if (
       logicType === "THRESHOLD" &&
-      thresholdValue > circuitInformation.conditions.length
+      thresholdValue > Number(context?.circuitInformation.conditions.length)
     ) {
-      dispatch(
-        setModalOpen({
-          actionOpen: true,
-          actionMessage:
-            "Threshold Number Cannot Exceed Number of Conditions. Try Again.",
-          actionImage: "QmemD9mkEusskUc8aUtdp4RF2rHJBpWQHgZUoM9DFvw8jw",
-        })
-      );
+      context?.setGeneralModal({
+        open: true,
+        message:
+          "Threshold Number Cannot Exceed Number of Conditions. Try Again.",
+        image: "QmemD9mkEusskUc8aUtdp4RF2rHJBpWQHgZUoM9DFvw8jw",
+      });
+
       return (logicCorrect = false);
     }
 
@@ -62,12 +54,10 @@ const useConditionalLogic = () => {
       };
     }
 
-    dispatch(
-      setCircuitInformation({
-        ...circuitInformation,
-        conditionalLogic: conditionalLogic as any,
-      })
-    );
+    context?.setCircuitInformation((prev) => ({
+      ...prev,
+      conditionalLogic: conditionalLogic as any,
+    }));
 
     return logicCorrect;
   };

@@ -1,5 +1,9 @@
-import { FunctionComponent } from "react";
-import { Details, SelectedCircuitProps, Sub } from "../types/account.types";
+import { FunctionComponent, useContext } from "react";
+import {
+  DecryptedDetails,
+  Details,
+  SelectedCircuitProps,
+} from "../types/account.types";
 import { convertDate } from "../../../../lib/helpers/convertDate";
 import { AiOutlineLoading } from "react-icons/ai";
 import moment from "moment";
@@ -8,17 +12,16 @@ import { BiCopy } from "react-icons/bi";
 import Link from "next/link";
 import { ACCEPTED_TOKENS, INFURA_GATEWAY } from "../../../../lib/constants";
 import Image from "next/legacy/image";
+import { ModalContext } from "@/pages/_app";
 
 const SelectedCircuit: FunctionComponent<SelectedCircuitProps> = ({
-  selectedCircuit,
   interruptLoading,
   handleInterruptCircuit,
-  selectedOrder,
-  switchAccount,
   decryptFulfillment,
   decryptLoading,
 }): JSX.Element => {
-  switch (switchAccount) {
+  const context = useContext(ModalContext);
+  switch (context?.switchAccount) {
     case true:
       return (
         <div className="relative w-full h-full justify-center items-center flex">
@@ -32,19 +35,24 @@ const SelectedCircuit: FunctionComponent<SelectedCircuitProps> = ({
                   Order Id:
                 </div>
                 <div className="relative flex items-center justify-center text-ballena">
-                  {selectedOrder?.orderId}
+                  {context?.selectedOrderSidebar?.orderId}
                 </div>
               </div>
 
               <div className="relative flex flex-row h-fit w-fit">
                 <div
                   className={`relative flex items-center justify-center border border-white p-2 text-white h-8 w-40 ${
-                    !selectedOrder?.decrypted &&
+                    !context?.selectedOrderSidebar?.decrypted &&
                     !decryptLoading &&
                     "cursor-pointer"
-                  } ${!selectedOrder?.decrypted ? "bg-rojo" : "bg-comp"}`}
+                  } ${
+                    !context?.selectedOrderSidebar?.decrypted
+                      ? "bg-rojo"
+                      : "bg-comp"
+                  }`}
                   onClick={() =>
-                    !selectedOrder?.decrypted && decryptFulfillment()
+                    !context?.selectedOrderSidebar?.decrypted &&
+                    decryptFulfillment()
                   }
                 >
                   <div
@@ -54,7 +62,7 @@ const SelectedCircuit: FunctionComponent<SelectedCircuitProps> = ({
                   >
                     {decryptLoading ? (
                       <AiOutlineLoading size={15} color="white" />
-                    ) : !selectedOrder?.decrypted ? (
+                    ) : !context?.selectedOrderSidebar?.decrypted ? (
                       "Decrypt Fulfillment"
                     ) : (
                       "Decrypted"
@@ -67,50 +75,46 @@ const SelectedCircuit: FunctionComponent<SelectedCircuitProps> = ({
             <div className="relative w-full h-full flex flex-col overflow-y-scroll px-2 gap-4">
               <div className="relative w-full h-fit inline-flex flex-wrap gap-3 justify-between items-center font-vcr pt-3">
                 <div className="relative flex flex-col gap-1 w-fit h-fit justify-center items-start text-xs">
-                  <div className="relative w-fit h-fit text-white">Name</div>
-                  <div className="relative w-fit h-fit text-sol">
-                    {selectedOrder?.decrypted
-                      ? (selectedOrder?.details as Details)?.name
-                      : "@#$13l33t"}
-                  </div>
-                </div>
-                <div className="relative flex flex-col gap-1 w-fit h-fit justify-center items-start text-xs">
                   <div className="relative w-fit h-fit text-white">Address</div>
                   <div className="relative w-fit h-fit text-sol">
-                    {selectedOrder?.decrypted
-                      ? (selectedOrder?.details as Details)?.address
+                    {context?.selectedOrderSidebar?.decrypted
+                      ? (context?.selectedOrderSidebar?.details as Details)
+                          ?.address
                       : "@#$13l33t"}
                   </div>
                 </div>
                 <div className="relative flex flex-col gap-1 w-fit h-fit justify-center items-start text-xs">
                   <div className="relative w-fit h-fit text-white">City</div>
                   <div className="relative w-fit h-fit text-sol">
-                    {selectedOrder?.decrypted
-                      ? (selectedOrder?.details as Details)?.city
+                    {context?.selectedOrderSidebar?.decrypted
+                      ? (context?.selectedOrderSidebar?.details as Details)
+                          ?.city
                       : "@#$13l33t"}
                   </div>
                 </div>
                 <div className="relative flex flex-col gap-1 w-fit h-fit justify-center items-start text-xs">
                   <div className="relative w-fit h-fit text-white">State</div>
                   <div className="relative w-fit h-fit text-sol">
-                    {selectedOrder?.decrypted
-                      ? (selectedOrder?.details as Details)?.state
+                    {context?.selectedOrderSidebar?.decrypted
+                      ? (context?.selectedOrderSidebar?.details as Details)
+                          ?.state
                       : "@#$13l33t"}
                   </div>
                 </div>
                 <div className="relative flex flex-col gap-1 w-fit h-fit justify-center items-start text-xs">
                   <div className="relative w-fit h-fit text-white">Zip</div>
                   <div className="relative w-fit h-fit text-sol">
-                    {selectedOrder?.decrypted
-                      ? (selectedOrder?.details as Details)?.zip
+                    {context?.selectedOrderSidebar?.decrypted
+                      ? (context?.selectedOrderSidebar?.details as Details)?.zip
                       : "@#$13l33t"}
                   </div>
                 </div>
                 <div className="relative flex flex-col gap-1 w-fit h-fit justify-center items-start text-xs">
                   <div className="relative w-fit h-fit text-white">Country</div>
                   <div className="relative w-fit h-fit text-sol">
-                    {selectedOrder?.decrypted
-                      ? (selectedOrder?.details as Details)?.country
+                    {context?.selectedOrderSidebar?.decrypted
+                      ? (context?.selectedOrderSidebar?.details as Details)
+                          ?.country
                       : "@#$13l33t"}
                   </div>
                 </div>
@@ -121,8 +125,10 @@ const SelectedCircuit: FunctionComponent<SelectedCircuitProps> = ({
                     Order Created:
                   </div>
                   <div className="relative w-fit h-fit text-sol">
-                    {selectedOrder?.blockTimestamp &&
-                      convertDate(selectedOrder?.blockTimestamp)}
+                    {context?.selectedOrderSidebar?.blockTimestamp &&
+                      convertDate(
+                        context?.selectedOrderSidebar?.blockTimestamp
+                      )}
                   </div>
                 </div>
                 <div className="relative flex flex-col gap-1 w-fit h-fit justify-center items-start text-xs">
@@ -130,7 +136,7 @@ const SelectedCircuit: FunctionComponent<SelectedCircuitProps> = ({
                     Order Block Number:
                   </div>
                   <div className="relative w-fit h-fit text-sol">
-                    {selectedOrder?.blockNumber}
+                    {context?.selectedOrderSidebar?.blockNumber}
                   </div>
                 </div>
                 <div className="relative flex flex-col gap-1 w-fit h-fit justify-center items-start text-xs">
@@ -138,11 +144,12 @@ const SelectedCircuit: FunctionComponent<SelectedCircuitProps> = ({
                     Total Order Price:
                   </div>
                   <div className="relative w-fit h-fit text-sol">
-                    {Number(selectedOrder?.totalPrice)}{" "}
+                    {Number(context?.selectedOrderSidebar?.totalPrice)}{" "}
                     {
                       ACCEPTED_TOKENS.find(
                         ([_, __, token]) =>
-                          token === selectedOrder?.currency?.toLowerCase()
+                          token ===
+                          context?.selectedOrderSidebar?.currency?.toLowerCase()
                       )?.[1] as `0x${string}`
                     }
                   </div>
@@ -157,9 +164,9 @@ const SelectedCircuit: FunctionComponent<SelectedCircuitProps> = ({
                     className="relative w-fit h-fit text-sol break-all cursor-pointer"
                     target="_blank"
                     rel="noreferrer"
-                    href={`https://polygonscan.com/tx/${selectedOrder?.transactionHash}`}
+                    href={`https://polygonscan.com/tx/${context?.selectedOrderSidebar?.transactionHash}`}
                   >
-                    {selectedOrder?.transactionHash}
+                    {context?.selectedOrderSidebar?.transactionHash}
                   </Link>
                 </div>
               </div>
@@ -169,77 +176,73 @@ const SelectedCircuit: FunctionComponent<SelectedCircuitProps> = ({
               <div className="relative w-fit h-fit text-white font-vcr text-sm">
                 Item Details
               </div>
-              <div className="relative w-full h-fit flex flex-col gap-4">
-                {selectedOrder?.subOrders?.map((sub: Sub, index: number) => {
-                  return (
-                    <div
-                      className="relative w-full h-fit flex md:flex-nowrap flex-wrap flex-row items-center justify-between gap-3"
-                      key={index}
-                    >
-                      <div className="relative w-fit h-fit flex items-center justify-center">
-                        <div
-                          className="relative flex w-20 h-20 rounded-sm border border-white cursor-pointer"
-                          onClick={() =>
-                            window.open(
-                              `https://cypher.digitalax.xyz/item/listener/${sub?.collection?.name?.replaceAll(
-                                " ",
-                                "_"
-                              )}`
-                            )
-                          }
-                        >
-                          <Image
-                            layout="fill"
-                            src={`${INFURA_GATEWAY}/ipfs/${
-                              selectedOrder?.images?.[0]?.split("ipfs://")?.[1]
-                            }`}
-                            className="rounded-sm"
-                            objectFit="cover"
-                            draggable={false}
-                          />
-                        </div>
-                      </div>
-                      <div className="relative w-full h-fit flex items-center justify-between gap-3 flex-wrap md:flex-nowrap">
-                        <div className="relative flex w-fit h-fit items-center justify-center text-sm font-vcr text-white">
-                          ${Number(sub?.price) / Number(sub?.amount)}
-                        </div>
-                        <div className="relative flex w-fit h-fit items-center justify-center text-sm font-vcr text-white">
-                          {sub?.isFulfilled
-                            ? "Fulfilled"
-                            : "Processing for Fulfillment"}
-                        </div>
-                        <div className="relative flex w-fit h-fit items-center justify-center text-sm font-vcr text-white">
-                          Qty.{sub?.amount}
-                        </div>
+              <div className="relative w-full h-fit flex md:flex-nowrap flex-wrap flex-row items-center justify-between gap-3">
+                <div className="relative w-fit h-fit flex items-center justify-center">
+                  <div
+                    className="relative flex w-20 h-20 rounded-sm border border-white cursor-pointer"
+                    onClick={() =>
+                      window.open(
+                        `https://cypher.digitalax.xyz/item/listener/${context?.selectedOrderSidebar?.collection?.metadata?.title?.replaceAll(
+                          " ",
+                          "_"
+                        )}`
+                      )
+                    }
+                  >
+                    <Image
+                      layout="fill"
+                      src={`${INFURA_GATEWAY}/ipfs/${
+                        context?.selectedOrderSidebar?.collection?.metadata?.images?.[0]?.split(
+                          "ipfs://"
+                        )?.[1]
+                      }`}
+                      className="rounded-sm"
+                      objectFit="cover"
+                      draggable={false}
+                    />
+                  </div>
+                </div>
+                <div className="relative w-full h-fit flex items-center justify-between gap-3 flex-wrap md:flex-nowrap">
+                  <div className="relative flex w-fit h-fit items-center justify-center text-sm font-vcr text-white">
+                    $
+                    {(Number(context?.selectedOrderSidebar?.collection?.price) *
+                      Number(
+                        context?.selectedOrderSidebar?.collection?.amount
+                      )) /
+                      10 ** 18}
+                  </div>
+                  <div className="relative flex w-fit h-fit items-center justify-center text-sm font-vcr text-white">
+                    {context?.selectedOrderSidebar?.isFulfilled
+                      ? "Fulfilled"
+                      : "Processing for Fulfillment"}
+                  </div>
+                  <div className="relative flex w-fit h-fit items-center justify-center text-sm font-vcr text-white">
+                    Qty.{context?.selectedOrderSidebar?.collection?.amount}
+                  </div>
 
-                        <div
-                          className={`relative flex h-7 border border-white p-px items-center justify-center font-vcr text-white ${
-                            ["xs", "s", "m", "l", "xl", "2xl"].includes(
-                              sub?.size?.toLowerCase() || ""
-                            ) || !selectedOrder?.decrypted
-                              ? "rounded-full w-7 text-sm"
-                              : "w-fit px-1 rounded-sm text-xxs"
-                          }`}
-                        >
-                          {sub?.size && selectedOrder?.decrypted
-                            ? sub?.size
-                            : "??"}
-                        </div>
-                        <div
-                          className={`relative flex w-7 h-7 border border-white p-px rounded-full items-center justify-center text-sm font-vcr text-white`}
-                          style={{
-                            backgroundColor:
-                              sub?.color && selectedOrder?.decrypted
-                                ? `${sub?.color}`
-                                : "#131313",
-                          }}
-                        >
-                          {(!sub?.color || !selectedOrder?.decrypted) && "?"}
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
+                  <div
+                    className={`relative flex h-7 border border-white p-px items-center justify-center font-vcr text-white ${
+                      ["xs", "s", "m", "l", "xl", "2xl"].includes(
+                        (
+                          context?.selectedOrderSidebar
+                            ?.details as DecryptedDetails
+                        )?.size?.toLowerCase() || ""
+                      ) || !context?.selectedOrderSidebar?.decrypted
+                        ? "rounded-full w-7 text-sm"
+                        : "w-fit px-1 rounded-sm text-xxs"
+                    }`}
+                  >
+                    {(
+                      context?.selectedOrderSidebar?.details as DecryptedDetails
+                    )?.size && context?.selectedOrderSidebar?.decrypted
+                      ? (
+                          context?.selectedOrderSidebar
+                            ?.details as DecryptedDetails
+                        )?.size
+                      : "??"}
+                  </div>
+                  
+                </div>
               </div>
             </div>
             <div className="relative bg-white h-px w-full"></div>
@@ -260,25 +263,41 @@ const SelectedCircuit: FunctionComponent<SelectedCircuitProps> = ({
                   Circuit Id:
                 </div>
                 <div className="relative flex items-center justify-center text-ballena">
-                  {selectedCircuit?.circuitInformation?.id?.slice(0, 8) +
+                  {context?.selectedUserCircuit?.circuitInformation?.id?.slice(
+                    0,
+                    8
+                  ) +
                     "-" +
-                    selectedCircuit?.circuitInformation?.id?.slice(8, 12) +
+                    context?.selectedUserCircuit?.circuitInformation?.id?.slice(
+                      8,
+                      12
+                    ) +
                     "-" +
-                    selectedCircuit?.circuitInformation?.id?.slice(12, 16) +
+                    context?.selectedUserCircuit?.circuitInformation?.id?.slice(
+                      12,
+                      16
+                    ) +
                     "-" +
-                    selectedCircuit?.circuitInformation?.id?.slice(16, 20) +
+                    context?.selectedUserCircuit?.circuitInformation?.id?.slice(
+                      16,
+                      20
+                    ) +
                     "-" +
-                    selectedCircuit?.circuitInformation?.id?.slice(20)}
+                    context?.selectedUserCircuit?.circuitInformation?.id?.slice(
+                      20
+                    )}
                 </div>
               </div>
-              {!selectedCircuit ||
-              (Object.keys(selectedCircuit?.completed).length === 0 &&
-                Object.keys(selectedCircuit?.interrupted).length === 0 &&
-                selectedCircuit.logs.monitorExecutions !==
-                  selectedCircuit.circuitInformation?.information
+              {!context?.selectedUserCircuit ||
+              (Object.keys(context?.selectedUserCircuit?.completed).length ===
+                0 &&
+                Object.keys(context?.selectedUserCircuit?.interrupted)
+                  .length === 0 &&
+                context?.selectedUserCircuit?.logs.monitorExecutions !==
+                  context?.selectedUserCircuit?.circuitInformation?.information
                     ?.executionConstraints?.conditionMonitorExecutions &&
-                selectedCircuit.logs.circuitExecutions !==
-                  selectedCircuit.circuitInformation?.information
+                context?.selectedUserCircuit?.logs.circuitExecutions !==
+                  context?.selectedUserCircuit?.circuitInformation?.information
                     ?.executionConstraints?.maxLitActionCompletions) ? (
                 <div className="relative flex flex-row h-fit w-fit">
                   <div
@@ -287,24 +306,29 @@ const SelectedCircuit: FunctionComponent<SelectedCircuitProps> = ({
                     }`}
                     onClick={() =>
                       handleInterruptCircuit(
-                        selectedCircuit?.circuitInformation?.id?.slice(0, 8) +
+                        context?.selectedUserCircuit?.circuitInformation?.id?.slice(
+                          0,
+                          8
+                        ) +
                           "-" +
-                          selectedCircuit?.circuitInformation?.id?.slice(
+                          context?.selectedUserCircuit?.circuitInformation?.id?.slice(
                             8,
                             12
                           ) +
                           "-" +
-                          selectedCircuit?.circuitInformation?.id?.slice(
+                          context?.selectedUserCircuit?.circuitInformation?.id?.slice(
                             12,
                             16
                           ) +
                           "-" +
-                          selectedCircuit?.circuitInformation?.id?.slice(
+                          context?.selectedUserCircuit?.circuitInformation?.id?.slice(
                             16,
                             20
                           ) +
                           "-" +
-                          selectedCircuit?.circuitInformation?.id?.slice(20)
+                          context?.selectedUserCircuit?.circuitInformation?.id?.slice(
+                            20
+                          )
                       )
                     }
                   >
@@ -329,7 +353,8 @@ const SelectedCircuit: FunctionComponent<SelectedCircuitProps> = ({
                     <div
                       className={`relative w-fit h-fit flex items-center justify-center text-xs`}
                     >
-                      {Object.keys(selectedCircuit?.interrupted).length !== 0
+                      {Object.keys(context?.selectedUserCircuit?.interrupted)
+                        .length !== 0
                         ? "Circuit Interrupted"
                         : "Circuit Completed"}
                     </div>
@@ -345,8 +370,8 @@ const SelectedCircuit: FunctionComponent<SelectedCircuitProps> = ({
                     Circuit Instantiated:
                   </div>
                   <div className="relative w-fit h-fit text-sol">
-                    {selectedCircuit?.blockTimestamp &&
-                      convertDate(selectedCircuit?.blockTimestamp)}
+                    {context?.selectedUserCircuit?.blockTimestamp &&
+                      convertDate(context?.selectedUserCircuit?.blockTimestamp)}
                   </div>
                 </div>
                 <div className="relative flex flex-col gap-1 w-fit h-fit justify-center items-start text-xs">
@@ -354,7 +379,7 @@ const SelectedCircuit: FunctionComponent<SelectedCircuitProps> = ({
                     Circuit Block Number:
                   </div>
                   <div className="relative w-fit h-fit text-sol">
-                    {selectedCircuit?.blockNumber}
+                    {context?.selectedUserCircuit?.blockNumber}
                   </div>
                 </div>
                 <div className="relative flex flex-col gap-1 w-fit h-fit justify-center items-start text-xs">
@@ -362,7 +387,8 @@ const SelectedCircuit: FunctionComponent<SelectedCircuitProps> = ({
                     Lit Action Code IPFS Hash:
                   </div>
                   <div className="relative w-fit h-fit text-sol">
-                    ipfs://{selectedCircuit?.circuitInformation?.ipfs}
+                    ipfs://
+                    {context?.selectedUserCircuit?.circuitInformation?.ipfs}
                   </div>
                 </div>
                 <div className="relative flex flex-col gap-1 w-fit h-fit justify-center items-start text-xs">
@@ -370,8 +396,8 @@ const SelectedCircuit: FunctionComponent<SelectedCircuitProps> = ({
                     Action Count
                   </div>
                   <div className="relative w-fit h-fit text-sol">
-                    {selectedCircuit?.circuitInformation?.information
-                      ?.circuitActions?.length || 0}
+                    {context?.selectedUserCircuit?.circuitInformation
+                      ?.information?.circuitActions?.length || 0}
                   </div>
                 </div>
                 <div className="relative flex flex-col gap-1 w-fit h-fit justify-center items-start text-xs">
@@ -379,8 +405,8 @@ const SelectedCircuit: FunctionComponent<SelectedCircuitProps> = ({
                     Condition Count
                   </div>
                   <div className="relative w-fit h-fit text-sol">
-                    {selectedCircuit?.circuitInformation?.information
-                      ?.circuitActions?.length || 0}
+                    {context?.selectedUserCircuit?.circuitInformation
+                      ?.information?.circuitActions?.length || 0}
                   </div>
                 </div>
               </div>
@@ -390,7 +416,7 @@ const SelectedCircuit: FunctionComponent<SelectedCircuitProps> = ({
                     Assigned PKP Token Id
                   </div>
                   <div className="relative w-fit h-fit text-sol break-all">
-                    {selectedCircuit?.circuitInformation?.tokenId}
+                    {context?.selectedUserCircuit?.circuitInformation?.tokenId}
                   </div>
                 </div>
                 <div className="relative flex flex-col gap-1 w-fit h-fit justify-center items-start text-xs">
@@ -398,7 +424,10 @@ const SelectedCircuit: FunctionComponent<SelectedCircuitProps> = ({
                     Assigned PKP Address
                   </div>
                   <div className="relative w-fit h-fit text-sol break-all">
-                    {selectedCircuit?.circuitInformation?.pkpAddress}
+                    {
+                      context?.selectedUserCircuit?.circuitInformation
+                        ?.pkpAddress
+                    }
                   </div>
                 </div>
               </div>
@@ -409,8 +438,8 @@ const SelectedCircuit: FunctionComponent<SelectedCircuitProps> = ({
                   </div>
                   <div className="relative w-fit h-fit text-sol">
                     {
-                      selectedCircuit?.circuitInformation?.information
-                        ?.conditionalLogic?.type
+                      context?.selectedUserCircuit?.circuitInformation
+                        ?.information?.conditionalLogic?.type
                     }
                   </div>
                 </div>
@@ -420,8 +449,8 @@ const SelectedCircuit: FunctionComponent<SelectedCircuitProps> = ({
                   </div>
                   <div className="relative w-fit h-fit text-sol">
                     {
-                      selectedCircuit?.circuitInformation?.information
-                        ?.conditionalLogic?.interval
+                      context?.selectedUserCircuit?.circuitInformation
+                        ?.information?.conditionalLogic?.interval
                     }{" "}
                     ms
                   </div>
@@ -431,9 +460,11 @@ const SelectedCircuit: FunctionComponent<SelectedCircuitProps> = ({
                     Max Monitor Executions
                   </div>
                   <div className="relative w-fit h-fit text-sol">
-                    {selectedCircuit?.logs?.monitorExecutions || 0} /{" "}
-                    {selectedCircuit?.circuitInformation?.information
-                      ?.executionConstraints?.conditionMonitorExecutions || "∞"}
+                    {context?.selectedUserCircuit?.logs?.monitorExecutions || 0}{" "}
+                    /{" "}
+                    {context?.selectedUserCircuit?.circuitInformation
+                      ?.information?.executionConstraints
+                      ?.conditionMonitorExecutions || "∞"}
                   </div>
                 </div>
                 <div className="relative flex flex-col gap-1 w-fit h-fit justify-center items-start text-xs">
@@ -441,9 +472,11 @@ const SelectedCircuit: FunctionComponent<SelectedCircuitProps> = ({
                     Max Circuit Executions
                   </div>
                   <div className="relative w-fit h-fit text-sol">
-                    {selectedCircuit?.logs?.circuitExecutions || 0} /{" "}
-                    {selectedCircuit?.circuitInformation?.information
-                      ?.executionConstraints?.maxLitActionCompletions || "∞"}
+                    {context?.selectedUserCircuit?.logs?.circuitExecutions || 0}{" "}
+                    /{" "}
+                    {context?.selectedUserCircuit?.circuitInformation
+                      ?.information?.executionConstraints
+                      ?.maxLitActionCompletions || "∞"}
                   </div>
                 </div>
                 <div className="relative flex flex-col gap-1 w-fit h-fit justify-center items-start text-xs">
@@ -452,8 +485,8 @@ const SelectedCircuit: FunctionComponent<SelectedCircuitProps> = ({
                   </div>
                   <div className="relative w-fit h-fit text-sol">
                     {moment(
-                      selectedCircuit?.circuitInformation?.information
-                        ?.executionConstraints?.startDate
+                      context?.selectedUserCircuit?.circuitInformation
+                        ?.information?.executionConstraints?.startDate
                     ).calendar()}
                   </div>
                 </div>
@@ -463,8 +496,8 @@ const SelectedCircuit: FunctionComponent<SelectedCircuitProps> = ({
                   </div>
                   <div className="relative w-fit h-fit text-sol">
                     {moment(
-                      selectedCircuit?.circuitInformation?.information
-                        ?.executionConstraints?.endDate
+                      context?.selectedUserCircuit?.circuitInformation
+                        ?.information?.executionConstraints?.endDate
                     ).calendar()}
                   </div>
                 </div>
@@ -478,7 +511,7 @@ const SelectedCircuit: FunctionComponent<SelectedCircuitProps> = ({
             </div>
             <div className="relative w-full h-full flex overflow-y-scroll">
               <div className="relative w-full h-fit flex flex-col gap-3">
-                {selectedCircuit?.logs?.stringifiedLogs?.map(
+                {context?.selectedUserCircuit?.logs?.stringifiedLogs?.map(
                   (log, index: number) => {
                     let data: string;
                     if (Number(log?.category) === 0) {

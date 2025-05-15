@@ -1,19 +1,12 @@
 import Head from "next/head";
 import Image from "next/legacy/image";
 import { INFURA_GATEWAY } from "../../lib/constants";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../redux/store";
 import useShop from "@/components/Shop/hooks/useShop";
 import AllShop from "@/components/Shop/modules/AllShop";
 import Checkout from "@/components/Shop/modules/Checkout";
-import { useChainModal, useConnectModal } from "@rainbow-me/rainbowkit";
 import { useEffect, useState } from "react";
-import useSignIn from "@/components/Shop/hooks/useSignIn";
 
 export default function Shop() {
-  const dispatch = useDispatch();
-  const { openConnectModal } = useConnectModal();
-  const { openChainModal } = useChainModal();
   const {
     shopLoading,
     purchaseLoading,
@@ -23,29 +16,16 @@ export default function Shop() {
     fulfillmentDetails,
     checkoutCurrency,
     setCheckoutCurrency,
-    switchNeeded,
     setCurrentIndex,
     currentIndex,
     checkOutOpen,
     setCheckoutOpen,
-    setChosenItem,
-    chosenItem,
     collectItem,
     approveSpend,
+    cartItems,
+    setCartItems,
   } = useShop();
-  const allShopItems = useSelector(
-    (state: RootState) => state.app.allShopReducer.value
-  );
-  const lensConnected = useSelector(
-    (state: RootState) => state.app.lensConnectedReducer.profile
-  );
-  const currentIndexItem = useSelector(
-    (state: RootState) => state.app.currentIndexItemReducer.value
-  );
-  const oracleData = useSelector(
-    (state: RootState) => state.app.oracleDataReducer.data
-  );
-  const { handleLensConnect, signInLoading } = useSignIn();
+
   const [largeScreen, setLargeScreen] = useState<boolean>(true);
 
   useEffect(() => {
@@ -106,22 +86,18 @@ export default function Shop() {
           </div>
         ) : (
           <AllShop
+            cartItems={cartItems}
             checkOutOpen={checkOutOpen}
+            setCartItems={setCartItems}
             currentIndex={currentIndex}
             setCurrentIndex={setCurrentIndex}
-            allShopItems={allShopItems}
-            dispatch={dispatch}
-            currentIndexItem={currentIndexItem}
             largeScreen={largeScreen}
-            chosenItem={chosenItem}
-            setChosenItem={setChosenItem}
           />
         )}
       </div>
       <Checkout
-        dispatch={dispatch}
-        chosenCartItem={chosenItem}
-        setChosenCartItem={setChosenItem}
+        cartItems={cartItems}
+        setCartItems={setCartItems}
         largeScreen={largeScreen}
         purchaseLoading={purchaseLoading}
         purchaseItems={collectItem}
@@ -130,17 +106,10 @@ export default function Shop() {
         setFulfillmentDetails={setFulfillmentDetails}
         address={address ? true : false}
         approved={approved}
-        openConnectModal={openConnectModal}
         checkoutCurrency={checkoutCurrency}
         handleApproveSpend={approveSpend}
-        switchNeeded={switchNeeded}
-        openChainModal={openChainModal}
         checkOutOpen={checkOutOpen}
         setCheckoutOpen={setCheckoutOpen}
-        lensConnected={lensConnected}
-        lensSignIn={handleLensConnect}
-        lensLoading={signInLoading}
-        oracleData={oracleData}
       />
     </div>
   );

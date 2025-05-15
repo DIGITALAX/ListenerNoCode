@@ -1,6 +1,6 @@
-import { ArgsProps } from "@/components/CircuitFlow/types/circuitflow.types";
 import { FunctionComponent } from "react";
 import { IoMdAddCircleOutline } from "react-icons/io";
+import { ArgsProps } from "../../types/circuitflow.types";
 
 const Args: FunctionComponent<ArgsProps> = ({
   setAddMoreArgs,

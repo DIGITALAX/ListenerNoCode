@@ -6,10 +6,6 @@ export interface AllEntries {
   litAction: string;
 }
 
-export type AllActionsProps = {
-  allEntries: AllEntries[];
-};
-
 export type CodeComponentProps = {
   code: string;
 };

@@ -1,36 +1,17 @@
 import {
-  CHAIN_NAME,
   ContractCondition,
   WebhookCondition,
 } from "@/components/CircuitFlow/types/litlistener.types";
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { setCircuitInformation } from "../../../../../../redux/reducers/circuitInformationSlice";
-import { RootState } from "../../../../../../redux/store";
-import { setModalOpen } from "../../../../../../redux/reducers/modalOpenSlice";
-import { codeChecker } from "../../../../../../lib/helpers/codeChecker";
+import { useContext, useEffect, useState } from "react";
 import { checkMatchOperator } from "../../../../../../lib/helpers/checkMatchOperator";
 import { checkResponsePath } from "../../../../../../lib/helpers/checkResponsePath";
 import { checkBaseURL } from "../../../../../../lib/helpers/checkBaseURL";
 import { checkEndpoint } from "../../../../../../lib/helpers/checkEndpoint";
-import { setNewContractConditionInformation } from "../../../../../../redux/reducers/newContractConditionInformationSlice";
-import { setNewWebhookConditionInformation } from "../../../../../../redux/reducers/newWebhookConditionInformationSlice";
 import { SET_CONDITIONS_TEXT_WEBHOOK } from "../../../../../../lib/constants";
+import { ModalContext } from "@/pages/_app";
 
 const useSetConditions = () => {
-  const dispatch = useDispatch();
-  const circuitInformation = useSelector(
-    (state: RootState) => state.app.circuitInformationReducer.value
-  );
-  const conditionFlowIndex = useSelector(
-    (state: RootState) => state.app.conditionFlowReducer.value
-  );
-  const newContractConditionInformation = useSelector(
-    (state: RootState) => state.app.newContractConditionInformationReducer.value
-  );
-  const newWebhookConditionInformation = useSelector(
-    (state: RootState) => state.app.newWebhookConditionInformationReducer.value
-  );
+  const context = useContext(ModalContext);
   const [dropDownChainContract, setDropDownChainContract] =
     useState<boolean>(false);
   const [text, setText] = useState<string>(SET_CONDITIONS_TEXT_WEBHOOK[0]);
@@ -125,100 +106,82 @@ const useSetConditions = () => {
     );
 
     if (
-      !newContractConditionInformation?.contractAddress ||
-      newContractConditionInformation?.contractAddress?.trim() === ""
+      !context?.newContractConditionInfo?.contractAddress ||
+      context?.newContractConditionInfo?.contractAddress?.trim() === ""
     ) {
       checker = false;
-      dispatch(
-        setModalOpen({
-          actionOpen: true,
-          actionMessage: "Contract Address Missing. Try Again.",
-          actionImage: "QmQaUjMfMg1hmxyfHdAdeeT6hiw4JEbMkqKARexCytEMLu",
-        })
-      );
+      context?.setGeneralModal({
+        open: true,
+        message: "Contract Address Missing. Try Again.",
+        image: "QmQaUjMfMg1hmxyfHdAdeeT6hiw4JEbMkqKARexCytEMLu",
+      });
     } else if (
-      !newContractConditionInformation?.contractAddress?.startsWith("0x")
+      !context?.newContractConditionInfo?.contractAddress?.startsWith("0x")
     ) {
       checker = false;
-      dispatch(
-        setModalOpen({
-          actionOpen: true,
-          actionMessage: "Contract Address Invalid. Try Again.",
-          actionImage: "QmUQVRH5iX5FhqDN3dpN5ZGGAguaUh7MbTN6p1U9B2tB3r",
-        })
-      );
+      context?.setGeneralModal({
+        open: true,
+        message: "Contract Address Invalid. Try Again.",
+        image: "QmUQVRH5iX5FhqDN3dpN5ZGGAguaUh7MbTN6p1U9B2tB3r",
+      });
     } else if (
-      !newContractConditionInformation?.eventName ||
-      newContractConditionInformation?.eventName?.trim() === ""
+      !context?.newContractConditionInfo?.eventName ||
+      context?.newContractConditionInfo?.eventName?.trim() === ""
     ) {
       checker = false;
-      dispatch(
-        setModalOpen({
-          actionOpen: true,
-          actionMessage: "Event Name Missing. Try Again.",
-          actionImage: "QmRyjnEuR6sKeejA92eRbUXFZg9G6BtXQRprwgLc9zNkNn",
-        })
-      );
+      context?.setGeneralModal({
+        open: true,
+        message: "Event Name Missing. Try Again.",
+        image: "QmRyjnEuR6sKeejA92eRbUXFZg9G6BtXQRprwgLc9zNkNn",
+      });
     } else if (newEventArgs?.length < 1) {
       checker = false;
-      dispatch(
-        setModalOpen({
-          actionOpen: true,
-          actionMessage: "Event Args Missing. Try Again.",
-          actionImage: "Qmeu1VLZewUTJ7NvyY3fn8Kmr8MReFGJYMmbxzNqqmYVUf",
-        })
-      );
+      context?.setGeneralModal({
+        open: true,
+        message: "Event Args Missing. Try Again.",
+        image: "Qmeu1VLZewUTJ7NvyY3fn8Kmr8MReFGJYMmbxzNqqmYVUf",
+      });
     } else if (
-      !newContractConditionInformation?.matchOperator ||
-      newContractConditionInformation?.matchOperator?.trim() === ""
+      !context?.newContractConditionInfo?.matchOperator ||
+      context?.newContractConditionInfo?.matchOperator?.trim() === ""
     ) {
       checker = false;
-      dispatch(
-        setModalOpen({
-          actionOpen: true,
-          actionMessage: "Match Operator Missing. Try Again.",
-          actionImage: "Qmcz8vhEfNK5dyryED1rp6p1LE6CBJLr9XRNxsyrbqrFoK",
-        })
-      );
+      context?.setGeneralModal({
+        open: true,
+        message: "Match Operator Missing. Try Again.",
+        image: "Qmcz8vhEfNK5dyryED1rp6p1LE6CBJLr9XRNxsyrbqrFoK",
+      });
     } else if (
-      !checkMatchOperator(newContractConditionInformation?.matchOperator)
+      !checkMatchOperator(context?.newContractConditionInfo?.matchOperator)
     ) {
       checker = false;
-      dispatch(
-        setModalOpen({
-          actionOpen: true,
-          actionMessage: "Invalid Match Operator. Try Again.",
-          actionImage: "QmQM6CYN8fms9E4oJnzfUGUHdVawwFvVz9HY5vT32FmHz2",
-        })
-      );
+      context?.setGeneralModal({
+        open: true,
+        message: "Invalid Match Operator. Try Again.",
+        image: "QmQM6CYN8fms9E4oJnzfUGUHdVawwFvVz9HY5vT32FmHz2",
+      });
     } else if (newExpectedValues?.length < 1) {
       checker = false;
-      dispatch(
-        setModalOpen({
-          actionOpen: true,
-          actionMessage: "Expected Values Missing. Try Again.",
-          actionImage: "QmcqV3qmqJhzqmqEM6kRaPtgmyxMYnUfsRrkdbTDYxCsJw",
-        })
-      );
+      context?.setGeneralModal({
+        open: true,
+        message: "Expected Values Missing. Try Again.",
+        image: "QmcqV3qmqJhzqmqEM6kRaPtgmyxMYnUfsRrkdbTDYxCsJw",
+      });
     } else if (expectedValues?.length !== eventArgs?.length) {
       checker = false;
-      dispatch(
-        setModalOpen({
-          actionOpen: true,
-          actionMessage:
-            "Each Event Arg Needs A Corresponding Expected Value. Try Again.",
-          actionImage: "QmXiYwejG2YZrNuo7xAsAWAmmkqU2Wbzwj1URDkaP9FuMQ",
-        })
-      );
+      context?.setGeneralModal({
+        open: true,
+        message:
+          "Each Event Arg Needs A Corresponding Expected Value. Try Again.",
+        image: "QmXiYwejG2YZrNuo7xAsAWAmmkqU2Wbzwj1URDkaP9FuMQ",
+      });
     } else if (newInputs?.length < 1) {
       checker = false;
-      dispatch(
-        setModalOpen({
-          actionOpen: true,
-          actionMessage: "Contract ABI Inputs Missing. Try Again.",
-          actionImage: "QmRWHaMFya1MHuS7ysQesSDYjcqtdygq17aFk4PUdg7dVh",
-        })
-      );
+      context?.setGeneralModal({
+        open: true,
+        message: "Contract ABI Inputs Missing. Try Again.",
+        image: "QmRWHaMFya1MHuS7ysQesSDYjcqtdygq17aFk4PUdg7dVh",
+      });
     }
 
     return { checker, newInputs, newExpectedValues, newEventArgs };
@@ -230,119 +193,103 @@ const useSetConditions = () => {
     newEndpoint: string;
   } => {
     let checker = true;
-    const newBaseURL = !newWebhookConditionInformation?.baseUrl?.endsWith("/")
-      ? newWebhookConditionInformation?.baseUrl + "/"
-      : newWebhookConditionInformation?.baseUrl;
-    const newEndpoint = newWebhookConditionInformation?.endpoint.startsWith("/")
-      ? newWebhookConditionInformation?.endpoint?.substring(1)
-      : newWebhookConditionInformation?.endpoint!;
+    const newBaseURL = !context?.newWebhookConditionInfo?.baseUrl?.endsWith("/")
+      ? context?.newWebhookConditionInfo?.baseUrl + "/"
+      : context?.newWebhookConditionInfo?.baseUrl;
+    const newEndpoint = context?.newWebhookConditionInfo?.endpoint.startsWith(
+      "/"
+    )
+      ? context?.newWebhookConditionInfo?.endpoint?.substring(1)
+      : context?.newWebhookConditionInfo?.endpoint!;
     if (
-      !newWebhookConditionInformation?.baseUrl ||
-      newWebhookConditionInformation?.baseUrl?.trim() === ""
+      !context?.newWebhookConditionInfo?.baseUrl ||
+      context?.newWebhookConditionInfo?.baseUrl?.trim() === ""
     ) {
       checker = false;
-      dispatch(
-        setModalOpen({
-          actionOpen: true,
-          actionMessage: "Base URL Missing. Try Again.",
-          actionImage: "QmTwJR5WigvzU2WcXsRRbqZY4Av6EfGokmUMz6n1pKL9BL",
-        })
-      );
+      context?.setGeneralModal({
+        open: true,
+        message: "Base URL Missing. Try Again.",
+        image: "QmTwJR5WigvzU2WcXsRRbqZY4Av6EfGokmUMz6n1pKL9BL",
+      });
     } else if (
-      !newWebhookConditionInformation?.endpoint ||
-      newWebhookConditionInformation?.endpoint?.trim() === ""
+      !context?.newWebhookConditionInfo?.endpoint ||
+      context?.newWebhookConditionInfo?.endpoint?.trim() === ""
     ) {
       checker = false;
-      dispatch(
-        setModalOpen({
-          actionOpen: true,
-          actionMessage: "Endpoint Missing. Try Again.",
-          actionImage: "QmQspswKVpm8MTGfw7esAN6estvHtXhANycx9iUEYPmHsD",
-        })
-      );
-    } else if (!checkBaseURL(newWebhookConditionInformation?.baseUrl)) {
+      context?.setGeneralModal({
+        open: true,
+        message: "Endpoint Missing. Try Again.",
+        image: "QmQspswKVpm8MTGfw7esAN6estvHtXhANycx9iUEYPmHsD",
+      });
+    } else if (!checkBaseURL(context?.newWebhookConditionInfo?.baseUrl)) {
       checker = false;
-      dispatch(
-        setModalOpen({
-          actionOpen: true,
-          actionMessage: "Base URL Invalid. Try Again.",
-          actionImage: "Qmdont4GbQx4BhgdF1FWvhCow21rRTjst6wwESNNLxN5QJ",
-        })
-      );
-    } else if (!checkEndpoint(newWebhookConditionInformation?.endpoint)) {
+      context?.setGeneralModal({
+        open: true,
+        message: "Base URL Invalid. Try Again.",
+        image: "Qmdont4GbQx4BhgdF1FWvhCow21rRTjst6wwESNNLxN5QJ",
+      });
+    } else if (!checkEndpoint(context?.newWebhookConditionInfo?.endpoint)) {
       checker = false;
-      dispatch(
-        setModalOpen({
-          actionOpen: true,
-          actionMessage: "Endpoint Invalid. Try Again.",
-          actionImage: "QmWgZnGb5HLEAXZ9y5N7fxAFvoTvb5Bv6CbLaMdfCQSLbS",
-        })
-      );
+      context?.setGeneralModal({
+        open: true,
+        message: "Endpoint Invalid. Try Again.",
+        image: "QmWgZnGb5HLEAXZ9y5N7fxAFvoTvb5Bv6CbLaMdfCQSLbS",
+      });
     } else if (
-      !newWebhookConditionInformation?.matchOperator ||
-      newWebhookConditionInformation?.matchOperator?.trim() === ""
+      !context?.newWebhookConditionInfo?.matchOperator ||
+      context?.newWebhookConditionInfo?.matchOperator?.trim() === ""
     ) {
       checker = false;
-      dispatch(
-        setModalOpen({
-          actionOpen: true,
-          actionMessage: "Match Operator Missing. Try Again.",
-          actionImage: "QmfM8CZg7C4T4338VL7gEb9VwhcFqYR3GKE75z472oaUiZ",
-        })
-      );
+      context?.setGeneralModal({
+        open: true,
+        message: "Match Operator Missing. Try Again.",
+        image: "QmfM8CZg7C4T4338VL7gEb9VwhcFqYR3GKE75z472oaUiZ",
+      });
     } else if (
-      !checkMatchOperator(newWebhookConditionInformation?.matchOperator)
+      !checkMatchOperator(context?.newWebhookConditionInfo?.matchOperator)
     ) {
       checker = false;
-      dispatch(
-        setModalOpen({
-          actionOpen: true,
-          actionMessage: "Invalid Match Operator. Try Again.",
-          actionImage: "QmSUH38BqmfPci9NEvmC2KRQEJeoyxdebHiZi1FABbtueg",
-        })
-      );
+      context?.setGeneralModal({
+        open: true,
+        message: "Invalid Match Operator. Try Again.",
+        image: "QmSUH38BqmfPci9NEvmC2KRQEJeoyxdebHiZi1FABbtueg",
+      });
     } else if (
-      !newWebhookConditionInformation?.responsePath ||
-      newWebhookConditionInformation?.responsePath?.trim() === ""
+      !context?.newWebhookConditionInfo?.responsePath ||
+      context?.newWebhookConditionInfo?.responsePath?.trim() === ""
     ) {
       checker = false;
-      dispatch(
-        setModalOpen({
-          actionOpen: true,
-          actionMessage: "Response Path Missing. Try Again.",
-          actionImage: "Qmf3knH67VUqS2icK5hbkSUqRTxCFdbfdZnyxWPrJVG5w4",
-        })
-      );
+      context?.setGeneralModal({
+        open: true,
+        message: "Response Path Missing. Try Again.",
+        image: "Qmf3knH67VUqS2icK5hbkSUqRTxCFdbfdZnyxWPrJVG5w4",
+      });
     } else if (
-      !checkResponsePath(newWebhookConditionInformation.responsePath)
+      !checkResponsePath(context?.newWebhookConditionInfo?.responsePath)
     ) {
       checker = false;
-      dispatch(
-        setModalOpen({
-          actionOpen: true,
-          actionMessage: "Response Path Invalid. Try Again.",
-          actionImage: "Qmez3hLGshhkVjobBpaCATxnMyLpBhBvDmRSEVGdAxJijE",
-        })
-      );
+      context?.setGeneralModal({
+        open: true,
+        message: "Response Path Invalid. Try Again.",
+        image: "Qmez3hLGshhkVjobBpaCATxnMyLpBhBvDmRSEVGdAxJijE",
+      });
     } else if (
-      !newWebhookConditionInformation?.expectedValue ||
-      newWebhookConditionInformation?.expectedValue?.toString()?.trim() === ""
+      !context?.newWebhookConditionInfo?.expectedValue ||
+      context?.newWebhookConditionInfo?.expectedValue?.toString()?.trim() === ""
     ) {
       checker = false;
-      dispatch(
-        setModalOpen({
-          actionOpen: true,
-          actionMessage: "Expected Value Missing. Try Again.",
-          actionImage: "QmUzzkGb1HKfixUnyKbVDHVb9TG9nYpdYQhL6uZckRETow",
-        })
-      );
+      context?.setGeneralModal({
+        open: true,
+        message: "Expected Value Missing. Try Again.",
+        image: "QmUzzkGb1HKfixUnyKbVDHVb9TG9nYpdYQhL6uZckRETow",
+      });
     }
 
     return { checker, newBaseURL, newEndpoint };
   };
 
   const handleAddConditionAndReset = () => {
-    if (conditionType === "contract" && conditionFlowIndex.index !== 0) {
+    if (conditionType === "contract" && context?.conditionFlow?.index !== 0) {
       const { checker, newInputs, newEventArgs, newExpectedValues } =
         checkContractCondition();
       if (!checker) {
@@ -350,56 +297,54 @@ const useSetConditions = () => {
       }
 
       const abi = buildABI(
-        newContractConditionInformation?.eventName!,
+        context?.newContractConditionInfo?.eventName!,
         newInputs
       );
 
-      dispatch(
-        setCircuitInformation({
-          ...circuitInformation,
-          conditions: [
-            ...circuitInformation.conditions,
-            {
-              ...newContractConditionInformation,
-              id:
-                circuitInformation.conditions?.length > 0
-                  ? circuitInformation.conditions?.length?.toString()
-                  : "1",
-              abi,
-              chainId: newContractConditionInformation?.chainId || "ethereum",
-              eventArgName: newEventArgs,
-              expectedValue: newExpectedValues,
-            } as ContractCondition,
-          ],
-        })
-      );
-      dispatch(setNewContractConditionInformation(undefined));
+      context?.setCircuitInformation((prev) => ({
+        ...prev,
+        conditions: [
+          ...prev.conditions,
+          {
+            ...context?.newContractConditionInfo,
+            id:
+              prev.conditions?.length > 0
+                ? prev.conditions?.length?.toString()
+                : "1",
+            abi,
+            chainId: context?.newContractConditionInfo?.chainId || "ethereum",
+            eventArgName: newEventArgs,
+            expectedValue: newExpectedValues,
+          } as ContractCondition,
+        ],
+      }));
+
+      context?.setNewContractConditionInfo(undefined);
       setEventArgs([]);
       setExpectedValues([]);
-    } else if (conditionFlowIndex.index !== 0) {
+    } else if (context?.conditionFlow?.index !== 0) {
       const { checker, newBaseURL, newEndpoint } = checkWebhookCondition();
       if (!checker) {
         return;
       }
-      dispatch(
-        setCircuitInformation({
-          ...circuitInformation,
-          conditions: [
-            ...circuitInformation.conditions,
-            {
-              ...newWebhookConditionInformation,
-              id:
-                circuitInformation.conditions?.length > 0
-                  ? circuitInformation.conditions?.length?.toString()
-                  : "1",
-              baseUrl: newBaseURL,
-              endpoint: newEndpoint,
-            } as WebhookCondition,
-          ],
-        })
-      );
 
-      dispatch(setNewWebhookConditionInformation(undefined));
+      context?.setCircuitInformation((prev) => ({
+        ...prev,
+        conditions: [
+          ...prev.conditions,
+          {
+            ...context?.newWebhookConditionInfo,
+            id:
+              prev.conditions?.length > 0
+                ? prev.conditions?.length?.toString()
+                : "1",
+            baseUrl: newBaseURL,
+            endpoint: newEndpoint,
+          } as WebhookCondition,
+        ],
+      }));
+
+      context?.setNewWebhookConditionInfo(undefined);
     }
   };
 
@@ -412,32 +357,30 @@ const useSetConditions = () => {
       }
 
       const abi = buildABI(
-        newContractConditionInformation?.eventName!,
+        context?.newContractConditionInfo?.eventName!,
         newInputs
       );
 
-      dispatch(
-        setCircuitInformation({
-          ...circuitInformation,
-          conditions: circuitInformation.conditions.map((obj) =>
-            obj.id === newContractConditionInformation?.id
-              ? {
-                  ...obj,
-                  ...({
-                    ...newContractConditionInformation,
-                    chainId:
-                      newContractConditionInformation?.chainId || "ethereum",
-                    abi,
-                    eventArgName: newEventArgs,
-                    expectedValue: newExpectedValues,
-                  } as ContractCondition),
-                }
-              : obj
-          ),
-        })
-      );
+      context?.setCircuitInformation((prev) => ({
+        ...prev,
+        conditions: prev.conditions.map((obj) =>
+          obj.id === context?.newContractConditionInfo?.id
+            ? {
+                ...obj,
+                ...({
+                  ...context?.newContractConditionInfo,
+                  chainId:
+                    context?.newContractConditionInfo?.chainId || "ethereum",
+                  abi,
+                  eventArgName: newEventArgs,
+                  expectedValue: newExpectedValues,
+                } as ContractCondition),
+              }
+            : obj
+        ),
+      }));
 
-      dispatch(setNewContractConditionInformation(undefined));
+      context?.setNewContractConditionInfo(undefined);
 
       setEventArgs([""]);
       setExpectedValues([""]);
@@ -447,25 +390,22 @@ const useSetConditions = () => {
         return;
       }
 
-      dispatch(
-        setCircuitInformation({
-          ...circuitInformation,
-          conditions: circuitInformation.conditions.map((obj) =>
-            obj.id === newWebhookConditionInformation?.id
-              ? ({
-                  ...obj,
-                  ...{
-                    ...newWebhookConditionInformation,
-                    baseUrl: newBaseURL,
-                    endpoint: newEndpoint,
-                  },
-                } as WebhookCondition)
-              : obj
-          ),
-        })
-      );
-
-      dispatch(setNewWebhookConditionInformation(undefined));
+      context?.setCircuitInformation((prev) => ({
+        ...prev,
+        conditions: prev.conditions.map((obj) =>
+          obj.id === context?.newWebhookConditionInfo?.id
+            ? ({
+                ...obj,
+                ...{
+                  ...context?.newWebhookConditionInfo,
+                  baseUrl: newBaseURL,
+                  endpoint: newEndpoint,
+                },
+              } as WebhookCondition)
+            : obj
+        ),
+      }));
+      context?.setNewWebhookConditionInfo(undefined);
     }
 
     setEditingState(false);

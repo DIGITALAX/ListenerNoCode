@@ -1,25 +1,20 @@
-import { FunctionComponent } from "react";
-import { OverviewProps } from "../../types/circuitflow.types";
-import { setCircuitFlow } from "../../../../../redux/reducers/circuitFlowSlice";
-import { setModalOpen } from "../../../../../redux/reducers/modalOpenSlice";
+import { FunctionComponent, useContext } from "react";
 import {
   PiArrowCircleUpLeftFill,
   PiArrowCircleDownRightFill,
 } from "react-icons/pi";
+import { ModalContext } from "@/pages/_app";
+import { OverviewProps } from "../../types/circuitflow.types";
 
 const Overview: FunctionComponent<OverviewProps> = ({
-  circuitFlowIndex,
-  dispatch,
-  circuitInformation,
   handleSetConditionalLogic,
-  ipfsHash,
   handleAddExecutionConstraints,
   handleClearCircuit,
-  circuitRunning,
   overviewOpen,
   setOverviewOpen,
   largeScreen,
 }): JSX.Element => {
+  const context = useContext(ModalContext);
   return (
     <div
       className={`absolute z-20 right-0 top-0 grow border-l-2 h-full border-sol px-4 py-6 bg-aBlack items-center justify-center ${
@@ -81,61 +76,54 @@ const Overview: FunctionComponent<OverviewProps> = ({
                 <div
                   key={index}
                   className={`relative w-fit xl:w-full h-fit flex flex-row justify-start items-center gap-3 cursor-pointer active:scale-95 hover:text-sol xl:grow ${
-                    circuitFlowIndex === index ? "text-sol" : "text-rio"
+                    context?.circuitFlow === index ? "text-sol" : "text-rio"
                   }`}
                   onClick={
-                    circuitFlowIndex === 6 && circuitRunning
+                    context?.circuitFlow === 6 && context?.circuitRunning
                       ? () => handleClearCircuit()
-                      : circuitFlowIndex === 0 &&
-                        circuitInformation?.conditions?.length < 1 &&
+                      : context?.circuitFlow === 0 &&
+                        context?.circuitInformation?.conditions?.length < 1 &&
                         index > 0
                       ? () =>
-                          dispatch(
-                            setModalOpen({
-                              actionOpen: true,
-                              actionMessage:
-                                "Add Conditions Before Continuing.",
-                              actionImage:
-                                "QmRyJipNKXxRDRc5B89Xy5dSxqAZoydHSqZrxbAqaQJKpb",
-                            })
-                          )
-                      : circuitFlowIndex === 1 && index > 1
+                          context?.setGeneralModal({
+                            open: true,
+                            message: "Add Conditions Before Continuing.",
+                            image:
+                              "QmRyJipNKXxRDRc5B89Xy5dSxqAZoydHSqZrxbAqaQJKpb",
+                          })
+                      : context?.circuitFlow === 1 && index > 1
                       ? () => {
                           const logicCorrect = handleSetConditionalLogic();
                           if (logicCorrect) {
-                            dispatch(setCircuitFlow(index));
+                            context?.setCircuitFlow(index);
                           }
                         }
-                      : circuitFlowIndex === 2 &&
-                        circuitInformation?.actions?.length < 1 &&
+                      : context?.circuitFlow === 2 &&
+                        context?.circuitInformation?.actions?.length < 1 &&
                         index > 2
                       ? () =>
-                          dispatch(
-                            setModalOpen({
-                              actionOpen: true,
-                              actionMessage: "Add Actions Before Continuing.",
-                              actionImage:
-                                "Qmam45hAbVeeq4RaJ2Dz4kTw7iea42rmvrgJySJBdSJuFS",
-                            })
-                          )
-                      : circuitFlowIndex === 3 && index > 3
+                          context?.setGeneralModal({
+                            open: true,
+                            message: "Add Actions Before Continuing.",
+                            image:
+                              "Qmam45hAbVeeq4RaJ2Dz4kTw7iea42rmvrgJySJBdSJuFS",
+                          })
+                      : context?.circuitFlow === 3 && index > 3
                       ? () => {
                           handleAddExecutionConstraints();
-                          dispatch(setCircuitFlow(index));
+                          context?.setCircuitFlow(index);
                         }
-                      : circuitFlowIndex === 4 &&
-                        ipfsHash?.trim() === "" &&
+                      : context?.circuitFlow === 4 &&
+                        context?.ipfsHash?.ipfs?.trim() === "" &&
                         index > 4
                       ? () =>
-                          dispatch(
-                            setModalOpen({
-                              actionOpen: true,
-                              actionMessage: "Hash to IPFS before continuing.",
-                              actionImage:
-                                "QmehNYsJB4MBfwr1SmZMGmAsdcVBFYa1cbyMq68RjgRf6J",
-                            })
-                          )
-                      : () => dispatch(setCircuitFlow(index))
+                          context?.setGeneralModal({
+                            open: true,
+                            message: "Hash to IPFS before continuing.",
+                            image:
+                              "QmehNYsJB4MBfwr1SmZMGmAsdcVBFYa1cbyMq68RjgRf6J",
+                          })
+                      : () => context?.setCircuitFlow(index)
                   }
                 >
                   <div className="flex flex-row justify-start items-center w-fit h-fit gap-1.5">

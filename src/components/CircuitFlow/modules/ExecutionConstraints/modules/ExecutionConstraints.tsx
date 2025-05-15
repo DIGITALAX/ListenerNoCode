@@ -1,8 +1,9 @@
-import { FunctionComponent } from "react";
+import { FunctionComponent, useContext } from "react";
 import Start from "./Start";
 import End from "./End";
-import { ExecutionConstraintsProps } from "@/components/CircuitFlow/types/circuitflow.types";
 import Input from "../../Common/Input";
+import { ExecutionConstraintsProps } from "@/components/CircuitFlow/types/circuitflow.types";
+import { ModalContext } from "@/pages/_app";
 
 const ExecutionConstraints: FunctionComponent<ExecutionConstraintsProps> = ({
   time,
@@ -11,9 +12,9 @@ const ExecutionConstraints: FunctionComponent<ExecutionConstraintsProps> = ({
   setTime,
   conditionMonitorExecutions,
   maxLitActionCompletions,
-  executionConstraintFlowIndex,
 }): JSX.Element => {
-  switch (executionConstraintFlowIndex.index) {
+  const context = useContext(ModalContext);
+  switch (context?.executionConstraintFlow?.index) {
     case 3:
       return (
         <Input

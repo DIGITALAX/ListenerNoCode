@@ -1,74 +1,48 @@
-import { useEffect, useState } from "react";
-import { RootState } from "../../../../../../redux/store";
-import { useDispatch, useSelector } from "react-redux";
-import { setIpfsHash } from "../../../../../../redux/reducers/ipfsHashSlice";
+import { useContext, useEffect, useState } from "react";
 import {
   INFURA_GATEWAY,
   LIT_DB_CONTRACT,
 } from "../../../../../../lib/constants";
-import { setCircuitInformation } from "../../../../../../redux/reducers/circuitInformationSlice";
 import {
   Action,
   ContractAction,
 } from "@/components/CircuitFlow/types/litlistener.types";
-import { setModalOpen } from "../../../../../../redux/reducers/modalOpenSlice";
-import {
-  useAccount,
-  useContractWrite,
-  useNetwork,
-  usePrepareContractWrite,
-} from "wagmi";
-import { waitForTransaction } from "@wagmi/core";
+import { useAccount } from "wagmi";
+import { http } from "@wagmi/core";
 import LitDbAbi from "./../../../../../../abi/LitDbAbi.json";
+import { chronicle, ModalContext } from "@/pages/_app";
+import { createPublicClient, createWalletClient, custom } from "viem";
+import { polygon } from "viem/chains";
 
 const useIPFS = () => {
-  const dispatch = useDispatch();
-  const { isConnected, address } = useAccount();
-  const { chain } = useNetwork();
-  const circuitInformation = useSelector(
-    (state: RootState) => state.app.circuitInformationReducer.value
-  );
-  const walletConnected = useSelector(
-    (state: RootState) => state.app.walletConnectedReducer.value
-  );
-  const ipfsHash = useSelector(
-    (state: RootState) => state.app.ipfsHashReducer.value
-  );
+  const context = useContext(ModalContext);
+  const { isConnected, address, chainId } = useAccount();
   const [switchNeeded, setSwitchNeeded] = useState<boolean>(false);
   const [serverLoaded, setServerLoaded] = useState<boolean>(false);
   const [ipfsLoading, setIpfsLoading] = useState<boolean>(false);
   const [dbLoading, setDbLoading] = useState<boolean>(false);
   const [dbAdded, setDBAdded] = useState<boolean>(false);
-
-  const { config } = usePrepareContractWrite({
-    address: LIT_DB_CONTRACT,
-    abi: LitDbAbi,
-    args: [
-      circuitInformation?.id?.replace(/-/g, ""),
-      `ipfs://${ipfsHash.ipfs}`,
-    ],
-    functionName: "addEntryToDB",
-    enabled: Boolean(ipfsHash.ipfs !== ""),
+  const publicClient = createPublicClient({
+    chain: polygon,
+    transport: http(
+      `https://polygon-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`
+    ),
   });
-
-  const { writeAsync } = useContractWrite(config as any);
 
   const handleInstantiateCircuit = async () => {
     if (
-      circuitInformation?.actions?.length > 1 &&
-      circuitInformation?.actions.some(
+      Number(context?.circuitInformation?.actions?.length) > 1 &&
+      context?.circuitInformation?.actions.some(
         (obj: Action) => (obj as ContractAction).chainId !== undefined
       ) &&
-      (!circuitInformation?.providerURL ||
-        circuitInformation?.providerURL === "")
+      (!context?.circuitInformation?.providerURL ||
+        context?.circuitInformation?.providerURL === "")
     ) {
-      dispatch(
-        setModalOpen({
-          actionOpen: true,
-          actionMessage: "You must set a Provider URL with Contract Actions.",
-          actionImage: "QmaLbRzzCP1axGEd6vJsDs7Jm7hyyiBGYsnBfv3jW51KiX",
-        })
-      );
+      context?.setGeneralModal({
+        open: true,
+        message: "You must set a Provider URL with Contract Actions.",
+        image: "QmaLbRzzCP1axGEd6vJsDs7Jm7hyyiBGYsnBfv3jW51KiX",
+      });
     }
 
     setIpfsLoading(true);
@@ -76,24 +50,22 @@ const useIPFS = () => {
       const res = await fetch("/api/render/instantiate", {
         method: "POST",
         body: JSON.stringify({
-          circuitConditions: circuitInformation.conditions,
-          circuitActions: circuitInformation.actions,
-          conditionalLogic: circuitInformation.conditionalLogic,
-          executionConstraints: circuitInformation.executionConstraints,
+          circuitConditions: context?.circuitInformation.conditions,
+          circuitActions: context?.circuitInformation.actions,
+          conditionalLogic: context?.circuitInformation.conditionalLogic,
+          executionConstraints:
+            context?.circuitInformation.executionConstraints,
           instantiatorAddress: address,
         }),
       });
       if (res.status === 200) {
         setIpfsLoading(false);
       } else if (res.status === 500) {
-        dispatch(
-          setModalOpen({
-            actionOpen: true,
-            actionMessage:
-              "There was an error instantiating your circuit. Try Again.",
-            actionImage: "QmSUH38BqmfPci9NEvmC2KRQEJeoyxdebHiZi1FABbtueg",
-          })
-        );
+        context?.setGeneralModal({
+          open: true,
+          message: "There was an error instantiating your circuit. Try Again.",
+          image: "QmSUH38BqmfPci9NEvmC2KRQEJeoyxdebHiZi1FABbtueg",
+        });
       }
     } catch (err: any) {
       setIpfsLoading(false);
@@ -105,11 +77,26 @@ const useIPFS = () => {
   const handleSaveToIPFSDB = async () => {
     setDbLoading(true);
     try {
-      const tx = await writeAsync?.();
-      const res = await waitForTransaction({
-        hash: tx?.hash!,
+      const clientWallet = createWalletClient({
+        chain: chronicle,
+        transport: custom((window as any).ethereum),
       });
-      if (res.status === "success") {
+
+      const { request } = await publicClient.simulateContract({
+        address: LIT_DB_CONTRACT,
+        abi: LitDbAbi,
+        args: [
+          context?.circuitInformation?.id?.replace(/-/g, ""),
+          `ipfs://${context?.ipfsHash.ipfs}`,
+        ],
+        functionName: "addEntryToDB",
+        account: address,
+      });
+
+      const res = await clientWallet.writeContract(request);
+      const tx = await publicClient.waitForTransactionReceipt({ hash: res });
+
+      if (tx.status === "success") {
         setDBAdded(true);
       }
     } catch (err: any) {
@@ -137,21 +124,18 @@ const useIPFS = () => {
 
           const data = JSON.parse(message);
 
-          dispatch(
-            setCircuitInformation({
-              ...circuitInformation,
-              id: data?.id,
-            })
-          );
+          context?.setCircuitInformation((prev) => ({
+            ...prev,
+            id: data?.id,
+          }));
+
           const res = await fetch(`${INFURA_GATEWAY}/ipfs/${data?.ipfs}`);
           if (res) {
             const litActionCode = await res.text();
-            dispatch(
-              setIpfsHash({
-                ipfs: String(data?.ipfs || ""),
-                litCode: litActionCode || "",
-              })
-            );
+            context?.setIpfsHash({
+              ipfs: String(data?.ipfs || ""),
+              litCode: litActionCode || "",
+            });
           }
         });
 
@@ -166,8 +150,8 @@ const useIPFS = () => {
   }, []);
 
   useEffect(() => {
-    setSwitchNeeded(chain?.id !== 137 ? true : false);
-  }, [isConnected, walletConnected, chain?.id]);
+    setSwitchNeeded(chainId !== 137 ? true : false);
+  }, [isConnected, chainId]);
 
   return {
     ipfsLoading,

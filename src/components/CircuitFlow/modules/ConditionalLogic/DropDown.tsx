@@ -1,6 +1,7 @@
-import { DropDownLogicProps } from "@/components/CircuitFlow/types/circuitflow.types";
-import { FunctionComponent } from "react";
+import { FunctionComponent, useContext } from "react";
 import { Condition, ContractCondition } from "../../types/litlistener.types";
+import { DropDownLogicProps } from "../../types/circuitflow.types";
+import { ModalContext } from "@/pages/_app";
 
 const DropDown: FunctionComponent<DropDownLogicProps> = ({
   setDropDownOpenIndex,
@@ -8,8 +9,8 @@ const DropDown: FunctionComponent<DropDownLogicProps> = ({
   inputChosen,
   dropDownOpen,
   title,
-  circuitInformation,
 }): JSX.Element => {
+  const context = useContext(ModalContext);
   return (
     <div
       className="relative w-72 h-40 flex flex-col p-2 gap-3 justify-center items-center px-4 font-vcr text-ballena"
@@ -24,8 +25,11 @@ const DropDown: FunctionComponent<DropDownLogicProps> = ({
         onClick={() => setDropDownOpen()}
       >
         {`${
-          (circuitInformation?.conditions[inputChosen - 1] as ContractCondition)
-            ?.chainId
+          (
+            context?.circuitInformation?.conditions[
+              inputChosen - 1
+            ] as ContractCondition
+          )?.chainId
             ? "Contract Condition"
             : "Webhook Condition"
         } ${inputChosen}`}
@@ -33,7 +37,7 @@ const DropDown: FunctionComponent<DropDownLogicProps> = ({
       {dropDownOpen && (
         <div className="absolute w-full h-60 overflow-y-scroll z-5 top-16">
           <div className="relative w-full h-fit flex flex-col bg-aBlack">
-            {circuitInformation?.conditions.map(
+            {context?.circuitInformation?.conditions.map(
               (condition: Condition, index: number) => {
                 return (
                   <div

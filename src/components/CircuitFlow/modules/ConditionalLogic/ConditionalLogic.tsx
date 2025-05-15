@@ -1,8 +1,9 @@
-import { FunctionComponent } from "react";
+import { FunctionComponent, useContext } from "react";
 import LogicOptions from "./LogicOptions";
-import { ConditionalLogicProps } from "../../types/circuitflow.types";
 import Input from "./Input";
 import DropDown from "./DropDown";
+import { ConditionalLogicProps } from "../../types/circuitflow.types";
+import { ModalContext } from "@/pages/_app";
 
 const ConditionalLogic: FunctionComponent<ConditionalLogicProps> = ({
   logicType,
@@ -15,12 +16,11 @@ const ConditionalLogic: FunctionComponent<ConditionalLogicProps> = ({
   setInterval,
   targetConditionOpen,
   setTargetConditionOpen,
-  circuitInformation,
-  conditionLogicFlowIndex,
 }): JSX.Element => {
+  const context = useContext(ModalContext);
   switch (logicType) {
     case "TARGET":
-      switch (conditionLogicFlowIndex.index) {
+      switch (context?.conditionLogicFlow.index) {
         case 2:
           return (
             <DropDown
@@ -30,7 +30,6 @@ const ConditionalLogic: FunctionComponent<ConditionalLogicProps> = ({
               inputChosen={targetCondition}
               dropDownOpen={targetConditionOpen}
               title={"Target"}
-              circuitInformation={circuitInformation}
               setDropDownOpenIndex={(index: number) => {
                 setTargetConditionOpen(!targetConditionOpen);
                 setTargetCondition(index + 1);
@@ -55,7 +54,7 @@ const ConditionalLogic: FunctionComponent<ConditionalLogicProps> = ({
       }
 
     case "THRESHOLD":
-      switch (conditionLogicFlowIndex.index) {
+      switch (context?.conditionLogicFlow?.index) {
         case 2:
           return (
             <Input
@@ -83,7 +82,7 @@ const ConditionalLogic: FunctionComponent<ConditionalLogicProps> = ({
       }
 
     default:
-      switch (conditionLogicFlowIndex.index) {
+      switch (context?.conditionLogicFlow?.index) {
         case 1:
           return (
             <Input

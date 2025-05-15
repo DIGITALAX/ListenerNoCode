@@ -1,5 +1,5 @@
 import { FunctionComponent } from "react";
-import { InputProps } from "@/components/CircuitFlow/types/circuitflow.types";
+import { InputProps } from "../../types/circuitflow.types";
 
 const Input: FunctionComponent<InputProps> = ({
   text,

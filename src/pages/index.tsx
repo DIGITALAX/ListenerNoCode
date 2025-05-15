@@ -13,8 +13,6 @@ import {
   SET_CONDITIONS_TEXT_CONTRACT,
   SET_CONDITIONS_TEXT_WEBHOOK,
 } from "../../lib/constants";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../redux/store";
 import CircuitSwitch from "@/components/CircuitFlow/modules/Common/CircuitSwitch";
 import Overview from "@/components/CircuitFlow/modules/Common/Overview";
 import useSetConditions from "@/components/CircuitFlow/modules/SetConditions/hooks/useSetConditions";
@@ -26,76 +24,14 @@ import useStartCircuit from "@/components/CircuitFlow/modules/StartCircuit/hooks
 import useSetActions from "@/components/CircuitFlow/modules/SetActions/hooks/useSetActions";
 import Head from "next/head";
 import Steps from "@/components/CircuitFlow/modules/Common/Steps";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import NextButton from "@/components/CircuitFlow/modules/Common/NextButton";
-import { setConditionFlow } from "../../redux/reducers/conditionFlowSlice";
 import AllConditions from "@/components/CircuitFlow/modules/SetConditions/modules/AllConditions";
-import { setConditionLogicFlow } from "../../redux/reducers/conditionLogicFlowSlice";
 import AllActions from "@/components/CircuitFlow/modules/SetActions/modules/AllActions";
-import { setActionFlow } from "../../redux/reducers/actionFlowSlice";
-import { setExecutionConstraintFlow } from "../../redux/reducers/executionConstraintFlowSlice";
-import { setIpfsFlow } from "../../redux/reducers/ipfsFlowSlice";
-import { setMintPKPFlow } from "../../redux/reducers/mintPKPFlowSlice";
-import { setRunCircuit } from "../../redux/reducers/runCircuitFlowSlice";
-import { useRouter } from "next/router";
-import { useChainModal, useConnectModal } from "@rainbow-me/rainbowkit";
-import { useAccount } from "wagmi";
-import useServerConnect from "@/components/CircuitFlow/hooks/useServerConnect";
+import { ModalContext } from "./_app";
 
 export default function Home() {
-  const dispatch = useDispatch();
-  const router = useRouter();
-  const { address } = useAccount();
-  const { openChainModal } = useChainModal();
-  const { openConnectModal } = useConnectModal();
-  const circuitFlowIndex = useSelector(
-    (state: RootState) => state.app.circuitFlowReducer.value
-  );
-  const circuitRunning = useSelector(
-    (state: RootState) => state.app.circuitRunningReducer.value
-  );
-  const conditionFlowIndex = useSelector(
-    (state: RootState) => state.app.conditionFlowReducer.value
-  );
-  const actionFlowIndex = useSelector(
-    (state: RootState) => state.app.actionFlowReducer.value
-  );
-  const runCircuitFlowIndex = useSelector(
-    (state: RootState) => state.app.runCircuitFlowReducer.value
-  );
-  const conditionLogicFlowIndex = useSelector(
-    (state: RootState) => state.app.conditionLogicFlowReducer.value
-  );
-  const mintPKPFlowIndex = useSelector(
-    (state: RootState) => state.app.mintPKPFlowReducer.value
-  );
-  const ipfsFlowIndex = useSelector(
-    (state: RootState) => state.app.ipfsFlowReducer.value
-  );
-  const executionConstraintFlowIndex = useSelector(
-    (state: RootState) => state.app.executionConstraintFlowReducer.value
-  );
-  const ipfsHash = useSelector(
-    (state: RootState) => state.app.ipfsHashReducer.value
-  );
-  const circuitInformation = useSelector(
-    (state: RootState) => state.app.circuitInformationReducer.value
-  );
-  const newContractConditionInformation = useSelector(
-    (state: RootState) => state.app.newContractConditionInformationReducer.value
-  );
-  const newWebhookConditionInformation = useSelector(
-    (state: RootState) => state.app.newWebhookConditionInformationReducer.value
-  );
-  const newContractActionInformation = useSelector(
-    (state: RootState) => state.app.newContractActionInformationReducer.value
-  );
-  const signedPKPTx = useSelector(
-    (state: RootState) => state.app.signedPKPReducer.value
-  );
-  const newFetchActionInformation = useSelector(
-    (state: RootState) => state.app.newFetchActionInformationReducer.value
-  );
+  const context = useContext(ModalContext);
   const [stepCount, setStepCount] = useState<number>(0);
   const [largeOverview, setLargeOverview] = useState<boolean>(true);
   const [largeScreen, setLargeScreen] = useState<number>(0);
@@ -189,27 +125,31 @@ export default function Home() {
 
   useEffect(() => {
     setText(
-      circuitFlowIndex === 0
+      context?.circuitFlow === 0
         ? conditionType === "web"
-          ? SET_CONDITIONS_TEXT_WEBHOOK[conditionFlowIndex.index]
-          : SET_CONDITIONS_TEXT_CONTRACT[conditionFlowIndex.index]
-        : circuitFlowIndex === 1
+          ? SET_CONDITIONS_TEXT_WEBHOOK[context?.conditionFlow?.index]
+          : SET_CONDITIONS_TEXT_CONTRACT[context?.conditionFlow?.index]
+        : context?.circuitFlow === 1
         ? conditionType === "EVERY"
-          ? SET_CONDITIONAL_LOGIC_TEXT_EVERY[conditionLogicFlowIndex.index]
+          ? SET_CONDITIONAL_LOGIC_TEXT_EVERY[context?.conditionLogicFlow?.index]
           : conditionType === "THRESHOLD"
-          ? SET_CONDITIONAL_LOGIC_TEXT_THRESHOLD[conditionLogicFlowIndex.index]
-          : SET_CONDITIONAL_LOGIC_TEXT_TARGET[conditionLogicFlowIndex.index]
-        : circuitFlowIndex === 2
+          ? SET_CONDITIONAL_LOGIC_TEXT_THRESHOLD[
+              context?.conditionLogicFlow?.index
+            ]
+          : SET_CONDITIONAL_LOGIC_TEXT_TARGET[
+              context?.conditionLogicFlow?.index
+            ]
+        : context?.circuitFlow === 2
         ? actionType === "fetch"
-          ? SET_ACTIONS_TEXT_FETCH[actionFlowIndex.index]
-          : SET_ACTIONS_TEXT_CONTRACT[actionFlowIndex.index]
-        : circuitFlowIndex === 3
-        ? EXECUTION_CONSTRAINTS_TEXT[executionConstraintFlowIndex.index]
-        : circuitFlowIndex === 4
-        ? IPFS_TEXT[ipfsFlowIndex.index]
-        : circuitFlowIndex === 5
+          ? SET_ACTIONS_TEXT_FETCH[context?.actionFlow?.index]
+          : SET_ACTIONS_TEXT_CONTRACT[context?.actionFlow?.index]
+        : context?.circuitFlow === 3
+        ? EXECUTION_CONSTRAINTS_TEXT[context?.executionConstraintFlow?.index]
+        : context?.circuitFlow === 4
+        ? IPFS_TEXT[context?.ipfsFlow?.index]
+        : context?.circuitFlow === 5
         ? MINT_BURN_TEXT[0]
-        : circuitRunning
+        : context?.circuitRunning
         ? RUN_CIRCUIT_TEXT[2]
         : circuitRunLoading
         ? RUN_CIRCUIT_TEXT[1]
@@ -217,95 +157,83 @@ export default function Home() {
     );
   }, [
     circuitRunLoading,
-    circuitRunning,
-    circuitFlowIndex,
-    ipfsFlowIndex.index,
-    executionConstraintFlowIndex.index,
-    actionFlowIndex.index,
-    conditionLogicFlowIndex.index,
-    conditionFlowIndex.index,
+    context?.circuitRunning,
+    context?.circuitFlow,
+    context?.ipfsFlow.index,
+    context?.executionConstraintFlow.index,
+    context?.actionFlow.index,
+    context?.conditionLogicFlow?.index,
+    context?.conditionFlow.index,
     actionType,
     conditionType,
   ]);
 
   useEffect(() => {
-    if (circuitFlowIndex === 0) {
+    if (context?.circuitFlow === 0) {
       if (conditionType === "web") {
-        setStepCount(conditionFlowIndex.webhookCount);
+        setStepCount(context?.conditionFlow?.webhookCount);
       } else {
-        setStepCount(conditionFlowIndex.contractCount);
-      }
-      dispatch(
-        setConditionFlow({
-          index: 0,
-          contractCount: conditionFlowIndex.contractCount,
-          webhookCount: conditionFlowIndex.webhookCount,
-        })
-      );
-    } else if (circuitFlowIndex === 1) {
-      if (logicType === "EVERY") {
-        setStepCount(conditionLogicFlowIndex.everyCount);
-      } else if (logicType === "THRESHOLD") {
-        setStepCount(conditionLogicFlowIndex.thresholdCount);
-      } else {
-        setStepCount(conditionLogicFlowIndex.targetCount);
-      }
-      dispatch(
-        setConditionLogicFlow({
-          index: 0,
-          everyCount: conditionLogicFlowIndex.everyCount,
-          targetCount: conditionLogicFlowIndex.targetCount,
-          thresholdCount: conditionLogicFlowIndex.thresholdCount,
-        })
-      );
-    } else if (circuitFlowIndex === 2) {
-      if (actionType === "fetch") {
-        setStepCount(actionFlowIndex.fetchCount);
-      } else {
-        setStepCount(actionFlowIndex.contractCount);
+        setStepCount(context?.conditionFlow?.contractCount);
       }
 
-      dispatch(
-        setActionFlow({
-          index: 0,
-          contractCount: actionFlowIndex.contractCount,
-          fetchCount: actionFlowIndex.fetchCount,
-        })
-      );
-    } else if (circuitFlowIndex === 3) {
-      setStepCount(executionConstraintFlowIndex.executionCount);
-      dispatch(
-        setExecutionConstraintFlow({
-          index: 0,
-          executionCount: executionConstraintFlowIndex.executionCount,
-        })
-      );
-    } else if (circuitFlowIndex === 4) {
-      setStepCount(ipfsFlowIndex.ipfsCount);
-      dispatch(
-        setIpfsFlow({
-          index: 0,
-          ipfsCount: ipfsFlowIndex.ipfsCount,
-        })
-      );
-    } else if (circuitFlowIndex === 5) {
-      setStepCount(mintPKPFlowIndex.mintPKPCount);
-      dispatch(
-        setMintPKPFlow({
-          index: 0,
-          mintPKPCount: mintPKPFlowIndex.mintPKPCount,
-        })
-      );
-    } else if (circuitFlowIndex === 6) {
-      setStepCount(runCircuitFlowIndex.circuitCount);
-      dispatch(
-        setRunCircuit({
-          index: 0,
-          circuitCount: runCircuitFlowIndex.circuitCount,
-        })
-      );
+      context?.setConditionFlow((prev) => ({
+        ...prev,
+        index: 0,
+      }));
+    } else if (context?.circuitFlow === 1) {
+      if (logicType === "EVERY") {
+        setStepCount(context?.conditionLogicFlow?.everyCount);
+      } else if (logicType === "THRESHOLD") {
+        setStepCount(context?.conditionLogicFlow?.thresholdCount);
+      } else {
+        setStepCount(context?.conditionLogicFlow?.targetCount);
+      }
+
+      context?.setConditionLogicFlow((prev) => ({
+        ...prev,
+        index: 0,
+      }));
+    } else if (context?.circuitFlow === 2) {
+      if (actionType === "fetch") {
+        setStepCount(context?.actionFlow?.fetchCount);
+      } else {
+        setStepCount(context?.actionFlow?.contractCount);
+      }
+
+      context?.setActionFlow((prev) => ({
+        ...prev,
+        index: 0,
+      }));
+    } else if (context?.circuitFlow === 3) {
+      setStepCount(context?.executionConstraintFlow?.executionCount);
+
+      context?.setExecutionConstraintFlow({
+        index: 0,
+        executionCount: context?.executionConstraintFlow?.executionCount,
+      });
+    } else if (context?.circuitFlow === 4) {
+      setStepCount(context?.ipfsFlow?.ipfsCount);
+
+      context?.setIpfsFlow((prev) => ({
+        ...prev,
+        index: 0,
+      }));
+    } else if (context?.circuitFlow === 5) {
+      setStepCount(context?.mintPKPFlow?.mintPKPCount);
+
+      context?.setMintPKPFlow((prev) => ({
+        ...prev,
+        index: 0,
+      }));
+    } else if (context?.circuitFlow === 6) {
+      setStepCount(context?.runCircuit?.circuitCount);
+
+      context?.setRunCircuit((prev) => ({
+        ...prev,
+        index: 0,
+      }));
     }
-  }, [circuitFlowIndex, conditionType, logicType, actionType]);
+  }, [context?.circuitFlow, conditionType, logicType, actionType]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -323,7 +251,6 @@ export default function Home() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // const { handleServerConnect, decryptLitKey } = useServerConnect();
 
   return (
     <div className="relative w-full h-fit flex flex-row border-t-2 border-sol grow overflow-y-scroll">
@@ -384,20 +311,10 @@ export default function Home() {
                     setDropDownChainContractAction={
                       setDropDownChainContractAction
                     }
+                    setExpectedValues={setExpectedValues}
                     dropDownChainContractAction={dropDownChainContractAction}
-                    actionFlowIndex={actionFlowIndex}
-                    conditionFlowIndex={conditionFlowIndex}
-                    dispatch={dispatch}
-                    circuitFlowIndex={circuitFlowIndex}
-                    circuitInformation={circuitInformation}
                     conditionType={conditionType}
                     setConditionType={setConditionType}
-                    newContractConditionInformation={
-                      newContractConditionInformation
-                    }
-                    address={Boolean(address)}
-                    openConnectModal={openConnectModal}
-                    litActionCode={ipfsHash.litCode}
                     dropDownsSignOpen={dropDownsSignOpen}
                     setDropDownsSignOpen={setDropDownsSignOpen}
                     handleAddConditionAndReset={handleAddConditionAndReset}
@@ -410,11 +327,6 @@ export default function Home() {
                     eventArgs={eventArgs}
                     setEventArgs={setEventArgs}
                     expectedValues={expectedValues}
-                    setExpectedValues={setExpectedValues}
-                    newWebhookConditionInformation={
-                      newWebhookConditionInformation
-                    }
-                    executionConstraintFlowIndex={executionConstraintFlowIndex}
                     editingState={editingState}
                     handleUpdateCondition={handleUpdateCondition}
                     logicType={logicType}
@@ -438,17 +350,12 @@ export default function Home() {
                     }
                     switchNeededPKP={switchNeededPKP}
                     switchNeeded={switchNeeded}
-                    openChainModal={openChainModal}
                     handleInstantiateCircuit={handleInstantiateCircuit}
-                    ipfsHash={ipfsHash.ipfs}
                     ipfsLoading={ipfsLoading}
                     pkpLoading={pkpLoading}
                     handleMintGrantBurnPKP={handleMintGrantBurnPKP}
-                    circuitRunning={circuitRunning}
                     handleRunCircuit={handleRunCircuit}
                     actionType={actionType}
-                    newContractActionInformation={newContractActionInformation}
-                    newFetchActionInformation={newFetchActionInformation}
                     actionOutputs={actionOutputs}
                     setActionOutputs={setActionOutputs}
                     actionInputs={actionInputs}
@@ -472,33 +379,24 @@ export default function Home() {
                     handleSaveToIPFSDB={handleSaveToIPFSDB}
                     dbLoading={dbLoading}
                     dbAdded={dbAdded}
-                    signedPKPTx={signedPKPTx}
                     setDropDownChainContract={setDropDownChainContract}
                     dropDownChainContract={dropDownChainContract}
-                    conditionLogicFlowIndex={conditionLogicFlowIndex}
-                    ipfsFlowIndex={ipfsFlowIndex}
                   />
-                  {circuitInformation?.conditions?.length > 0 &&
-                  circuitFlowIndex === 0 ? (
+                  {Number(context?.circuitInformation?.conditions?.length) >
+                    0 && context?.circuitFlow === 0 ? (
                     <div className="absolute bottom-0 left-0 bg-black w-full h-12 border border-ballena px-2">
                       <AllConditions
-                        dispatch={dispatch}
-                        circuitInformation={circuitInformation}
                         setConditionType={setConditionType}
                         setEditingState={setEditingState}
-                        conditionFlowIndex={conditionFlowIndex}
                       />
                     </div>
                   ) : (
-                    circuitInformation?.actions?.length > 0 &&
-                    circuitFlowIndex === 2 && (
+                    Number(context?.circuitInformation?.actions?.length) > 0 &&
+                    context?.circuitFlow === 2 && (
                       <div className="absolute bottom-0 left-0 bg-black w-full h-12 border border-ballena px-2">
                         <AllActions
-                          dispatch={dispatch}
-                          circuitInformation={circuitInformation}
                           setActionType={setActionType}
                           setEditingStateAction={setEditingStateAction}
-                          actionFlowIndex={actionFlowIndex}
                         />
                       </div>
                     )
@@ -509,99 +407,75 @@ export default function Home() {
                     largeScreen={largeScreen}
                     stepCount={stepCount}
                     currentFlowIndex={
-                      circuitFlowIndex === 0
-                        ? conditionFlowIndex
-                        : circuitFlowIndex === 1
-                        ? conditionLogicFlowIndex
-                        : circuitFlowIndex === 2
-                        ? actionFlowIndex
-                        : circuitFlowIndex === 3
-                        ? executionConstraintFlowIndex
-                        : circuitFlowIndex === 4
-                        ? ipfsFlowIndex
-                        : circuitFlowIndex === 5
-                        ? mintPKPFlowIndex
-                        : runCircuitFlowIndex
+                      context?.circuitFlow === 0
+                        ? context?.conditionFlow
+                        : context?.circuitFlow === 1
+                        ? context?.conditionLogicFlow
+                        : context?.circuitFlow === 2
+                        ? context?.actionFlow
+                        : context?.circuitFlow === 3
+                        ? context?.executionConstraintFlow
+                        : context?.circuitFlow === 4
+                        ? context?.ipfsFlow
+                        : context?.circuitFlow === 5
+                        ? context?.mintPKPFlow
+                        : context?.runCircuit
                     }
                     increaseStepFunction={
-                      circuitFlowIndex === 0
+                      context?.circuitFlow === 0
                         ? (index: number) => {
                             index < stepCount &&
-                              dispatch(
-                                setConditionFlow({
-                                  index: index,
-                                  webhookCount: conditionFlowIndex.webhookCount,
-                                  contractCount:
-                                    conditionFlowIndex.contractCount,
-                                })
-                              );
+                              context?.setConditionFlow((prev) => ({
+                                ...prev,
+                                index,
+                              }));
                           }
-                        : circuitFlowIndex === 1
+                        : context?.circuitFlow === 1
                         ? (index: number) => {
                             index < stepCount &&
-                              dispatch(
-                                setConditionLogicFlow({
-                                  index: index,
-                                  thresholdCount:
-                                    conditionLogicFlowIndex.thresholdCount,
-                                  everyCount:
-                                    conditionLogicFlowIndex.everyCount,
-                                  targetCount:
-                                    conditionLogicFlowIndex.targetCount,
-                                })
-                              );
+                              context?.setConditionLogicFlow((prev) => ({
+                                ...prev,
+                                index,
+                              }));
                           }
-                        : circuitFlowIndex === 2
+                        : context?.circuitFlow === 2
                         ? (index: number) => {
                             index < stepCount &&
-                              dispatch(
-                                setActionFlow({
-                                  index: index,
-                                  fetchCount: actionFlowIndex.fetchCount,
-                                  contractCount: actionFlowIndex.contractCount,
-                                })
-                              );
+                              context?.setActionFlow((prev) => ({
+                                ...prev,
+                                index,
+                              }));
                           }
-                        : circuitFlowIndex === 3
+                        : context?.circuitFlow === 3
                         ? (index: number) => {
                             index < stepCount &&
-                              dispatch(
-                                setExecutionConstraintFlow({
-                                  index: index,
-                                  executionCount:
-                                    executionConstraintFlowIndex.executionCount,
-                                })
-                              );
+                              context?.setExecutionConstraintFlow((prev) => ({
+                                ...prev,
+                                index,
+                              }));
                           }
-                        : circuitFlowIndex === 4
+                        : context?.circuitFlow === 4
                         ? (index: number) => {
                             index < stepCount &&
-                              dispatch(
-                                setIpfsFlow({
-                                  index: index,
-                                  ipfsCount: ipfsFlowIndex.ipfsCount,
-                                })
-                              );
+                              context?.setIpfsFlow((prev) => ({
+                                ...prev,
+                                index,
+                              }));
                           }
-                        : circuitFlowIndex === 5
+                        : context?.circuitFlow === 5
                         ? (index: number) => {
                             index < stepCount &&
-                              dispatch(
-                                setMintPKPFlow({
-                                  index: index,
-                                  mintPKPCount: mintPKPFlowIndex.mintPKPCount,
-                                })
-                              );
+                              context?.setMintPKPFlow((prev) => ({
+                                ...prev,
+                                index: index,
+                              }));
                           }
                         : (index: number) => {
                             index < stepCount &&
-                              dispatch(
-                                setRunCircuit({
-                                  index: index,
-                                  circuitCount:
-                                    runCircuitFlowIndex.circuitCount,
-                                })
-                              );
+                              context?.setRunCircuit((prev) => ({
+                                ...prev,
+                                index: index,
+                              }));
                           }
                     }
                   />
@@ -615,17 +489,17 @@ export default function Home() {
                       className="absolute w-full h-fit font-mine uppercase text-center justify-center items-center text-xl top-3.5 left-0"
                       id="explainerTitleGlow"
                     >
-                      {circuitFlowIndex === 0
+                      {context?.circuitFlow === 0
                         ? "Set Conditions"
-                        : circuitFlowIndex === 1
+                        : context?.circuitFlow === 1
                         ? "Conditional Logic"
-                        : circuitFlowIndex === 2
+                        : context?.circuitFlow === 2
                         ? "Set Actions"
-                        : circuitFlowIndex === 3
+                        : context?.circuitFlow === 3
                         ? "Execution Constraints"
-                        : circuitFlowIndex === 4
+                        : context?.circuitFlow === 4
                         ? "IPFS Hash"
-                        : circuitFlowIndex === 5
+                        : context?.circuitFlow === 5
                         ? "MintGrantBurn PKP"
                         : "Run Circuit"}
                     </div>
@@ -633,17 +507,17 @@ export default function Home() {
                       className="relative w-full h-fit font-mine uppercase text-center justify-center items-center text-xl"
                       id="explainerTitle"
                     >
-                      {circuitFlowIndex === 0
+                      {context?.circuitFlow === 0
                         ? "Set Conditions"
-                        : circuitFlowIndex === 1
+                        : context?.circuitFlow === 1
                         ? "Conditional Logic"
-                        : circuitFlowIndex === 2
+                        : context?.circuitFlow === 2
                         ? "Set Actions"
-                        : circuitFlowIndex === 3
+                        : context?.circuitFlow === 3
                         ? "Execution Constraints"
-                        : circuitFlowIndex === 4
+                        : context?.circuitFlow === 4
                         ? "IPFS Hash"
-                        : circuitFlowIndex === 5
+                        : context?.circuitFlow === 5
                         ? "MintGrantBurn PKP"
                         : "Run Circuit"}
                     </div>
@@ -669,17 +543,17 @@ export default function Home() {
                       className="absolute w-full h-fit font-mine uppercase text-center justify-center items-center text-xl top-3.5 left-0"
                       id="explainerTitleGlow"
                     >
-                      {circuitFlowIndex === 0
+                      {context?.circuitFlow === 0
                         ? "Set Conditions"
-                        : circuitFlowIndex === 1
+                        : context?.circuitFlow === 1
                         ? "Conditional Logic"
-                        : circuitFlowIndex === 2
+                        : context?.circuitFlow === 2
                         ? "Set Actions"
-                        : circuitFlowIndex === 3
+                        : context?.circuitFlow === 3
                         ? "Execution Constraints"
-                        : circuitFlowIndex === 4
+                        : context?.circuitFlow === 4
                         ? "IPFS Hash"
-                        : circuitFlowIndex === 5
+                        : context?.circuitFlow === 5
                         ? "MintGrantBurn PKP"
                         : "Run Circuit"}
                     </div>
@@ -687,17 +561,17 @@ export default function Home() {
                       className="relative w-full h-fit font-mine uppercase text-center justify-center items-center text-xl"
                       id="explainerTitle"
                     >
-                      {circuitFlowIndex === 0
+                      {context?.circuitFlow === 0
                         ? "Set Conditions"
-                        : circuitFlowIndex === 1
+                        : context?.circuitFlow === 1
                         ? "Conditional Logic"
-                        : circuitFlowIndex === 2
+                        : context?.circuitFlow === 2
                         ? "Set Actions"
-                        : circuitFlowIndex === 3
+                        : context?.circuitFlow === 3
                         ? "Execution Constraints"
-                        : circuitFlowIndex === 4
+                        : context?.circuitFlow === 4
                         ? "IPFS Hash"
-                        : circuitFlowIndex === 5
+                        : context?.circuitFlow === 5
                         ? "MintGrantBurn PKP"
                         : "Run Circuit"}
                     </div>
@@ -717,121 +591,84 @@ export default function Home() {
                     largeScreen={largeScreen}
                     stepCount={stepCount}
                     currentFlowIndex={
-                      circuitFlowIndex === 0
-                        ? conditionFlowIndex
-                        : circuitFlowIndex === 1
-                        ? conditionLogicFlowIndex
-                        : circuitFlowIndex === 2
-                        ? actionFlowIndex
-                        : circuitFlowIndex === 3
-                        ? executionConstraintFlowIndex
-                        : circuitFlowIndex === 4
-                        ? ipfsFlowIndex
-                        : circuitFlowIndex === 5
-                        ? mintPKPFlowIndex
-                        : runCircuitFlowIndex
+                      context?.circuitFlow === 0
+                        ? context?.conditionFlow
+                        : context?.circuitFlow === 1
+                        ? context?.conditionLogicFlow
+                        : context?.circuitFlow === 2
+                        ? context?.actionFlow
+                        : context?.circuitFlow === 3
+                        ? context?.executionConstraintFlow
+                        : context?.circuitFlow === 4
+                        ? context?.ipfsFlow
+                        : context?.circuitFlow === 5
+                        ? context?.mintPKPFlow
+                        : context?.runCircuit
                     }
                     increaseStepFunction={
-                      circuitFlowIndex === 0
+                      context?.circuitFlow === 0
                         ? (index: number) => {
                             index < stepCount &&
-                              dispatch(
-                                setConditionFlow({
-                                  index: index,
-                                  webhookCount: conditionFlowIndex.webhookCount,
-                                  contractCount:
-                                    conditionFlowIndex.contractCount,
-                                })
-                              );
+                              context?.setConditionFlow((prev) => ({
+                                ...prev,
+                                index,
+                              }));
                           }
-                        : circuitFlowIndex === 1
+                        : context?.circuitFlow === 1
                         ? (index: number) => {
                             index < stepCount &&
-                              dispatch(
-                                setConditionLogicFlow({
-                                  index: index,
-                                  thresholdCount:
-                                    conditionLogicFlowIndex.thresholdCount,
-                                  everyCount:
-                                    conditionLogicFlowIndex.everyCount,
-                                  targetCount:
-                                    conditionLogicFlowIndex.targetCount,
-                                })
-                              );
+                              context?.setConditionLogicFlow((prev) => ({
+                                ...prev,
+                                index,
+                              }));
                           }
-                        : circuitFlowIndex === 2
+                        : context?.circuitFlow === 2
                         ? (index: number) => {
                             index < stepCount &&
-                              dispatch(
-                                setActionFlow({
-                                  index: index,
-                                  fetchCount: actionFlowIndex.fetchCount,
-                                  contractCount: actionFlowIndex.contractCount,
-                                })
-                              );
+                              context?.setActionFlow((prev) => ({
+                                ...prev,
+                                index,
+                              }));
                           }
-                        : circuitFlowIndex === 3
+                        : context?.circuitFlow === 3
                         ? (index: number) => {
                             index < stepCount &&
-                              dispatch(
-                                setExecutionConstraintFlow({
-                                  index: index,
-                                  executionCount:
-                                    executionConstraintFlowIndex.executionCount,
-                                })
-                              );
+                              context?.setExecutionConstraintFlow((prev) => ({
+                                ...prev,
+                                index,
+                              }));
                           }
-                        : circuitFlowIndex === 4
+                        : context?.circuitFlow === 4
                         ? (index: number) => {
                             index < stepCount &&
-                              dispatch(
-                                setIpfsFlow({
-                                  index: index,
-                                  ipfsCount: ipfsFlowIndex.ipfsCount,
-                                })
-                              );
+                              context?.setIpfsFlow((prev) => ({
+                                ...prev,
+                                index,
+                              }));
                           }
-                        : circuitFlowIndex === 5
+                        : context?.circuitFlow === 5
                         ? (index: number) => {
                             index < stepCount &&
-                              dispatch(
-                                setMintPKPFlow({
-                                  index: index,
-                                  mintPKPCount: mintPKPFlowIndex.mintPKPCount,
-                                })
-                              );
+                              context?.setMintPKPFlow((prev) => ({
+                                ...prev,
+                                index,
+                              }));
                           }
                         : (index: number) => {
                             index < stepCount &&
-                              dispatch(
-                                setRunCircuit({
-                                  index: index,
-                                  circuitCount:
-                                    runCircuitFlowIndex.circuitCount,
-                                })
-                              );
+                              context?.setRunCircuit((prev) => ({
+                                ...prev,
+                                index,
+                              }));
                           }
                     }
                   />
                 </div>
                 <NextButton
                   handleClearCircuit={handleClearCircuit}
-                  conditionFlowIndex={conditionFlowIndex}
-                  conditionLogicFlowIndex={conditionLogicFlowIndex}
-                  dispatch={dispatch}
-                  circuitFlowIndex={circuitFlowIndex}
-                  circuitInformation={circuitInformation}
                   handleSetConditionalLogic={handleSetConditionalLogic}
                   handleAddExecutionConstraints={handleAddExecutionConstraints}
-                  ipfsHash={ipfsHash.ipfs}
                   stepCount={stepCount}
-                  actionFlowIndex={actionFlowIndex}
-                  executionConstraintFlowIndex={executionConstraintFlowIndex}
-                  ipfsFlowIndex={ipfsFlowIndex}
-                  signedPKPTx={signedPKPTx}
-                  mintPKPFlowIndex={mintPKPFlowIndex}
-                  circuitRunning={circuitRunning}
-                  router={router}
                 />
               </div>
             </div>
@@ -840,13 +677,8 @@ export default function Home() {
       </div>
       <Overview
         handleClearCircuit={handleClearCircuit}
-        dispatch={dispatch}
-        circuitFlowIndex={circuitFlowIndex}
-        circuitInformation={circuitInformation}
         handleSetConditionalLogic={handleSetConditionalLogic}
         handleAddExecutionConstraints={handleAddExecutionConstraints}
-        ipfsHash={ipfsHash.ipfs}
-        circuitRunning={circuitRunning}
         overviewOpen={overviewOpen}
         setOverviewOpen={setOverviewOpen}
         largeScreen={largeOverview}

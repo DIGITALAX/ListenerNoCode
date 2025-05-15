@@ -1,18 +1,20 @@
-import { FunctionComponent } from "react";
-import { HashIPFSProps } from "../../types/circuitflow.types";
+import { FunctionComponent, useContext } from "react";
 import { AiOutlineLoading } from "react-icons/ai";
 import copy from "copy-to-clipboard";
 import { BiCopy } from "react-icons/bi";
+import { HashIPFSProps } from "../../types/circuitflow.types";
+import { useAccount } from "wagmi";
+import { useModal } from "connectkit";
+import { ModalContext } from "@/pages/_app";
 
 const HashIPFS: FunctionComponent<HashIPFSProps> = ({
   handleInstantiateCircuit,
   ipfsLoading,
-  ipfsHash,
-  litActionCode,
-  address,
-  openConnectModal,
   serverLoaded,
 }): JSX.Element => {
+  const { address } = useAccount();
+  const context = useContext(ModalContext);
+  const { openOnboarding } = useModal();
   return (
     <div
       className="relative w-60 h-60 flex flex-col p-2 gap-3"
@@ -27,7 +29,7 @@ const HashIPFS: FunctionComponent<HashIPFSProps> = ({
                 ? () => {}
                 : address
                 ? () => handleInstantiateCircuit()
-                : openConnectModal
+                : () => openOnboarding()
             }
           >
             <div
@@ -56,7 +58,7 @@ const HashIPFS: FunctionComponent<HashIPFSProps> = ({
               </div>
             </div>
           )}
-          {ipfsHash && (
+          {context?.ipfsHash?.ipfs && (
             <div
               className={`relative w-fit flex flex-col gap-3 justify-center items-center h-fit`}
             >
@@ -70,7 +72,7 @@ const HashIPFS: FunctionComponent<HashIPFSProps> = ({
                 <div
                   className="relative w-fit h-fit justify-start items-start cursor-pointer active:scale-95"
                   id="blur"
-                  onClick={() => copy(ipfsHash)}
+                  onClick={() => copy(context?.ipfsHash?.ipfs)}
                 >
                   <BiCopy size={15} color="#FFD85F" />
                 </div>
@@ -79,14 +81,14 @@ const HashIPFS: FunctionComponent<HashIPFSProps> = ({
                 className={`relative w-fit text-left flex text-white font-vcr text-sm whitespace-nowrap break-words justify-start items-center h-full cursor-pointer`}
               >
                 <input
-                  value={ipfsHash || ""}
+                  value={context?.ipfsHash?.ipfs || ""}
                   className="bg-aBlack w-44 h-8 p-1 text-white font-vcr text-sm justify-end items-start flex bg-black/40 lowercase border border-ballena border-l-8"
                   disabled
                 />
               </div>
             </div>
           )}
-          {litActionCode && (
+          {context?.ipfsHash?.litCode && (
             <div
               className={`relative w-fit flex flex-col gap-3 justify-center items-center h-fit`}
             >
@@ -100,7 +102,7 @@ const HashIPFS: FunctionComponent<HashIPFSProps> = ({
                 <div
                   className="relative w-fit h-fit justify-start items-start cursor-pointer active:scale-95"
                   id="blur"
-                  onClick={() => copy(litActionCode)}
+                  onClick={() => copy(context?.ipfsHash?.litCode)}
                 >
                   <BiCopy size={15} color="#FFD85F" />
                 </div>
@@ -108,7 +110,7 @@ const HashIPFS: FunctionComponent<HashIPFSProps> = ({
               <div className="relative w-fit h-full flex overflow-y-scroll">
                 <div className="relative w-fit h-fit flex flex-col gap-1 justify-start items-start">
                   <textarea
-                    value={litActionCode}
+                    value={context?.ipfsHash?.litCode}
                     className="bg-aBlack w-52 h-60 p-1 text-white font-vcr text-sm justify-end items-start flex bg-black/40 lowercase border border-ballena border-l-8"
                     disabled
                     style={{ resize: "none" }}

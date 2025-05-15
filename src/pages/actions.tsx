@@ -1,19 +1,15 @@
-import { useSelector } from "react-redux";
-import { RootState } from "../../redux/store";
 import Head from "next/head";
 import { INFURA_GATEWAY } from "../../lib/constants";
 import Image from "next/legacy/image";
 import Link from "next/link";
 import useActions from "@/components/Actions/hooks/useActions";
 import AllActions from "@/components/Actions/modules/AllActions";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { ModalContext } from "./_app";
 
 export default function Actions() {
-  const allEntries = useSelector(
-    (state: RootState) => state.app.allEntriesReducer.value
-  );
   const { entriesLoading } = useActions();
-
+  const context = useContext(ModalContext)
   const [largeScreen, setLargeScreen] = useState<boolean>(true);
 
   useEffect(() => {
@@ -60,7 +56,7 @@ export default function Actions() {
         />
       </div>
       <div className="relative w-full min-h-100 flex items-center justify-center grow">
-        {allEntries?.length < 1 && !entriesLoading ? (
+        {Number(context?.allEntries?.length) < 1 && !entriesLoading ? (
           <div className="relative w-full h-full flex items-center justify-center">
             <Link
               className="relative w-fit h-fit text-center font-vcr text-white flex items-center justify-center cursor-pointer"
@@ -81,7 +77,7 @@ export default function Actions() {
           </div>
         ) : (
           <div className="relative flex flex-row w-full h-full justify-center items-center">
-            <AllActions allEntries={allEntries} />
+            <AllActions />
           </div>
         )}
       </div>

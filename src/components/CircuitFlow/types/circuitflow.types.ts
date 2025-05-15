@@ -1,4 +1,3 @@
-import { AnyAction, Dispatch } from "redux";
 import {
   Action,
   Condition,
@@ -9,65 +8,29 @@ import {
   IExecutionConstraints,
   WebhookCondition,
 } from "./litlistener.types";
-import { NextRouter } from "next/router";
 
 export type OverviewProps = {
-  circuitFlowIndex: number;
-  dispatch: Dispatch<AnyAction>;
-  circuitInformation: CircuitInformation;
   handleSetConditionalLogic: () => boolean;
   handleAddExecutionConstraints: () => void;
-  ipfsHash: string;
   handleClearCircuit: () => void;
-  circuitRunning: boolean;
   overviewOpen: boolean;
   setOverviewOpen: (e: boolean) => void;
   largeScreen: boolean;
 };
 
 export type CircuitSwitchProps = {
-  address: boolean;
   serverLoaded: boolean;
-  openConnectModal: (() => void) | undefined;
   apiPasswordAction: boolean;
-  litActionCode: string;
-  ipfsFlowIndex: {
-    index: number;
-    ipfsCount: number;
-  };
   switchNeededPKP: boolean;
   setApiPasswordAction: (e: boolean) => void;
-  executionConstraintFlowIndex: {
-    index: number;
-    executionCount: number;
-  };
-  conditionFlowIndex: {
-    index: number;
-    contractCount: number;
-    webhookCount: number;
-  };
-  actionFlowIndex: {
-    index: number;
-    contractCount: number;
-    fetchCount: number;
-  };
-  conditionLogicFlowIndex: {
-    index: number;
-    everyCount: number;
-    thresholdCount: number;
-    targetCount: number;
-  };
   apiPassword: boolean;
   setApiPassword: (e: boolean) => void;
-  circuitFlowIndex: number;
   dbLoading: boolean;
   dbAdded: boolean;
   switchNeeded: boolean;
-  openChainModal: (() => void) | undefined;
   handleSaveToIPFSDB: () => Promise<void>;
   handleClearCircuit: () => void;
   circuitRunLoading: boolean;
-  dispatch: Dispatch<AnyAction>;
   signConditions: {
     type: string;
     operator: string;
@@ -135,8 +98,6 @@ export type CircuitSwitchProps = {
   }) => void;
   functionArgs: string[];
   setFunctionArgs: (e: string[]) => void;
-  newContractActionInformation: ContractAction | undefined;
-  newFetchActionInformation: FetchAction | undefined;
   payable: boolean;
   setPayable: (e: boolean) => void;
   stateMutability: string;
@@ -146,12 +107,10 @@ export type CircuitSwitchProps = {
   setDropDownChainContractAction: (e: boolean) => void;
   dropDownChainContractAction: boolean;
   handleRunCircuit: () => Promise<void>;
-  circuitRunning: boolean;
   handleMintGrantBurnPKP: () => Promise<void>;
   pkpLoading: boolean;
   handleInstantiateCircuit: () => Promise<void>;
   ipfsLoading: boolean;
-  ipfsHash: string;
   time: {
     startDate: string | undefined;
     endDate: string | undefined;
@@ -166,11 +125,8 @@ export type CircuitSwitchProps = {
   setConditionMonitorExecutions: (e: number | undefined) => void;
   targetConditionOpen: boolean;
   setTargetConditionOpen: (e: boolean) => void;
-  circuitInformation: CircuitInformation;
   conditionType: string;
   setConditionType: (e: string) => void;
-  newWebhookConditionInformation: WebhookCondition | undefined;
-  newContractConditionInformation: ContractCondition | undefined;
   handleAddConditionAndReset: () => void;
   inputs: {
     indexed: boolean;
@@ -214,11 +170,6 @@ export type CircuitSwitchProps = {
   setTargetCondition: (e: number) => void;
   interval: number;
   setInterval: (e: number) => void;
-  signedPKPTx: {
-    tokenId: string;
-    publicKey: string;
-    address: string;
-  };
   setDropDownChainContract: (e: boolean) => void;
   dropDownChainContract: boolean;
 };
@@ -227,13 +178,7 @@ export type SetConditionsProps = {
   apiPassword: boolean;
   setApiPassword: (e: boolean) => void;
   editingState: boolean;
-  circuitInformation: CircuitInformation;
   handleUpdateCondition: () => void;
-  conditionFlowIndex: {
-    index: number;
-    contractCount: number;
-    webhookCount: number;
-  };
   inputs: {
     indexed: boolean;
     internalType: string;
@@ -262,11 +207,8 @@ export type SetConditionsProps = {
     internalTypesOutput: boolean[];
     typesOutput: boolean[];
   }) => void;
-  dispatch: Dispatch<AnyAction>;
   conditionType: string;
   setConditionType: (e: string) => void;
-  newWebhookConditionInformation: WebhookCondition | undefined;
-  newContractConditionInformation: ContractCondition | undefined;
   handleAddConditionAndReset: () => void;
   eventArgs: string[];
   setEventArgs: (e: string[]) => void;
@@ -287,15 +229,8 @@ export interface CircuitInformation {
 }
 
 export type AllConditionsProps = {
-  circuitInformation: CircuitInformation;
-  dispatch: Dispatch<AnyAction>;
   setConditionType: (e: string) => void;
   setEditingState: (e: boolean) => void;
-  conditionFlowIndex: {
-    index: number;
-    webhookCount: number;
-    contractCount: number;
-  };
 };
 
 export type ConnectorProps = {
@@ -303,49 +238,10 @@ export type ConnectorProps = {
 };
 
 export type NextButtonProps = {
-  mintPKPFlowIndex: {
-    index: number;
-    mintPKPCount: number;
-  };
   handleClearCircuit: () => void;
-  circuitRunning: boolean;
-  router: NextRouter;
-  signedPKPTx: {
-    tokenId: string;
-    publicKey: string;
-    address: string;
-  };
-  conditionFlowIndex: {
-    index: number;
-    webhookCount: number;
-    contractCount: number;
-  };
-  ipfsFlowIndex: {
-    index: number;
-    ipfsCount: number;
-  };
-  circuitFlowIndex: number;
-  dispatch: Dispatch<AnyAction>;
-  circuitInformation: CircuitInformation;
   handleAddExecutionConstraints: () => void;
   handleSetConditionalLogic: () => boolean;
-  ipfsHash: string | undefined;
   stepCount: number;
-  conditionLogicFlowIndex: {
-    index: number;
-    everyCount: number;
-    thresholdCount: number;
-    targetCount: number;
-  };
-  actionFlowIndex: {
-    index: number;
-    fetchCount: number;
-    contractCount: number;
-  };
-  executionConstraintFlowIndex: {
-    index: number;
-    executionCount: number;
-  };
 };
 
 export type InputProps = {
@@ -390,13 +286,6 @@ export type ConditionalLogicProps = {
   setInterval: (e: number) => void;
   targetConditionOpen: boolean;
   setTargetConditionOpen: (e: boolean) => void;
-  circuitInformation: CircuitInformation;
-  conditionLogicFlowIndex: {
-    index: number;
-    everyCount: number;
-    thresholdCount: number;
-    targetCount: number;
-  };
 };
 
 export type LogicSwitchProps = {
@@ -407,7 +296,6 @@ export type LogicSwitchProps = {
   setTargetCondition: (e: number) => void;
   targetConditionOpen: boolean;
   setTargetConditionOpen: (e: boolean) => void;
-  circuitInformation: CircuitInformation;
 };
 
 export type ExecutionConstraintsProps = {
@@ -423,10 +311,6 @@ export type ExecutionConstraintsProps = {
   setMaxLitActionCompletions: (e: number | undefined) => void;
   conditionMonitorExecutions: number | undefined;
   setConditionMonitorExecutions: (e: number | undefined) => void;
-  executionConstraintFlowIndex: {
-    index: number;
-    executionCount: number;
-  };
 };
 
 export type EndStartProps = {
@@ -441,32 +325,19 @@ export type EndStartProps = {
 };
 
 export type IPFSProps = {
-  ipfsFlowIndex: {
-    index: number;
-    ipfsCount: number;
-  };
   serverLoaded: boolean;
-  address: boolean;
-  openConnectModal: (() => void) | undefined;
   switchNeeded: boolean;
-  openChainModal: (() => void) | undefined;
-  ipfsHash: string;
   handleInstantiateCircuit: () => Promise<void>;
   ipfsLoading: boolean;
   handleSaveToIPFSDB: () => Promise<void>;
   dbLoading: boolean;
   dbAdded: boolean;
-  litActionCode: string;
 };
 
 export type HashIPFSProps = {
   handleInstantiateCircuit: () => Promise<void>;
   ipfsLoading: boolean;
   serverLoaded: boolean;
-  ipfsHash: string;
-  litActionCode: string;
-  address: boolean;
-  openConnectModal: (() => void) | undefined;
 };
 
 export type ResultIPFSProps = {
@@ -474,31 +345,18 @@ export type ResultIPFSProps = {
   dbLoading: boolean;
   dbAdded: boolean;
   switchNeeded: boolean;
-  openChainModal: (() => void) | undefined;
 };
 
 export type MintGrantBurnProps = {
-  openChainModal: (() => void) | undefined;
   switchNeededPKP: boolean;
   handleMintGrantBurnPKP: () => Promise<void>;
   pkpLoading: boolean;
-  signedPKPTx: {
-    tokenId: string;
-    publicKey: string;
-    address: string;
-  };
 };
 
 export type MintPKPProps = {
-  openChainModal: (() => void) | undefined;
   switchNeededPKP: boolean;
   handleMintGrantBurnPKP: () => Promise<void>;
   pkpLoading: boolean;
-  signedPKPTx: {
-    tokenId: string;
-    publicKey: string;
-    address: string;
-  };
 };
 
 export type CircuitInputProps = {
@@ -515,13 +373,11 @@ export type CircuitStartProps = {
 };
 
 export type ViewInAccountProps = {
-  circuitRunning: boolean;
   handleClearCircuit: () => void;
 };
 
 export type RunCircuitProps = {
   handleRunCircuit: () => Promise<void>;
-  circuitRunning: boolean;
   handleClearCircuit: () => void;
   circuitRunLoading: boolean;
 };
@@ -572,7 +428,7 @@ export type ActionSwitchProps = {
   setFunctionArgs: (e: string[]) => void;
   newContractActionInformation: ContractAction | undefined;
   newFetchActionInformation: FetchAction | undefined;
-  dispatch: Dispatch<AnyAction>;
+
   payable: boolean;
   setPayable: (e: boolean) => void;
   stateMutability: string;
@@ -594,15 +450,8 @@ export type ActionSwitchProps = {
 };
 
 export type AllActionsProps = {
-  circuitInformation: CircuitInformation;
-  dispatch: Dispatch<AnyAction>;
   setActionType: (e: string) => void;
   setEditingStateAction: (e: boolean) => void;
-  actionFlowIndex: {
-    index: number;
-    contractCount: number;
-    fetchCount: number;
-  };
 };
 
 export type MoreActionButtonProps = {
@@ -614,11 +463,6 @@ export type MoreActionButtonProps = {
 export type SetActionsProps = {
   apiPasswordAction: boolean;
   setApiPasswordAction: (e: boolean) => void;
-  actionFlowIndex: {
-    index: number;
-    contractCount: number;
-    fetchCount: number;
-  };
   setDropDownChainContractAction: (e: boolean) => void;
   dropDownChainContractAction: boolean;
   handleAddActionAndReset: () => void;
@@ -680,15 +524,11 @@ export type SetActionsProps = {
   }) => void;
   functionArgs: string[];
   setFunctionArgs: (e: string[]) => void;
-  newContractActionInformation: ContractAction | undefined;
-  newFetchActionInformation: FetchAction | undefined;
-  dispatch: Dispatch<AnyAction>;
   payable: boolean;
   setPayable: (e: boolean) => void;
   stateMutability: string;
   setStateMutability: (e: string) => void;
   actionType: string;
-  circuitInformation: CircuitInformation;
   setActionType: (e: string) => void;
   dropDownsSignOpen: {
     signType: boolean[];
@@ -714,7 +554,6 @@ export type StepsProps = {
 };
 
 export type FinalActionProps = {
-  actionInformation: Action | undefined;
   signConditions?: {
     type: string;
     operator: string;
@@ -723,15 +562,8 @@ export type FinalActionProps = {
   }[];
   actionType: string;
   editingState: boolean;
-  actionFlowIndex: {
-    index: number;
-    fetchCount: number;
-    contractCount: number;
-  };
-  circuitInformation: CircuitInformation;
   handleUpdateAction: () => void;
   handleAddActionAndReset: () => void;
-  dispatch: Dispatch<AnyAction>;
   apiPassword?: boolean;
   setApiPassword?: (e: boolean) => void;
   inputs?: {
@@ -748,18 +580,10 @@ export type FinalActionProps = {
 };
 
 export type FinalConditionProps = {
-  conditionInformation: Condition | undefined;
   conditionType: string;
   editingState: boolean;
-  conditionFlowIndex: {
-    index: number;
-    webhookCount: number;
-    contractCount: number;
-  };
-  circuitInformation: CircuitInformation;
   handleUpdateCondition: () => void;
   handleAddConditionAndReset: () => void;
-  dispatch: Dispatch<AnyAction>;
   apiPassword?: boolean;
   setApiPassword?: (e: boolean) => void;
   inputs?: {
@@ -870,7 +694,6 @@ export type DropDownLogicProps = {
   inputChosen: number;
   dropDownOpen: boolean;
   title: string;
-  circuitInformation: CircuitInformation;
 };
 
 export type ArgsProps = {

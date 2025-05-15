@@ -2,29 +2,26 @@ import {
   ContractAction,
   FetchAction,
 } from "@/components/CircuitFlow/types/litlistener.types";
-import { FunctionComponent } from "react";
-import { setActionFlow } from "../../../../../../redux/reducers/actionFlowSlice";
+import { FunctionComponent, useContext } from "react";
+import { ModalContext } from "@/pages/_app";
 import { FinalActionProps } from "@/components/CircuitFlow/types/circuitflow.types";
 
 const FinalAction: FunctionComponent<FinalActionProps> = ({
   actionType,
   editingState,
-  actionFlowIndex,
   handleUpdateAction,
   handleAddActionAndReset,
-  dispatch,
   apiPassword,
   setApiPassword,
   functionArgs,
   inputs,
   outputs,
-  circuitInformation,
-  actionInformation,
   signConditions,
 }) => {
+  const context = useContext(ModalContext);
   switch (actionType) {
     case "fetch":
-      const fetchInfo = actionInformation as FetchAction;
+      const fetchInfo = context?.newFetchActionInfo as FetchAction;
       const toSign = !fetchInfo?.toSign
         ? ""
         : typeof fetchInfo?.toSign === "string"
@@ -38,7 +35,7 @@ const FinalAction: FunctionComponent<FinalActionProps> = ({
       return (
         <div
           className={`relative w-full overflow-y-scroll flex flex-col gap-10 items-start justify-start h-60 grow p-2.5 ${
-            circuitInformation.actions.length > 0 && "pb-20"
+            Number(context?.circuitInformation.actions.length) > 0 && "pb-20"
           } `}
         >
           <div className="relative w-full h-full flex items-center justify-center text-center">
@@ -220,14 +217,12 @@ const FinalAction: FunctionComponent<FinalActionProps> = ({
               <div
                 className="relative w-fit h-fit px-2 py-1.5 flex items-center justify-center cursor-pointer hover:opacity-50 active:scale-95 border border-ballena bg-white"
                 onClick={() =>
-                  actionFlowIndex.index === 0
-                    ? dispatch(
-                        setActionFlow({
-                          index: actionFlowIndex.index + 1,
-                          contractCount: actionFlowIndex.contractCount,
-                          fetchCount: actionFlowIndex.fetchCount,
-                        })
-                      )
+                  context?.actionFlow?.index === 0
+                    ? context?.setActionFlow({
+                        index: context?.actionFlow?.index + 1,
+                        contractCount: context?.actionFlow?.contractCount,
+                        fetchCount: context?.actionFlow?.fetchCount,
+                      })
                     : editingState
                     ? handleUpdateAction()
                     : handleAddActionAndReset()
@@ -243,11 +238,11 @@ const FinalAction: FunctionComponent<FinalActionProps> = ({
       );
 
     default:
-      const contractInfo = actionInformation as ContractAction;
+      const contractInfo = context?.newContractActionInfo as ContractAction;
       return (
         <div
           className={`relative w-full overflow-y-scroll flex flex-col gap-10 items-start justify-start h-60 ${
-            circuitInformation.actions.length > 0 && "pb-20"
+            Number(context?.circuitInformation.actions.length) > 0 && "pb-20"
           } grow p-2.5`}
         >
           <div className="relative w-full h-full flex items-center justify-center text-center">
@@ -410,14 +405,12 @@ const FinalAction: FunctionComponent<FinalActionProps> = ({
               <div
                 className="relative w-fit h-fit px-2 py-1.5 flex items-center justify-center cursor-pointer hover:opacity-50 active:scale-95 border border-ballena bg-white"
                 onClick={() =>
-                  actionFlowIndex.index === 0
-                    ? dispatch(
-                        setActionFlow({
-                          index: actionFlowIndex.index + 1,
-                          contractCount: actionFlowIndex.contractCount,
-                          fetchCount: actionFlowIndex.fetchCount,
-                        })
-                      )
+                  context?.actionFlow?.index === 0
+                    ? context?.setActionFlow({
+                        index: context?.actionFlow?.index + 1,
+                        contractCount: context?.actionFlow?.contractCount,
+                        fetchCount: context?.actionFlow?.fetchCount,
+                      })
                     : editingState
                     ? handleUpdateAction()
                     : handleAddActionAndReset()

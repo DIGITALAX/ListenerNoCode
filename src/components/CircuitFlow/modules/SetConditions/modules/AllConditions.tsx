@@ -4,27 +4,22 @@ import {
   ContractCondition,
   WebhookCondition,
 } from "@/components/CircuitFlow/types/litlistener.types";
-import { FunctionComponent } from "react";
+import { ModalContext } from "@/pages/_app";
+import { FunctionComponent, useContext } from "react";
 import { RiCloseCircleFill } from "react-icons/ri";
-import { setCircuitInformation } from "../../../../../../redux/reducers/circuitInformationSlice";
-import { setNewWebhookConditionInformation } from "../../../../../../redux/reducers/newWebhookConditionInformationSlice";
-import { setNewContractConditionInformation } from "../../../../../../redux/reducers/newContractConditionInformationSlice";
-import { setConditionFlow } from "../../../../../../redux/reducers/conditionFlowSlice";
 
 const AllConditions: FunctionComponent<AllConditionsProps> = ({
-  circuitInformation,
-  dispatch,
   setConditionType,
   setEditingState,
-  conditionFlowIndex,
 }): JSX.Element => {
+  const context = useContext(ModalContext);
   return (
     <div
       className="relative w-full h-fit overflow-y-hidden py-4 overflow-x-scroll flex items-center justify-start"
       id="xScroll"
     >
       <div className="relative flex flex-row gap-2 w-fit h-fit">
-        {circuitInformation?.conditions?.map(
+        {context?.circuitInformation?.conditions?.map(
           (condition: Condition, index: number) => {
             return (
               <div key={index} className="relative w-fit h-fit flex">
@@ -32,23 +27,18 @@ const AllConditions: FunctionComponent<AllConditionsProps> = ({
                   className="relative w-24 flex justify-center items-center text-center font-vcr h-full text-sm text-white cursor-pointer active:scale-95 hover:opacity-80 bg-aBlack border border-white"
                   onClick={() => {
                     (condition as ContractCondition)?.chainId
-                      ? dispatch(
-                          setNewContractConditionInformation(
-                            condition as ContractCondition
-                          )
+                      ? context?.setNewContractConditionInfo(
+                          condition as ContractCondition
                         )
-                      : dispatch(
-                          setNewWebhookConditionInformation(
-                            condition as WebhookCondition
-                          )
+                      : context?.setNewWebhookConditionInfo(
+                          condition as WebhookCondition
                         );
-                    dispatch(
-                      setConditionFlow({
-                        index: 1,
-                        webhookCount: conditionFlowIndex.webhookCount,
-                        contractCount: conditionFlowIndex.contractCount,
-                      })
-                    );
+
+                    context?.setConditionFlow((prev) => ({
+                      ...prev,
+                      index: 1,
+                    }));
+
                     (condition as ContractCondition)?.chainId
                       ? setConditionType("contract")
                       : setConditionType("web");
@@ -68,17 +58,19 @@ const AllConditions: FunctionComponent<AllConditionsProps> = ({
                   className="absolute w-fit h-fit -top-2 -right-2 cursor-pointer z-1 hover:mix-blend-multiply"
                   id="blur"
                   onClick={() => {
-                    const newConditions = [...circuitInformation.conditions];
+                    const newConditions = [
+                      ...context?.circuitInformation?.conditions,
+                      context?.newContractConditionInfo!,
+                      context?.newWebhookConditionInfo!,
+                    ]?.filter(Boolean);
                     newConditions.splice(index, 1);
-                    dispatch(setNewContractConditionInformation(undefined));
-                    dispatch(setNewWebhookConditionInformation(undefined));
+                    context?.setNewContractConditionInfo(undefined);
+                    context?.setNewWebhookConditionInfo(undefined);
                     setEditingState(false);
-                    dispatch(
-                      setCircuitInformation({
-                        ...circuitInformation,
-                        conditions: newConditions,
-                      })
-                    );
+                    context?.setCircuitInformation((prev) => ({
+                      ...prev,
+                      conditions: newConditions,
+                    }));
                   }}
                 >
                   <RiCloseCircleFill color="white" size={20} />

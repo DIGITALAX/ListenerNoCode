@@ -1,32 +1,17 @@
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../../../../../redux/store";
-import { useEffect, useState } from "react";
-import { setNewFetchActionInformation } from "../../../../../../redux/reducers/newFetchActionInformationSlice";
+import { useContext, useEffect, useState } from "react";
 import {
-  CHAIN_NAME,
   ContractAction,
   FetchAction,
 } from "@/components/CircuitFlow/types/litlistener.types";
-import { setCircuitInformation } from "../../../../../../redux/reducers/circuitInformationSlice";
-import { setNewContractActionInformation } from "../../../../../../redux/reducers/newContractActionInformationSlice";
-import { setModalOpen } from "../../../../../../redux/reducers/modalOpenSlice";
 import { checkResponsePath } from "../../../../../../lib/helpers/checkResponsePath";
 import { checkEndpoint } from "../../../../../../lib/helpers/checkEndpoint";
 import { checkBaseURL } from "../../../../../../lib/helpers/checkBaseURL";
 import { typeChecker } from "../../../../../../lib/helpers/typeChecker";
 import { checkSignCondition } from "../../../../../../lib/helpers/checkSignCondition";
+import { ModalContext } from "@/pages/_app";
 
 const useSetActions = () => {
-  const dispatch = useDispatch();
-  const circuitInformation = useSelector(
-    (state: RootState) => state.app.circuitInformationReducer.value
-  );
-  const newContractActionInformation = useSelector(
-    (state: RootState) => state.app.newContractActionInformationReducer.value
-  );
-  const newFetchActionInformation = useSelector(
-    (state: RootState) => state.app.newFetchActionInformationReducer.value
-  );
+  const context = useContext(ModalContext);
   const [functionArgs, setFunctionArgs] = useState<string[]>([""]);
   const [actionType, setActionType] = useState<string>("contract");
   const [editingStateAction, setEditingStateAction] = useState<boolean>(false);
@@ -188,78 +173,70 @@ const useSetActions = () => {
     );
 
     if (
-      !newContractActionInformation?.contractAddress ||
-      newContractActionInformation?.contractAddress?.trim() === ""
+      !context?.newContractActionInfo?.contractAddress ||
+      context?.newContractActionInfo?.contractAddress?.trim() === ""
     ) {
       checker = false;
-      dispatch(
-        setModalOpen({
-          actionOpen: true,
-          actionMessage: "Contract Address Missing. Try Again.",
-          actionImage: "QmQaUjMfMg1hmxyfHdAdeeT6hiw4JEbMkqKARexCytEMLu",
-        })
-      );
+
+      context?.setGeneralModal({
+        open: true,
+        message: "Contract Address Missing. Try Again.",
+        image: "QmQaUjMfMg1hmxyfHdAdeeT6hiw4JEbMkqKARexCytEMLu",
+      });
     } else if (
-      !newContractActionInformation?.contractAddress?.startsWith("0x")
+      !context?.newContractActionInfo?.contractAddress?.startsWith("0x")
     ) {
       checker = false;
-      dispatch(
-        setModalOpen({
-          actionOpen: true,
-          actionMessage: "Contract Address Invalid. Try Again.",
-          actionImage: "QmUQVRH5iX5FhqDN3dpN5ZGGAguaUh7MbTN6p1U9B2tB3r",
-        })
-      );
+
+      context?.setGeneralModal({
+        open: true,
+        message: "Contract Address Invalid. Try Again.",
+        image: "QmUQVRH5iX5FhqDN3dpN5ZGGAguaUh7MbTN6p1U9B2tB3r",
+      });
     } else if (
-      !newContractActionInformation?.functionName ||
-      newContractActionInformation?.functionName?.trim() === ""
+      !context?.newContractActionInfo?.functionName ||
+      context?.newContractActionInfo?.functionName?.trim() === ""
     ) {
       checker = false;
-      dispatch(
-        setModalOpen({
-          actionOpen: true,
-          actionMessage: "Function Name Missing. Try Again.",
-          actionImage: "QmRyjnEuR6sKeejA92eRbUXFZg9G6BtXQRprwgLc9zNkNn",
-        })
-      );
+
+      context?.setGeneralModal({
+        open: true,
+        message: "Function Name Missing. Try Again.",
+        image: "QmRyjnEuR6sKeejA92eRbUXFZg9G6BtXQRprwgLc9zNkNn",
+      });
     } else if (newInputs?.length !== functionArgs?.length) {
       checker = false;
-      dispatch(
-        setModalOpen({
-          actionOpen: true,
-          actionMessage:
-            "Each Function Arg Needs A Corresponding ABI Input Value. Try Again.",
-          actionImage: "QmXiYwejG2YZrNuo7xAsAWAmmkqU2Wbzwj1URDkaP9FuMQ",
-        })
-      );
+
+      context?.setGeneralModal({
+        open: true,
+        message:
+          "Each Function Arg Needs A Corresponding ABI Input Value. Try Again.",
+        image: "QmXiYwejG2YZrNuo7xAsAWAmmkqU2Wbzwj1URDkaP9FuMQ",
+      });
     } else if (newInputs?.length < 1) {
       checker = false;
-      dispatch(
-        setModalOpen({
-          actionOpen: true,
-          actionMessage: "Contract ABI Inputs Missing. Try Again.",
-          actionImage: "QmRWHaMFya1MHuS7ysQesSDYjcqtdygq17aFk4PUdg7dVh",
-        })
-      );
+
+      context?.setGeneralModal({
+        open: true,
+        message: "Contract ABI Inputs Missing. Try Again.",
+        image: "QmRWHaMFya1MHuS7ysQesSDYjcqtdygq17aFk4PUdg7dVh",
+      });
     } else if (newOutputs?.length < 1) {
       checker = false;
-      dispatch(
-        setModalOpen({
-          actionOpen: true,
-          actionMessage: "Contract ABI Outputs Missing. Try Again.",
-          actionImage: "QmWMQKSDzchgfe3KSVSLh98ArZT2k9r8tV772T2EMEH9E4",
-        })
-      );
+
+      context?.setGeneralModal({
+        open: true,
+        message: "Contract ABI Outputs Missing. Try Again.",
+        image: "QmWMQKSDzchgfe3KSVSLh98ArZT2k9r8tV772T2EMEH9E4",
+      });
     } else if (!isValid || convertedArgs?.length < 1) {
       checker = false;
-      dispatch(
-        setModalOpen({
-          actionOpen: true,
-          actionMessage:
-            "Function Args must match Internal Input Type. Try Again.",
-          actionImage: "QmaLbRzzCP1axGEd6vJsDs7Jm7hyyiBGYsnBfv3jW51KiX",
-        })
-      );
+
+      context?.setGeneralModal({
+        open: true,
+        message: "Function Args must match Internal Input Type. Try Again.",
+        image: "QmaLbRzzCP1axGEd6vJsDs7Jm7hyyiBGYsnBfv3jW51KiX",
+      });
     }
 
     return { checker, newInputs, newOutputs, convertedArgs };
@@ -278,86 +255,79 @@ const useSetActions = () => {
       | undefined;
   } => {
     let checker = true;
-    const newBaseURL = !newFetchActionInformation?.baseUrl?.endsWith("/")
-      ? newFetchActionInformation?.baseUrl + "/"
-      : newFetchActionInformation?.baseUrl;
-    const newEndpoint = newFetchActionInformation?.endpoint?.startsWith("/")
-      ? newFetchActionInformation?.endpoint?.substring(1)
-      : newFetchActionInformation?.endpoint!;
+    const newBaseURL = !context?.newFetchActionInfo?.baseUrl?.endsWith("/")
+      ? context?.newFetchActionInfo?.baseUrl + "/"
+      : context?.newFetchActionInfo?.baseUrl;
+    const newEndpoint = context?.newFetchActionInfo?.endpoint?.startsWith("/")
+      ? context?.newFetchActionInfo?.endpoint?.substring(1)
+      : context?.newFetchActionInfo?.endpoint!;
     const { isValid, updatedSignConditions } =
       checkSignCondition(signConditions);
     if (
-      !newFetchActionInformation?.baseUrl ||
-      newFetchActionInformation?.baseUrl?.trim() === ""
+      !context?.newFetchActionInfo?.baseUrl ||
+      context?.newFetchActionInfo?.baseUrl?.trim() === ""
     ) {
       checker = false;
-      dispatch(
-        setModalOpen({
-          actionOpen: true,
-          actionMessage: "Base URL Missing. Try Again.",
-          actionImage: "QmTwJR5WigvzU2WcXsRRbqZY4Av6EfGokmUMz6n1pKL9BL",
-        })
-      );
+
+      context?.setGeneralModal({
+        open: true,
+        message: "Base URL Missing. Try Again.",
+        image: "QmTwJR5WigvzU2WcXsRRbqZY4Av6EfGokmUMz6n1pKL9BL",
+      });
     } else if (
-      !newFetchActionInformation?.endpoint ||
-      newFetchActionInformation?.endpoint?.trim() === ""
+      !context?.newFetchActionInfo?.endpoint ||
+      context?.newFetchActionInfo?.endpoint?.trim() === ""
     ) {
       checker = false;
-      dispatch(
-        setModalOpen({
-          actionOpen: true,
-          actionMessage: "Endpoint Missing. Try Again.",
-          actionImage: "QmQspswKVpm8MTGfw7esAN6estvHtXhANycx9iUEYPmHsD",
-        })
-      );
-    } else if (!checkBaseURL(newFetchActionInformation?.baseUrl!)) {
+
+      context?.setGeneralModal({
+        open: true,
+        message: "Endpoint Missing. Try Again.",
+        image: "QmQspswKVpm8MTGfw7esAN6estvHtXhANycx9iUEYPmHsD",
+      });
+    } else if (!checkBaseURL(context?.newFetchActionInfo?.baseUrl!)) {
       checker = false;
-      dispatch(
-        setModalOpen({
-          actionOpen: true,
-          actionMessage: "Base URL Invalid. Try Again.",
-          actionImage: "Qmdont4GbQx4BhgdF1FWvhCow21rRTjst6wwESNNLxN5QJ",
-        })
-      );
-    } else if (!checkEndpoint(newFetchActionInformation?.endpoint!)) {
+
+      context?.setGeneralModal({
+        open: true,
+        message: "Base URL Invalid. Try Again.",
+        image: "Qmdont4GbQx4BhgdF1FWvhCow21rRTjst6wwESNNLxN5QJ",
+      });
+    } else if (!checkEndpoint(context?.newFetchActionInfo?.endpoint!)) {
       checker = false;
-      dispatch(
-        setModalOpen({
-          actionOpen: true,
-          actionMessage: "Endpoint Invalid. Try Again.",
-          actionImage: "QmWgZnGb5HLEAXZ9y5N7fxAFvoTvb5Bv6CbLaMdfCQSLbS",
-        })
-      );
+
+      context?.setGeneralModal({
+        open: true,
+        message: "Endpoint Invalid. Try Again.",
+        image: "QmWgZnGb5HLEAXZ9y5N7fxAFvoTvb5Bv6CbLaMdfCQSLbS",
+      });
     } else if (
-      !newFetchActionInformation?.responsePath! ||
-      newFetchActionInformation?.responsePath!?.trim() === ""
+      !context?.newFetchActionInfo?.responsePath! ||
+      context?.newFetchActionInfo?.responsePath!?.trim() === ""
     ) {
       checker = false;
-      dispatch(
-        setModalOpen({
-          actionOpen: true,
-          actionMessage: "Response Path Missing. Try Again.",
-          actionImage: "Qmf3knH67VUqS2icK5hbkSUqRTxCFdbfdZnyxWPrJVG5w4",
-        })
-      );
-    } else if (!checkResponsePath(newFetchActionInformation?.responsePath!)) {
+
+      context?.setGeneralModal({
+        open: true,
+        message: "Response Path Missing. Try Again.",
+        image: "Qmf3knH67VUqS2icK5hbkSUqRTxCFdbfdZnyxWPrJVG5w4",
+      });
+    } else if (!checkResponsePath(context?.newFetchActionInfo?.responsePath!)) {
       checker = false;
-      dispatch(
-        setModalOpen({
-          actionOpen: true,
-          actionMessage: "Response Path Invalid. Try Again.",
-          actionImage: "Qmez3hLGshhkVjobBpaCATxnMyLpBhBvDmRSEVGdAxJijE",
-        })
-      );
+
+      context?.setGeneralModal({
+        open: true,
+        message: "Response Path Invalid. Try Again.",
+        image: "Qmez3hLGshhkVjobBpaCATxnMyLpBhBvDmRSEVGdAxJijE",
+      });
     } else if (!updatedSignConditions || !isValid) {
       checker = false;
-      dispatch(
-        setModalOpen({
-          actionOpen: true,
-          actionMessage: "Sign Conditions Invalid. Try Again.",
-          actionImage: "Qmez3hLGshhkVjobBpaCATxnMyLpBhBvDmRSEVGdAxJijE",
-        })
-      );
+
+      context?.setGeneralModal({
+        open: true,
+        message: "Sign Conditions Invalid. Try Again.",
+        image: "Qmez3hLGshhkVjobBpaCATxnMyLpBhBvDmRSEVGdAxJijE",
+      });
     }
 
     return { checker, newBaseURL, newEndpoint, updatedSignConditions };
@@ -373,28 +343,27 @@ const useSetActions = () => {
       }
 
       const abi = buildABI(
-        newContractActionInformation?.functionName!,
+        context?.newContractActionInfo?.functionName!,
         newInputs,
         newOutputs
       );
 
-      dispatch(
-        setCircuitInformation({
-          ...circuitInformation,
-          actions: [
-            ...circuitInformation.actions,
-            {
-              ...newContractActionInformation,
-              type: "contract",
-              priority: circuitInformation?.actions?.length,
-              abi: [abi],
-              chainId: newContractActionInformation?.chainId || "ethereum",
-              args: convertedArgs,
-            } as unknown as ContractAction,
-          ],
-        })
-      );
-      dispatch(setNewContractActionInformation(undefined));
+      context?.setCircuitInformation((prev) => ({
+        ...prev,
+        actions: [
+          ...prev.actions,
+          {
+            ...context?.newContractActionInfo,
+            type: "contract",
+            priority: prev?.actions?.length,
+            abi: [abi],
+            chainId: context?.newContractActionInfo?.chainId || "ethereum",
+            args: convertedArgs,
+          } as unknown as ContractAction,
+        ],
+      }));
+
+      context?.setNewContractActionInfo(undefined);
       setActionInputs([
         {
           internalType: "string",
@@ -428,66 +397,64 @@ const useSetActions = () => {
       if (!checker) {
         return;
       }
-      const buffer = Buffer.from(newFetchActionInformation?.toSign!);
+      const buffer = Buffer.from(context?.newFetchActionInfo?.toSign!);
 
-      dispatch(
-        setCircuitInformation({
-          ...circuitInformation,
-          actions: [
-            ...circuitInformation.actions,
-            (newFetchActionInformation?.toSign as any)?.trim() !== "" &&
-            updatedSignConditions &&
-            updatedSignConditions?.length > 0 &&
-            (newFetchActionInformation?.toSign as any)?.trim() !== ""
-              ? ({
-                  ...newFetchActionInformation,
-                  type: "fetch",
-                  priority: circuitInformation?.actions?.length,
-                  baseUrl: newBaseURL,
-                  endpoint: newEndpoint,
-                  signCondition: updatedSignConditions,
-                  toSign: new Uint8Array(
-                    buffer.buffer,
-                    buffer.byteOffset,
-                    buffer.byteLength
-                  ),
-                } as FetchAction)
-              : !updatedSignConditions ||
-                (updatedSignConditions?.length < 1 &&
-                  (newFetchActionInformation?.toSign as any)?.trim() === "")
-              ? ({
-                  ...newFetchActionInformation,
-                  type: "fetch",
-                  priority: circuitInformation?.actions?.length,
-                  baseUrl: newBaseURL,
-                  endpoint: newEndpoint,
-                } as FetchAction)
-              : (newFetchActionInformation?.toSign as any)?.trim() === ""
-              ? ({
-                  ...newFetchActionInformation,
-                  type: "fetch",
-                  priority: circuitInformation?.actions?.length,
-                  baseUrl: newBaseURL,
-                  endpoint: newEndpoint,
-                  signCondition: updatedSignConditions,
-                } as FetchAction)
-              : ({
-                  ...newFetchActionInformation,
-                  type: "fetch",
-                  priority: circuitInformation?.actions?.length,
-                  baseUrl: newBaseURL,
-                  endpoint: newEndpoint,
-                  toSign: new Uint8Array(
-                    buffer.buffer,
-                    buffer.byteOffset,
-                    buffer.byteLength
-                  ),
-                } as FetchAction),
-          ],
-        })
-      );
+      context?.setCircuitInformation((prev) => ({
+        ...prev,
+        actions: [
+          ...prev.actions,
+          (context?.newFetchActionInfo?.toSign as any)?.trim() !== "" &&
+          updatedSignConditions &&
+          updatedSignConditions?.length > 0 &&
+          (context?.newFetchActionInfo?.toSign as any)?.trim() !== ""
+            ? ({
+                ...context?.newFetchActionInfo,
+                type: "fetch",
+                priority: prev?.actions?.length,
+                baseUrl: newBaseURL,
+                endpoint: newEndpoint,
+                signCondition: updatedSignConditions,
+                toSign: new Uint8Array(
+                  buffer.buffer,
+                  buffer.byteOffset,
+                  buffer.byteLength
+                ),
+              } as FetchAction)
+            : !updatedSignConditions ||
+              (updatedSignConditions?.length < 1 &&
+                (context?.newFetchActionInfo?.toSign as any)?.trim() === "")
+            ? ({
+                ...context?.newFetchActionInfo,
+                type: "fetch",
+                priority: prev?.actions?.length,
+                baseUrl: newBaseURL,
+                endpoint: newEndpoint,
+              } as FetchAction)
+            : (context?.newFetchActionInfo?.toSign as any)?.trim() === ""
+            ? ({
+                ...context?.newFetchActionInfo,
+                type: "fetch",
+                priority: prev?.actions?.length,
+                baseUrl: newBaseURL,
+                endpoint: newEndpoint,
+                signCondition: updatedSignConditions,
+              } as FetchAction)
+            : ({
+                ...context?.newFetchActionInfo,
+                type: "fetch",
+                priority: prev?.actions?.length,
+                baseUrl: newBaseURL,
+                endpoint: newEndpoint,
+                toSign: new Uint8Array(
+                  buffer.buffer,
+                  buffer.byteOffset,
+                  buffer.byteLength
+                ),
+              } as FetchAction),
+        ],
+      }));
 
-      dispatch(setNewFetchActionInformation(undefined));
+      context?.setNewFetchActionInfo(undefined);
     }
   };
 
@@ -501,32 +468,30 @@ const useSetActions = () => {
       }
 
       const abi = buildABI(
-        newContractActionInformation?.functionName!,
+        context?.newContractActionInfo?.functionName!,
         newInputs,
         newOutputs
       );
 
-      dispatch(
-        setCircuitInformation({
-          ...circuitInformation,
-          actions: circuitInformation.actions.map((obj) =>
-            obj.priority === newContractActionInformation?.priority
-              ? {
-                  ...obj,
-                  ...({
-                    ...newContractActionInformation,
-                    abi: [abi],
-                    chainId:
-                      newContractActionInformation?.chainId || "ethereum",
-                    args: convertedArgs,
-                  } as unknown as ContractAction),
-                }
-              : obj
-          ) as any,
-        })
-      );
+      context?.setCircuitInformation((prev) => ({
+        ...prev,
+        actions: prev.actions.map((obj) =>
+          obj.priority === context?.newContractActionInfo?.priority
+            ? {
+                ...obj,
+                ...({
+                  ...context?.newContractActionInfo,
+                  abi: [abi],
+                  chainId:
+                    context?.newContractActionInfo?.chainId || "ethereum",
+                  args: convertedArgs,
+                } as unknown as ContractAction),
+              }
+            : obj
+        ) as any,
+      }));
 
-      dispatch(setNewContractActionInformation(undefined));
+      context?.setNewContractActionInfo(undefined);
       setActionInputs([
         {
           internalType: "string",
@@ -560,41 +525,39 @@ const useSetActions = () => {
       if (!checker) {
         return;
       }
-      const buffer = Buffer.from(newFetchActionInformation?.toSign!);
+      const buffer = Buffer.from(context?.newFetchActionInfo?.toSign!);
 
-      dispatch(
-        setCircuitInformation({
-          ...circuitInformation,
-          actions: circuitInformation.actions.map((obj) =>
-            obj.priority === newFetchActionInformation?.priority
-              ? ({
-                  ...obj,
-                  ...(!newFetchActionInformation?.toSign ||
-                  (newFetchActionInformation?.toSign as any)?.trim() !== ""
-                    ? {
-                        ...newFetchActionInformation,
-                        baseUrl: newBaseURL,
-                        endpoint: newEndpoint,
-                        signCondition: updatedSignConditions,
-                      }
-                    : {
-                        ...newFetchActionInformation,
-                        baseUrl: newBaseURL,
-                        endpoint: newEndpoint,
-                        signCondition: updatedSignConditions,
-                        toSign: new Uint8Array(
-                          buffer.buffer,
-                          buffer.byteOffset,
-                          buffer.byteLength
-                        ),
-                      }),
-                } as FetchAction)
-              : obj
-          ),
-        })
-      );
+      context?.setCircuitInformation((prev) => ({
+        ...prev,
+        actions: prev.actions.map((obj) =>
+          obj.priority === context?.newFetchActionInfo?.priority
+            ? ({
+                ...obj,
+                ...(!context?.newFetchActionInfo?.toSign ||
+                (context?.newFetchActionInfo?.toSign as any)?.trim() !== ""
+                  ? {
+                      ...context?.newFetchActionInfo,
+                      baseUrl: newBaseURL,
+                      endpoint: newEndpoint,
+                      signCondition: updatedSignConditions,
+                    }
+                  : {
+                      ...context?.newFetchActionInfo,
+                      baseUrl: newBaseURL,
+                      endpoint: newEndpoint,
+                      signCondition: updatedSignConditions,
+                      toSign: new Uint8Array(
+                        buffer.buffer,
+                        buffer.byteOffset,
+                        buffer.byteLength
+                      ),
+                    }),
+              } as FetchAction)
+            : obj
+        ),
+      }));
 
-      dispatch(setNewFetchActionInformation(undefined));
+      context?.setNewFetchActionInfo(undefined);
     }
 
     setEditingStateAction(false);

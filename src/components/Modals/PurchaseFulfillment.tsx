@@ -1,13 +1,11 @@
-import { FunctionComponent } from "react";
+import { FunctionComponent, useContext } from "react";
 import Image from "next/legacy/image";
 import { ImCross } from "react-icons/im";
-import { PurchaseFulfillmentProps } from "./types/modals.types";
 import { INFURA_GATEWAY } from "../../../lib/constants";
-import { setPurchaseModal } from "../../../redux/reducers/purchaseModalSlice";
+import { ModalContext } from "@/pages/_app";
 
-const PurchaseFulfillment: FunctionComponent<PurchaseFulfillmentProps> = ({
-  dispatch,
-}): JSX.Element => {
+const PurchaseFulfillment: FunctionComponent = (): JSX.Element => {
+  const context = useContext(ModalContext);
   return (
     <div className="inset-0 justify-center fixed z-20 bg-opacity-50 backdrop-blur-sm overflow-y-hidden grid grid-flow-col auto-cols-auto w-full h-auto">
       <div className="relative w-full lg:w-[30vw] h-fit col-start-1 place-self-center bg-black">
@@ -21,7 +19,7 @@ const PurchaseFulfillment: FunctionComponent<PurchaseFulfillmentProps> = ({
                 <ImCross
                   color="white"
                   size={15}
-                  onClick={() => dispatch(setPurchaseModal(false))}
+                  onClick={() => context?.setPurchaseModal(false)}
                 />
               </div>
               <div className="relative w-full h-fit flex flex-col items-center justify-center px-4 gap-6">

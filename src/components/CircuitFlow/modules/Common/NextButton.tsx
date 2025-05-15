@@ -1,166 +1,134 @@
-import { FunctionComponent } from "react";
-import { NextButtonProps } from "@/components/CircuitFlow/types/circuitflow.types";
-import { setConditionFlow } from "../../../../../redux/reducers/conditionFlowSlice";
-import { setModalOpen } from "../../../../../redux/reducers/modalOpenSlice";
-import { setCircuitFlow } from "../../../../../redux/reducers/circuitFlowSlice";
-import { setConditionLogicFlow } from "../../../../../redux/reducers/conditionLogicFlowSlice";
-import { setActionFlow } from "../../../../../redux/reducers/actionFlowSlice";
-import { setExecutionConstraintFlow } from "../../../../../redux/reducers/executionConstraintFlowSlice";
-import { setIpfsFlow } from "../../../../../redux/reducers/ipfsFlowSlice";
+import { FunctionComponent, useContext } from "react";
+import { ModalContext } from "@/pages/_app";
+import { useRouter } from "next/router";
+import { NextButtonProps } from "../../types/circuitflow.types";
 
 const NextButton: FunctionComponent<NextButtonProps> = ({
-  conditionFlowIndex,
-  circuitFlowIndex,
-  dispatch,
-  circuitInformation,
-  ipfsHash,
   stepCount,
-  conditionLogicFlowIndex,
-  actionFlowIndex,
   handleSetConditionalLogic,
-  executionConstraintFlowIndex,
   handleAddExecutionConstraints,
-  ipfsFlowIndex,
-  signedPKPTx,
-  mintPKPFlowIndex,
-  circuitRunning,
-  router,
   handleClearCircuit,
 }): JSX.Element => {
+  const context = useContext(ModalContext);
+  const router = useRouter();
   return (
     <div
       className="relative w-full h-16 flex items-center justify-center cursor-pointer hover:opacity-50 active:scale-95 border border-ballena"
       onClick={() => {
-        if (circuitFlowIndex === 0) {
+        if (context?.circuitFlow === 0) {
           if (
-            conditionFlowIndex.index === stepCount - 1 &&
-            circuitInformation?.conditions?.length < 1
+            context?.conditionFlow.index === stepCount - 1 &&
+            context?.circuitInformation?.conditions?.length < 1
           ) {
-            dispatch(
-              setModalOpen({
-                actionOpen: true,
-                actionMessage: "Add Conditions Before Continuing.",
-                actionImage: "Qmam45hAbVeeq4RaJ2Dz4kTw7iea42rmvrgJySJBdSJuFS",
-              })
-            );
+            context?.setGeneralModal({
+              open: true,
+              message: "Add Conditions Before Continuing.",
+              image: "Qmam45hAbVeeq4RaJ2Dz4kTw7iea42rmvrgJySJBdSJuFS",
+            });
           } else if (
-            circuitInformation?.conditions?.length > 0 &&
-            conditionFlowIndex.index === stepCount - 1
+            context?.circuitInformation?.conditions?.length > 0 &&
+            context?.conditionFlow.index === stepCount - 1
           ) {
-            dispatch(setCircuitFlow(circuitFlowIndex + 1));
+            context?.setCircuitFlow(context?.circuitFlow + 1);
           } else {
-            dispatch(
-              setConditionFlow({
-                index: conditionFlowIndex.index + 1,
-                contractCount: conditionFlowIndex.contractCount,
-                webhookCount: conditionFlowIndex.webhookCount,
-              })
-            );
+            context?.setConditionFlow((prev) => ({
+              ...prev,
+              index: prev.index + 1,
+            }));
           }
 
           return;
-        } else if (circuitFlowIndex === 1) {
-          if (conditionLogicFlowIndex.index === stepCount - 1) {
+        } else if (context?.circuitFlow === 1) {
+          if (context?.conditionLogicFlow.index === stepCount - 1) {
             const logicCorrect = handleSetConditionalLogic();
             if (logicCorrect) {
-              dispatch(setCircuitFlow(circuitFlowIndex + 1));
+              context?.setCircuitFlow(context?.circuitFlow + 1);
             }
           } else {
-            dispatch(
-              setConditionLogicFlow({
-                index: conditionLogicFlowIndex.index + 1,
-                everyCount: conditionLogicFlowIndex.everyCount,
-                thresholdCount: conditionLogicFlowIndex.thresholdCount,
-                targetCount: conditionLogicFlowIndex.targetCount,
-              })
-            );
+            context?.setConditionLogicFlow((prev) => ({
+              ...prev,
+              index: prev.index + 1,
+            }));
           }
 
           return;
-        } else if (circuitFlowIndex === 2) {
+        } else if (context?.circuitFlow === 2) {
           if (
-            actionFlowIndex.index === stepCount - 1 &&
-            circuitInformation?.actions?.length < 1
+            context?.actionFlow.index === stepCount - 1 &&
+            context?.circuitInformation?.actions?.length < 1
           ) {
-            dispatch(
-              setModalOpen({
-                actionOpen: true,
-                actionMessage: "Add Actions Before Continuing.",
-                actionImage: "Qmam45hAbVeeq4RaJ2Dz4kTw7iea42rmvrgJySJBdSJuFS",
-              })
-            );
+            context?.setGeneralModal({
+              open: true,
+              message: "Add Actions Before Continuing.",
+              image: "Qmam45hAbVeeq4RaJ2Dz4kTw7iea42rmvrgJySJBdSJuFS",
+            });
           } else if (
-            circuitInformation?.actions?.length > 0 &&
-            actionFlowIndex.index === stepCount - 1
+            context?.circuitInformation?.actions?.length > 0 &&
+            context?.actionFlow.index === stepCount - 1
           ) {
-            dispatch(setCircuitFlow(circuitFlowIndex + 1));
+            context?.setCircuitFlow(context?.circuitFlow + 1);
           } else {
-            dispatch(
-              setActionFlow({
-                index: actionFlowIndex.index + 1,
-                contractCount: actionFlowIndex.contractCount,
-                fetchCount: actionFlowIndex.fetchCount,
-              })
-            );
+            context?.setActionFlow((prev) => ({
+              ...prev,
+              index: prev.index + 1,
+            }));
           }
 
           return;
-        } else if (circuitFlowIndex === 3) {
-          if (executionConstraintFlowIndex.index === stepCount - 1) {
+        } else if (context?.circuitFlow === 3) {
+          if (context?.executionConstraintFlow.index === stepCount - 1) {
             handleAddExecutionConstraints();
-            dispatch(setCircuitFlow(circuitFlowIndex + 1));
+            context?.setCircuitFlow(context?.circuitFlow + 1);
           } else {
-            dispatch(
-              setExecutionConstraintFlow({
-                index: executionConstraintFlowIndex.index + 1,
-                executionCount: executionConstraintFlowIndex.executionCount,
-              })
-            );
+            context?.setExecutionConstraintFlow((prev) => ({
+              ...prev,
+              index: prev.index + 1,
+            }));
           }
 
           return;
-        } else if (circuitFlowIndex === 4) {
-          if (ipfsHash?.trim() === "" && 0 === ipfsFlowIndex.index) {
-            dispatch(
-              setModalOpen({
-                actionOpen: true,
-                actionMessage: "Hash to IPFS before continuing.",
-                actionImage: "QmSjfHHFeLfMhgdwjuvczjxqDbRhs3rW3z4kvo1Jqf9TfM",
-              })
-            );
-          } else if (
-            ipfsHash?.trim() !== "" &&
-            stepCount - 1 == ipfsFlowIndex.index
+        } else if (context?.circuitFlow === 4) {
+          if (
+            context?.ipfsHash?.ipfs?.trim() === "" &&
+            0 === context?.ipfsFlow.index
           ) {
-            dispatch(setCircuitFlow(circuitFlowIndex + 1));
-          } else if (ipfsHash?.trim() !== "") {
-            dispatch(
-              setIpfsFlow({
-                index: ipfsFlowIndex.index + 1,
-                ipfsCount: ipfsFlowIndex.ipfsCount,
-              })
-            );
+            context?.setGeneralModal({
+              open: true,
+              message: "Hash to IPFS before continuing.",
+              image: "QmSjfHHFeLfMhgdwjuvczjxqDbRhs3rW3z4kvo1Jqf9TfM",
+            });
+          } else if (
+            context?.ipfsHash?.ipfs?.trim() !== "" &&
+            stepCount - 1 == context?.ipfsFlow.index
+          ) {
+            context?.setCircuitFlow(context?.circuitFlow + 1);
+          } else if (context?.ipfsHash?.ipfs?.trim() !== "") {
+            context?.setIpfsFlow((prev) => ({
+              ...prev,
+              index: prev.index + 1,
+            }));
           }
           return;
-        } else if (circuitFlowIndex === 5) {
-          if (signedPKPTx?.publicKey === "" || signedPKPTx.address === "") {
-            dispatch(
-              setModalOpen({
-                actionOpen: true,
-                actionMessage: "MintGrantBurn PKP before continuing.",
-                actionImage: "QmSjfHHFeLfMhgdwjuvczjxqDbRhs3rW3z4kvo1Jqf9TfM",
-              })
-            );
-          } else if (
-            signedPKPTx?.publicKey?.trim() !== "" &&
-            signedPKPTx?.address?.trim() !== "" &&
-            stepCount - 1 == mintPKPFlowIndex.index
+        } else if (context?.circuitFlow === 5) {
+          if (
+            context?.signedPKP?.publicKey === "" ||
+            context?.signedPKP.address === ""
           ) {
-            dispatch(setCircuitFlow(circuitFlowIndex + 1));
+            context?.setGeneralModal({
+              open: true,
+              message: "MintGrantBurn PKP before continuing.",
+              image: "QmSjfHHFeLfMhgdwjuvczjxqDbRhs3rW3z4kvo1Jqf9TfM",
+            });
+          } else if (
+            context?.signedPKP?.publicKey?.trim() !== "" &&
+            context?.signedPKP?.address?.trim() !== "" &&
+            stepCount - 1 == context?.mintPKPFlow.index
+          ) {
+            context?.setCircuitFlow(context?.circuitFlow + 1);
           }
           return;
-        } else if (circuitFlowIndex === 6) {
-          if (circuitRunning) {
+        } else if (context?.circuitFlow === 6) {
+          if (context?.circuitRunning) {
             router.push("/account");
             handleClearCircuit();
           }

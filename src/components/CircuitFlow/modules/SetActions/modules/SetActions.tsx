@@ -1,21 +1,17 @@
-import { FunctionComponent } from "react";
+import { FunctionComponent, useContext } from "react";
 import FinalAction from "./FinalAction";
-import { SetActionsProps } from "@/components/CircuitFlow/types/circuitflow.types";
 import Choice from "../../Common/Choice";
 import Input from "../../Common/Input";
-import { setNewFetchActionInformation } from "../../../../../../redux/reducers/newFetchActionInformationSlice";
 import Args from "../../Common/Args";
 import Abi from "../../Common/Abi";
 import DropDown from "../../Common/DropDown";
-import { setNewContractActionInformation } from "../../../../../../redux/reducers/newContractActionInformationSlice";
 import SignCondition from "./SignCondition";
+import { ModalContext } from "@/pages/_app";
+import { SetActionsProps } from "@/components/CircuitFlow/types/circuitflow.types";
 
 const SetActions: FunctionComponent<SetActionsProps> = ({
-  dispatch,
-  circuitInformation,
   actionType,
   setActionType,
-  newContractActionInformation,
   handleAddActionAndReset,
   actionOutputs,
   setActionOutputs,
@@ -25,7 +21,6 @@ const SetActions: FunctionComponent<SetActionsProps> = ({
   setDropDownsOpenAction,
   functionArgs,
   setFunctionArgs,
-  newFetchActionInformation,
   editingStateAction,
   handleUpdateAction,
   payable,
@@ -34,7 +29,6 @@ const SetActions: FunctionComponent<SetActionsProps> = ({
   setStateMutability,
   signConditions,
   setSignConditions,
-  actionFlowIndex,
   apiPasswordAction,
   setApiPasswordAction,
   setDropDownChainContractAction,
@@ -42,20 +36,17 @@ const SetActions: FunctionComponent<SetActionsProps> = ({
   dropDownsSignOpen,
   setDropDownsSignOpen,
 }): JSX.Element => {
+  const context = useContext(ModalContext);
   switch (actionType) {
     case "contract":
-      switch (actionFlowIndex.index) {
+      switch (context?.actionFlow?.index) {
         case 7:
           return (
             <FinalAction
-              circuitInformation={circuitInformation}
-              actionInformation={newContractActionInformation}
               actionType={actionType}
               editingState={editingStateAction}
-              actionFlowIndex={actionFlowIndex}
               handleAddActionAndReset={handleAddActionAndReset}
               handleUpdateAction={handleUpdateAction}
-              dispatch={dispatch}
               apiPassword={apiPasswordAction}
               setApiPassword={setApiPasswordAction}
               functionArgs={functionArgs}
@@ -68,16 +59,16 @@ const SetActions: FunctionComponent<SetActionsProps> = ({
           return (
             <Args
               args={
-                newContractActionInformation?.args &&
-                newContractActionInformation?.args?.length > 0
-                  ? newContractActionInformation?.args
+                context?.newContractActionInfo?.args &&
+                context?.newContractActionInfo?.args?.length > 0
+                  ? context?.newContractActionInfo?.args
                   : functionArgs
               }
               setOnChangeArgs={(value: string, index: number) => {
                 const updatedFunctionArgs =
-                  newContractActionInformation?.args &&
-                  newContractActionInformation?.args?.length > 0
-                    ? [...newContractActionInformation?.args]
+                  context?.newContractActionInfo?.args &&
+                  context?.newContractActionInfo?.args?.length > 0
+                    ? [...context?.newContractActionInfo?.args]
                     : [...functionArgs];
                 updatedFunctionArgs[index] = value;
                 setFunctionArgs(updatedFunctionArgs);
@@ -94,20 +85,23 @@ const SetActions: FunctionComponent<SetActionsProps> = ({
               dropDownsOpen={dropDownsOpenAction}
               setDropDownsOpen={setDropDownsOpenAction}
               outputs={
-                (newContractActionInformation?.abi as any)?.[0]?.outputs?.length > 0
-                  ? (newContractActionInformation?.abi as any)?.[0]?.outputs
+                (context?.newContractActionInfo?.abi as any)?.[0]?.outputs
+                  ?.length > 0
+                  ? (context?.newContractActionInfo?.abi as any)?.[0]?.outputs
                   : actionOutputs
               }
               setOutputs={setActionOutputs}
               type={"output"}
               payable={
-                (newContractActionInformation?.abi as any)?.[0]?.payable
-                  ? (newContractActionInformation?.abi as any)?.[0]?.payable
+                (context?.newContractActionInfo?.abi as any)?.[0]?.payable
+                  ? (context?.newContractActionInfo?.abi as any)?.[0]?.payable
                   : payable
               }
               stateMutability={
-                (newContractActionInformation?.abi as any)?.[0]?.stateMutability
-                  ? (newContractActionInformation?.abi as any)?.[0]?.stateMutability
+                (context?.newContractActionInfo?.abi as any)?.[0]
+                  ?.stateMutability
+                  ? (context?.newContractActionInfo?.abi as any)?.[0]
+                      ?.stateMutability
                   : stateMutability
               }
               setPayable={setPayable}
@@ -119,8 +113,10 @@ const SetActions: FunctionComponent<SetActionsProps> = ({
           return (
             <Abi
               inputs={
-                (newContractActionInformation?.abi as any)?.[0]?.inputs?.length > 0
-                  ? (newContractActionInformation?.abi as any)?.[0]?.inputs?.length
+                (context?.newContractActionInfo?.abi as any)?.[0]?.inputs
+                  ?.length > 0
+                  ? (context?.newContractActionInfo?.abi as any)?.[0]?.inputs
+                      ?.length
                   : actionInputs
               }
               setInputs={setActionInputs}
@@ -135,14 +131,12 @@ const SetActions: FunctionComponent<SetActionsProps> = ({
             <Input
               onChangeFunction={[
                 (value: string) =>
-                  dispatch(
-                    setNewContractActionInformation({
-                      ...newContractActionInformation!,
-                      functionName: value,
-                    })
-                  ),
+                  context?.setNewContractActionInfo((prev) => ({
+                    ...prev!,
+                    functionName: value,
+                  })),
               ]}
-              changedValue={[newContractActionInformation?.functionName]}
+              changedValue={[context?.newContractActionInfo?.functionName]}
               text={["Function Name"]}
               count={1}
               placeholderText={["enter function name"]}
@@ -155,17 +149,16 @@ const SetActions: FunctionComponent<SetActionsProps> = ({
               setDropDownOpen={() => setDropDownChainContractAction(true)}
               setDropDownOpenIndex={(type: string) => {
                 setDropDownChainContractAction(false);
-                dispatch(
-                  setNewContractActionInformation({
-                    ...newContractActionInformation!,
-                    chainId: type as any,
-                  })
-                );
+
+                context?.setNewContractActionInfo((prev) => ({
+                  ...prev!,
+                  chainId: type as any,
+                }));
               }}
               dropDownOpen={dropDownChainContractAction}
               inputChosen={
-                newContractActionInformation?.chainId
-                  ? String(newContractActionInformation?.chainId)
+                context?.newContractActionInfo?.chainId
+                  ? String(context?.newContractActionInfo?.chainId)
                   : "ethereum"
               }
               title={"Chain Name"}
@@ -178,14 +171,12 @@ const SetActions: FunctionComponent<SetActionsProps> = ({
             <Input
               onChangeFunction={[
                 (value: string) =>
-                  dispatch(
-                    setNewContractActionInformation({
-                      ...newContractActionInformation!,
-                      contractAddress: value as `0x${string}`,
-                    })
-                  ),
+                  context?.setNewContractActionInfo((prev) => ({
+                    ...prev!,
+                    contractAddress: value as `0x${string}`,
+                  })),
               ]}
-              changedValue={[newContractActionInformation?.contractAddress]}
+              changedValue={[context?.newContractActionInfo?.contractAddress]}
               text={["Contract Address"]}
               count={1}
               placeholderText={["enter contract address"]}
@@ -205,18 +196,14 @@ const SetActions: FunctionComponent<SetActionsProps> = ({
       }
 
     default:
-      switch (actionFlowIndex.index) {
+      switch (context?.actionFlow?.index) {
         case 6:
           return (
             <FinalAction
-              circuitInformation={circuitInformation}
-              actionInformation={newFetchActionInformation}
               actionType={actionType}
               editingState={editingStateAction}
-              actionFlowIndex={actionFlowIndex}
               handleAddActionAndReset={handleAddActionAndReset}
               handleUpdateAction={handleUpdateAction}
-              dispatch={dispatch}
               apiPassword={apiPasswordAction}
               setApiPassword={setApiPasswordAction}
               signConditions={signConditions}
@@ -227,34 +214,33 @@ const SetActions: FunctionComponent<SetActionsProps> = ({
           return (
             <SignCondition
               signConditions={
-                (newFetchActionInformation?.signCondition as any)?.length > 0
-                  ? (newFetchActionInformation?.signCondition as any)
+                (context?.newFetchActionInfo?.signCondition as any)?.length > 0
+                  ? (context?.newFetchActionInfo?.signCondition as any)
                   : signConditions
               }
               dropDownsOpen={dropDownsSignOpen}
               setToSign={(value: string) =>
-                dispatch(
-                  setNewFetchActionInformation({
-                    ...newFetchActionInformation!,
-                    toSign: value as any,
-                  })
-                )
+                context?.setNewFetchActionInfo((prev) => ({
+                  ...prev!,
+                  toSign: value as any,
+                }))
               }
               toSignValue={
-                !newFetchActionInformation?.toSign
+                !context?.newFetchActionInfo?.toSign
                   ? ""
-                  : typeof newFetchActionInformation?.toSign === "string"
-                  ? newFetchActionInformation?.toSign
-                  : Array.isArray(newFetchActionInformation?.toSign)
-                  ? newFetchActionInformation.toSign
+                  : typeof context?.newFetchActionInfo?.toSign === "string"
+                  ? context?.newFetchActionInfo?.toSign
+                  : Array.isArray(context?.newFetchActionInfo?.toSign)
+                  ? context?.newFetchActionInfo?.toSign
                       .map((code) => String.fromCharCode(Number(code)))
                       .join("")
                   : ""
               }
               setAddSignConditions={() => {
                 const prevSign =
-                  (newFetchActionInformation?.signCondition as any)?.length > 0
-                    ? (newFetchActionInformation?.signCondition as any)
+                  (context?.newFetchActionInfo?.signCondition as any)?.length >
+                  0
+                    ? (context?.newFetchActionInfo?.signCondition as any)
                     : signConditions;
 
                 setSignConditions([
@@ -358,14 +344,12 @@ const SetActions: FunctionComponent<SetActionsProps> = ({
             <Input
               onChangeFunction={[
                 (value: string) =>
-                  dispatch(
-                    setNewFetchActionInformation({
-                      ...newFetchActionInformation!,
-                      apiKey: value,
-                    })
-                  ),
+                  context?.setNewFetchActionInfo((prev) => ({
+                    ...prev!,
+                    apiKey: value,
+                  })),
               ]}
-              changedValue={[newFetchActionInformation?.apiKey]}
+              changedValue={[context?.newFetchActionInfo?.apiKey]}
               text={["API Key"]}
               placeholderText={["enter api key"]}
               count={1}
@@ -378,14 +362,12 @@ const SetActions: FunctionComponent<SetActionsProps> = ({
             <Input
               onChangeFunction={[
                 (value: string) =>
-                  dispatch(
-                    setNewFetchActionInformation({
-                      ...newFetchActionInformation!,
-                      responsePath: value,
-                    })
-                  ),
+                  context?.setNewFetchActionInfo((prev) => ({
+                    ...prev!,
+                    responsePath: value,
+                  })),
               ]}
-              changedValue={[newFetchActionInformation?.responsePath]}
+              changedValue={[context?.newFetchActionInfo?.responsePath]}
               text={["Response Path"]}
               count={1}
               placeholderText={["enter.response.path"]}
@@ -396,14 +378,12 @@ const SetActions: FunctionComponent<SetActionsProps> = ({
             <Input
               onChangeFunction={[
                 (value: string) =>
-                  dispatch(
-                    setNewFetchActionInformation({
-                      ...newFetchActionInformation!,
-                      endpoint: value,
-                    })
-                  ),
+                  context?.setNewFetchActionInfo((prev) => ({
+                    ...prev!,
+                    endpoint: value,
+                  })),
               ]}
-              changedValue={[newFetchActionInformation?.endpoint]}
+              changedValue={[context?.newFetchActionInfo?.endpoint]}
               text={["Endpoint"]}
               count={1}
               placeholderText={["enter endpoint"]}
@@ -415,14 +395,12 @@ const SetActions: FunctionComponent<SetActionsProps> = ({
             <Input
               onChangeFunction={[
                 (value: string) =>
-                  dispatch(
-                    setNewFetchActionInformation({
-                      ...newFetchActionInformation!,
-                      baseUrl: value,
-                    })
-                  ),
+                  context?.setNewFetchActionInfo((prev) => ({
+                    ...prev!,
+                    baseUrl: value,
+                  })),
               ]}
-              changedValue={[newFetchActionInformation?.baseUrl]}
+              changedValue={[context?.newFetchActionInfo?.baseUrl]}
               text={["Base URL"]}
               count={1}
               placeholderText={["enter base url"]}

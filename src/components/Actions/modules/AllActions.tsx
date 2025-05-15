@@ -1,13 +1,13 @@
-import { FunctionComponent } from "react";
-import { AllActionsProps, AllEntries } from "../types/actions.types";
+import { FunctionComponent, useContext } from "react";
+import { AllEntries } from "../types/actions.types";
 import { convertDate } from "../../../../lib/helpers/convertDate";
 import Link from "next/link";
 import { INFURA_GATEWAY } from "../../../../lib/constants";
 import CodeComponent from "./CodeComponent";
+import { ModalContext } from "@/pages/_app";
 
-const AllActions: FunctionComponent<AllActionsProps> = ({
-  allEntries,
-}): JSX.Element => {
+const AllActions: FunctionComponent = (): JSX.Element => {
+  const context = useContext(ModalContext);
   return (
     <div className="relative w-full h-full justify-center items-center flex flex-wrap overflow-auto">
       <div
@@ -16,7 +16,7 @@ const AllActions: FunctionComponent<AllActionsProps> = ({
       >
         <div className="relative w-full h-full flex flex-wrap overflow-auto">
           <div className="relative w-full h-fit flex flex-col gap-3">
-            {allEntries?.map((entry: AllEntries, index: number) => {
+            {context?.allEntries?.map((entry: AllEntries, index: number) => {
               return (
                 <div
                   key={index}

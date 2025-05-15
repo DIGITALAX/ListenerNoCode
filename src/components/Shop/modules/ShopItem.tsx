@@ -1,20 +1,17 @@
-import { FunctionComponent } from "react";
+import { FunctionComponent, useContext } from "react";
 import { AllShop, CartItem, ShopItemProps } from "../types/shop.types";
 import Image from "next/legacy/image";
 import { INFURA_GATEWAY } from "../../../../lib/constants";
-import { setAllShop } from "../../../../redux/reducers/allShopSlice";
-import { setCurrentIndexItem } from "../../../../redux/reducers/currentIndexItemSlice";
+import { ModalContext } from "@/pages/_app";
 
 const ShopItem: FunctionComponent<ShopItemProps> = ({
   item,
-  dispatch,
-  currentIndexItem,
-  chosenItem,
   keyIndex,
-  allShopItems,
   largeScreen,
-  setChosenItem,
+  setCartItems,
+  cartItems,
 }): JSX.Element => {
+  const context = useContext(ModalContext);
   return (
     <div
       className={`relative h-96 bg-black rounded-md border-2 border-moda flex flex-col ${
@@ -22,22 +19,22 @@ const ShopItem: FunctionComponent<ShopItemProps> = ({
       }`}
     >
       <div className="relative w-full h-full">
-        {item?.collectionMetadata?.images?.[
-          currentIndexItem[keyIndex || 0]
+        {item?.metadata?.images?.[
+          context?.currentIndexItem?.[keyIndex || 0]!
         ] && (
           <Image
             layout="fill"
             objectFit="cover"
             src={`${INFURA_GATEWAY}/ipfs/${
-              item?.collectionMetadata?.images?.[
-                currentIndexItem[keyIndex || 0]
+              item?.metadata?.images?.[
+                context?.currentIndexItem?.[keyIndex || 0]!
               ]?.split("ipfs://")?.[1]
             }`}
             className="rounded-md"
             draggable={false}
             key={
-              item?.collectionMetadata?.images?.[
-                currentIndexItem[keyIndex || 0]
+              item?.metadata?.images?.[
+                context?.currentIndexItem?.[keyIndex || 0]!
               ]
             }
           />
@@ -47,13 +44,13 @@ const ShopItem: FunctionComponent<ShopItemProps> = ({
         <div
           className="relative w-4 h-4 flex items-center justify-center cursor-pointer active:scale-95 rotate-180 border border-ballena"
           onClick={() => {
-            const newItems = [...currentIndexItem];
+            const newItems = [...(context?.currentIndexItem || [])];
             newItems[keyIndex] =
-              (currentIndexItem[keyIndex] -
+              (context?.currentIndexItem?.[keyIndex]! -
                 1 +
-                item?.collectionMetadata?.images?.length) %
-              item?.collectionMetadata?.images?.length;
-            dispatch(setCurrentIndexItem(newItems));
+                item?.metadata?.images?.length) %
+              item?.metadata?.images?.length;
+            context?.setCurrentIndexItem(newItems);
           }}
         >
           <Image
@@ -65,12 +62,12 @@ const ShopItem: FunctionComponent<ShopItemProps> = ({
         <div
           className="relative w-4 h-4 flex items-center justify-center cursor-pointer active:scale-95 border border-ballena"
           onClick={() => {
-            const newItems = [...currentIndexItem];
+            const newItems = [...(context?.currentIndexItem || [])];
             newItems[keyIndex] =
-              (currentIndexItem[keyIndex] + 1) %
-              item?.collectionMetadata?.images?.length;
+              (context?.currentIndexItem?.[keyIndex]! + 1) %
+              item?.metadata?.images?.length;
 
-            dispatch(setCurrentIndexItem(newItems));
+            context?.setCurrentIndexItem(newItems);
           }}
         >
           <Image
@@ -82,60 +79,113 @@ const ShopItem: FunctionComponent<ShopItemProps> = ({
       </div>
       <div className="absolute bottom-0 left-0 h-20 bg-black/70 w-full flex flex-col rounded-b-md border-t border-white px-2 py-1 justify-between items-center">
         <div className="relative w-full h-fit flex flex-col cursor-pointer text-xs text-white font-vcr">
-          {item?.collectionMetadata?.title}
+          {item?.metadata?.title}
         </div>
         <div className="relative flex flex-row gap-2 w-full h-fit items-center">
           <div className="relative flex flex-row gap-2 w-full h-fit">
-            {item?.collectionMetadata?.sizes?.map(
-              (size: string, index: number) => {
-                return (
-                  <div
-                    key={index}
-                    className={`relative rounded-full text-xxs w-5 h-5 font-vcr flex items-center justify-center cursor-pointer active:scale-95 ${
-                      chosenItem?.chosenSize === size &&
-                      chosenItem?.item?.collectionMetadata?.title ==
-                        item?.collectionMetadata?.title
-                        ? "border border-ballena bg-white text-black"
-                        : "border border-moda bg-black text-white"
-                    }`}
-                    onClick={() => {
-                      const updated = allShopItems.map((obj: AllShop) =>
-                        obj?.collectionMetadata?.title ===
-                        item?.collectionMetadata?.title
-                          ? { ...obj, chosenSize: size }
-                          : obj
-                      );
+            {item?.metadata?.sizes?.map((size: string, index: number) => {
+              return (
+                <div
+                  key={index}
+                  className={`relative rounded-full text-xxs w-5 h-5 font-vcr flex items-center justify-center cursor-pointer active:scale-95 border border-moda bg-black text-white`}
+                  onClick={() => {
+                    setCartItems((prev) => {
+                      let arr = [...prev];
 
-                      setChosenItem((prev) => {
-                        let current = { ...prev };
+                      let current =
+                        arr[
+                          arr?.findIndex(
+                            (a) =>
+                              a?.item?.postId == item?.postId &&
+                              size == a?.chosenSize
+                          )
+                        ];
 
+                      if (current) {
+                        let exceeded = false;
                         if (
-                          prev?.item?.collectionMetadata?.title ==
-                          item?.collectionMetadata?.title
+                          cartItems
+                            ?.filter(
+                              (element) => element?.item?.postId == item?.postId
+                            )
+                            ?.reduce(
+                              (accumulator, currentItem) =>
+                                accumulator + currentItem.chosenAmount,
+                              0
+                            ) +
+                            1 >
+                          Number(item?.amount)
                         ) {
-                          current = {
-                            ...prev,
-                            chosenSize: size,
-                          };
-                        } else {
+                          context?.setGeneralModal({
+                            open: true,
+                            message:
+                              "We know you're eager. You've reached this prints' collect limit.",
+                            image:
+                              "QmSUH38BqmfPci9NEvmC2KRQEJeoyxdebHiZi1FABbtueg",
+                          });
+
+                          exceeded = true;
+                        }
+
+                        current = {
+                          ...current,
+                          chosenAmount: exceeded
+                            ? current?.chosenAmount
+                            : Number(current?.chosenAmount) + 1,
+                          chosenSize: size,
+                        };
+                        arr[
+                          arr?.findIndex(
+                            (a) =>
+                              a?.item?.postId == item?.postId &&
+                              size == a?.chosenSize
+                          )
+                        ] = current;
+                      } else {
+                        let exceeded = false;
+                        if (
+                          cartItems
+                            ?.filter(
+                              (element) => element?.item?.postId == item?.postId
+                            )
+                            ?.reduce(
+                              (accumulator, currentItem) =>
+                                accumulator + currentItem.chosenAmount,
+                              0
+                            ) +
+                            1 >
+                          Number(item?.amount)
+                        ) {
+                          context?.setGeneralModal({
+                            open: true,
+                            message:
+                              "We know you're eager. You've reached this prints' collect limit.",
+                            image:
+                              "QmSUH38BqmfPci9NEvmC2KRQEJeoyxdebHiZi1FABbtueg",
+                          });
+
+                          exceeded = true;
+                        }
+
+                        if (!exceeded) {
                           current = {
                             item,
                             chosenAmount: 1,
                             chosenSize: size,
                           };
+
+                          arr.push(current);
                         }
+                      }
 
-                        return current as CartItem;
-                      });
-
-                      dispatch(setAllShop(updated));
-                    }}
-                  >
-                    {size}
-                  </div>
-                );
-              }
-            )}
+                      return arr;
+                    });
+                  }}
+                >
+                  {size}
+                </div>
+              );
+            })}
           </div>
           {/* <div className="relative text-xl text-white font-vcr flex justify-end ml-auto w-5 items-center h-4 cursor-pointer active:scale-95">
             <Image
@@ -149,10 +199,10 @@ const ShopItem: FunctionComponent<ShopItemProps> = ({
         </div>
         <div className="relative flex flex-row gap-2 w-full h-fit items-center">
           <div className="relative font-vcr flex justify-start items-start w-fit h-fit text-ballena">
-            ${Number(item?.prices?.[0])}
+            ${Number(item?.price) / 10 ** 18}
           </div>
           <div className="relative font-vcr flex justify-start items-start w-fit h-fit text-ballena text-xs ml-auto">
-            {item?.soldTokens?.length || 0} / {item?.amount}
+            {Number(item?.tokenIdsMinted?.length) || 0} / {item?.amount}
           </div>
         </div>
       </div>
