@@ -10,9 +10,7 @@ export const graphClient = new ApolloClient({
 });
 
 const printLink = new HttpLink({
-  uri: process.env.NEXT_PUBLIC_BASE_URL
-    ? `${process.env.NEXT_PUBLIC_BASE_URL}/api/graphql/print`
-    : "https://listener.irrevocable.dev/api/graphql/print",
+  uri: "/api/graphql/print",
 });
 
 export const graphPrintClient = new ApolloClient({
