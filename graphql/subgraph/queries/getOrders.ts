@@ -1,5 +1,8 @@
 import { gql } from "@apollo/client";
-import { graphPrintClient } from "../../../lib/subgraph/client";
+import {
+  graphPrintClient,
+  graphPrintServer,
+} from "../../../lib/subgraph/client";
 
 const ORDERS = `
 query($buyer: String!) {
@@ -30,7 +33,9 @@ query($buyer: String!) {
 `;
 
 export const getOrders = async (buyer: string): Promise<any> => {
-  const queryPromise = graphPrintClient.query({
+  const queryPromise = (
+    typeof window === "undefined" ? graphPrintServer : graphPrintClient
+  ).query({
     query: gql(ORDERS),
     variables: {
       buyer,

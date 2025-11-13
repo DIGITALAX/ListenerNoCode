@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-import { graphPrintClient } from "../../../lib/subgraph/client";
+import { graphPrintClient, graphPrintServer } from "../../../lib/subgraph/client";
 
 const COLLECTIONS = `
 query {
@@ -41,7 +41,7 @@ query {
 `;
 
 export const getAllCollections = async (): Promise<any> => {
-  const queryPromise = graphPrintClient.query({
+  const queryPromise = (typeof window === "undefined" ? graphPrintServer : graphPrintClient).query({
     query: gql(COLLECTIONS),
     fetchPolicy: "no-cache",
     errorPolicy: "all",

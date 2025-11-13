@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-import { graphPrintClient } from "../../../lib/subgraph/client";
+import { graphPrintClient, graphPrintServer } from "../../../lib/subgraph/client";
 
 const CURRENCIES = `
 query {
@@ -12,7 +12,7 @@ query {
 `;
 
 export const getOracle = async (): Promise<any> => {
-  const queryPromise = graphPrintClient.query({
+  const queryPromise = (typeof window === "undefined" ? graphPrintServer : graphPrintClient).query({
     query: gql(CURRENCIES),
 
     fetchPolicy: "no-cache",
