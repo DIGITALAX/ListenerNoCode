@@ -4,7 +4,6 @@ import {
   IConditionalLogic,
   IExecutionConstraints,
 } from "@/components/CircuitFlow/types/litlistener.types";
-import { AccessControlConditions } from "@lit-protocol/types";
 
 export interface AllCircuits {
   circuitId: string;
@@ -140,8 +139,17 @@ export interface Order {
   isFulfilled: boolean;
   status: Status;
   amount: string;
-  details?: DecryptedDetails | EncryptedDetails | string;
+  details?: DecryptedDetails | EncryptedData | string;
   decrypted: boolean;
+}
+
+
+export interface EncryptedData {
+  [address: string]: {
+    ephemPublicKey: string;
+    iv: string;
+    ciphertext: string;
+  };
 }
 
 export enum Status {
@@ -151,12 +159,6 @@ export enum Status {
   Designing = "Designing",
 }
 
-export interface EncryptedDetails {
-  ciphertext: string;
-  dataToEncryptHash: string;
-  accessControlConditions: AccessControlConditions | undefined;
-  chainId: string;
-}
 
 export interface DecryptedDetails {
   name: string;

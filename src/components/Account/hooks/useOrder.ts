@@ -1,25 +1,17 @@
 import { useContext, useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 import { getOrders } from "../../../../graphql/subgraph/queries/getOrders";
-import { EncryptedDetails } from "../types/account.types";
 import { ModalContext } from "@/pages/_app";
-import {
-  checkAndSignAuthMessage,
-  LitNodeClient,
-  uint8arrayToString,
-} from "@lit-protocol/lit-node-client";
-import { LIT_NETWORK } from "@lit-protocol/constants";
 import { INFURA_GATEWAY, orderStatus } from "../../../../lib/constants";
+import { EncryptedData } from "../types/account.types";
+import { decryptData } from "../../../../lib/helpers/encryption";
 
 const useOrder = () => {
-  const client = new LitNodeClient({
-    litNetwork: LIT_NETWORK.Datil,
-    debug: false,
-  });
   const { address } = useAccount();
   const context = useContext(ModalContext);
   const [ordersLoading, setOrdersLoading] = useState<boolean>(false);
   const [decryptLoading, setDecryptLoading] = useState<boolean>(false);
+  const [privateKey, setPrivateKey] = useState<string | null>(null);
 
   const getAllOrders = async () => {
     setOrdersLoading(true);
@@ -68,9 +60,9 @@ const useOrder = () => {
 
     try {
       if (
-        !(context?.selectedOrderSidebar?.details as EncryptedDetails)
+        !(context?.selectedOrderSidebar?.details as EncryptedData)
           ?.ciphertext ||
-        !(context?.selectedOrderSidebar?.details as EncryptedDetails)
+        !(context?.selectedOrderSidebar?.details as EncryptedData)
           ?.dataToEncryptHash ||
         !address ||
         context?.selectedOrderSidebar?.decrypted
@@ -78,27 +70,31 @@ const useOrder = () => {
         return;
       }
 
-      let nonce = await client.getLatestBlockhash();
-      const authSig = await checkAndSignAuthMessage({
-        chain: "polygon",
-        nonce,
-      });
-      await client.connect();
+      let key = privateKey;
 
-      const { decryptedData } = await client.decrypt({
-        accessControlConditions: (
-          context?.selectedOrderSidebar?.details as EncryptedDetails
-        )?.accessControlConditions,
-        ciphertext: (context?.selectedOrderSidebar?.details as EncryptedDetails)
-          ?.ciphertext,
-        dataToEncryptHash: (
-          context?.selectedOrderSidebar?.details as EncryptedDetails
-        )?.dataToEncryptHash,
-        chain: "polygon",
-        authSig,
-      });
+      if (!key) {
+        const promptMessage =
+          "Enter your wallet private key to decrypt your fulfillment details.\n\nThis interface is fully open source, runs entirely in your browser, and never stores your key. Make sure you are in a secure environment before entering it.";
+        const promptValue = window.prompt(promptMessage);
 
-      const details = await JSON.parse(uint8arrayToString(decryptedData));
+        if (!promptValue) {
+          return;
+        }
+
+        key = promptValue.trim();
+
+        if (!key.startsWith("0x")) {
+          key = `0x${key}`;
+        }
+
+        setPrivateKey(key);
+      }
+
+      const details = await decryptData(
+        context?.selectedOrderSidebar?.details as EncryptedData,
+        key,
+        address
+      );
 
       const current = [...(context?.allOrders || [])];
       const index = context?.allOrders?.findIndex(

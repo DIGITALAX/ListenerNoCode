@@ -1,19 +1,13 @@
 import { useContext, useEffect, useState } from "react";
-import { LIT_NETWORK } from "@lit-protocol/constants";
-import {
-  LitNodeClient,
-  checkAndSignAuthMessage,
-  uint8arrayFromString,
-} from "@lit-protocol/lit-node-client";
 import { useAccount } from "wagmi";
 import {
   ACCEPTED_TOKENS,
   DIGITALAX_ADDRESS,
+  DIGITALAX_PUBLIC_KEY,
   LISTENER_OPEN_ACTION,
 } from "../../../../lib/constants";
 import { getAllCollections } from "../../../../graphql/subgraph/queries/getCollections";
 import { createPublicClient, createWalletClient, custom, http } from "viem";
-import { polygon } from "viem/chains";
 import { CartItem } from "../types/shop.types";
 import findBalance from "../../../../lib/helpers/findBalance";
 import { Details } from "@/components/Account/types/account.types";
@@ -21,8 +15,11 @@ import { ModalContext } from "@/pages/_app";
 import { executePostAction } from "@lens-protocol/client/actions";
 import { ethers } from "ethers";
 import { blockchainData } from "@lens-protocol/client";
-import { AccessControlConditions } from "@lit-protocol/types";
 import { chains } from "@lens-chain/sdk/viem";
+import {
+  encryptForMultipleRecipients,
+  getPublicKeyFromSignature,
+} from "../../../../lib/helpers/encryption";
 
 const useShop = () => {
   const context = useContext(ModalContext);
@@ -31,10 +28,6 @@ const useShop = () => {
     transport: http("https://rpc.lens.xyz"),
   });
   const coder = new ethers.AbiCoder();
-  const client = new LitNodeClient({
-    litNetwork: LIT_NETWORK.Datil,
-    debug: false,
-  });
   const { address } = useAccount();
   const [checkOutOpen, setCheckoutOpen] = useState<boolean>(true);
   const [shopLoading, setShopLoading] = useState<boolean>(false);
@@ -63,68 +56,45 @@ const useShop = () => {
     )
       return;
     try {
-      let nonce = await client.getLatestBlockhash();
-      await checkAndSignAuthMessage({
-        chain: "polygon",
-        nonce: nonce!,
-      });
-      await client.connect();
-
       let encryptedItems: string[] = [];
 
-      const accessControlConditions = [
-        {
-          contractAddress: "",
-          standardContractType: "",
-          chain: "polygon",
-          method: "",
-          parameters: [":userAddress"],
-          returnValueTest: {
-            comparator: "=",
-            value: address.toLowerCase(),
-          },
-        },
-        {
-          operator: "or",
-        },
-        {
-          contractAddress: "",
-          standardContractType: "",
-          chain: "polygon",
-          method: "",
-          parameters: [":userAddress"],
-          returnValueTest: {
-            comparator: "=",
-            value: address?.toLowerCase() as string,
-          },
-        },
-      ] as AccessControlConditions;
+      const clientWallet = createWalletClient({
+        chain: chains.mainnet,
+        transport: custom((window as any).ethereum),
+      });
+
+      const message = "Sign this message to encrypt your fulfillment details";
+      const signature = await clientWallet.signMessage({
+        account: address,
+        message,
+      });
+
+      const buyerPublicKey = await getPublicKeyFromSignature(
+        message,
+        signature
+      );
 
       await Promise.all(
         cartItems?.map(async (item) => {
-          const { ciphertext, dataToEncryptHash } = await client.encrypt({
-            accessControlConditions,
-            dataToEncrypt: uint8arrayFromString(
-              JSON.stringify({
-                ...fulfillmentDetails,
-                size: item?.chosenSize,
-                origin: "2",
-                fulfillerAddress: [DIGITALAX_ADDRESS],
-              })
-            ),
-          });
+          const encryptedData = await encryptForMultipleRecipients(
+            {
+              ...fulfillmentDetails,
+              size: item?.chosenSize,
+              origin: "2",
+              fulfillerAddress: [DIGITALAX_ADDRESS],
+            },
+            [
+              { address, publicKey: buyerPublicKey },
+              { address: DIGITALAX_ADDRESS, publicKey: DIGITALAX_PUBLIC_KEY },
+            ]
+          );
 
           const ipfsRes = await fetch("/api/ipfs", {
             method: "POST",
             headers: {
-              contentType: "application/json",
+              "Content-Type": "application/json",
             },
-            body: JSON.stringify({
-              ciphertext,
-              dataToEncryptHash,
-              accessControlConditions,
-              chain: "polygon",
-            }),
+            body: JSON.stringify(encryptedData),
           });
           const json = await ipfsRes.json();
 
